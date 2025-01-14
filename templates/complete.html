@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>実験結果</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h1>実験は終了です！</h1>
+    <h2>75%閾値: {{ threshold }}</h2>
+    <h2>あなたの心理物理関数❤️</h2>
+    <div class="image-container">
+        <img src="{{ url_for('static', filename=fig_path.replace('static/', '')) }}" alt="MLE Fitted Curve", class="responsive-image">
+    </div>
+    <p></p>
+    <!-- トップページに戻るボタン -->
+    <button onclick="window.location.href='/'">トップページに戻る</button>
+</body>
+</html>

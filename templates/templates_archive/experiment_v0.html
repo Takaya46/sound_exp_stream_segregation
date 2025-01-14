@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>実験</title>
+    <style>
+        /* ボタンの基本スタイル */
+        .button {
+            width: 100px;
+            height: 50px;
+            font-size: 18px;
+            margin: 10px;
+        }
+
+        /* 選択時のハイライトスタイル */
+        .selected {
+            background-color: yellow;
+        }
+    </style>
+</head>
+<body>
+    <h1>実験トライアル</h1>
+
+    <!-- 音声要素 -->
+    <audio id="tone1" preload="auto"></audio>
+    <audio id="tone2" preload="auto"></audio>
+    <audio id="tone3" preload="auto"></audio>
+
+    <!-- 開始ボタン -->
+    <button id="startButton" onclick="nextTrial()">実験を開始する</button>
+
+    <!-- 選択ボタン（視覚的表示用） -->
+    <div>
+        <button id="buttonF" class="button">１</button>
+        <button id="buttonJ" class="button">３</button>
+    </div>
+
+    <!-- 結果表示 -->
+    <div id="result" style="margin-top: 20px; font-size: 20px;"></div>
+
+    <script>
+        let selectedKey = null;  // 選択したキーを記録する変数
+
+        // キー入力のリスナー
+        document.addEventListener("keydown", (event) => {
+            console.log(`Pressed Key Code: ${event.code}`);  // デバッグ出力
+
+            if (event.code === "KeyF") {  // fキー
+                selectKey("f");
+            } else if (event.code === "KeyJ") {  // jキー
+                selectKey("j");
+            } else if (event.code === "Space") {  // Spaceキーで送信
+                if (selectedKey) {
+                    submitResponse(selectedKey);
+                } else {
+                    alert("FキーまたはJキーを選択してください！");
+                }
+            }
+        });
+
+        // キー選択処理
+        function selectKey(key) {
+            selectedKey = key;
+
+            // 選択状態を視覚的に表示
+            document.getElementById("buttonF").classList.remove("selected");
+            document.getElementById("buttonJ").classList.remove("selected");
+
+            if (key === "f") {
+                document.getElementById("buttonF").classList.add("selected");
+            } else if (key === "j") {
+                document.getElementById("buttonJ").classList.add("selected");
+            }
+        }
+
+        // トライアル開始処理
+        async function nextTrial() {
+            const res = await fetch('/next_trial', { method: 'POST' });
+            const data = await res.json();
+
+            const frequencyDir = "{{ session['frequency_dir'] }}";  // サーバーから選択された周波数ディレクトリ
+
+            // 音声ファイルのパスを設定
+            const tone1Path = `/static/stimuli/successive_0.52*4/${frequencyDir}/gallops_${data.tones[0]}ms.wav`;
+            const tone2Path = `/static/stimuli/successive_0.52*4/${frequencyDir}/gallops_${data.tones[1]}ms.wav`;
+            const tone3Path = `/static/stimuli/successive_0.52*4/${frequencyDir}/gallops_${data.tones[2]}ms.wav`;
+
+            // 音声要素にパスを設定
+            const audio1 = new Audio(tone1Path);
+            const audio2 = new Audio(tone2Path);
+            const audio3 = new Audio(tone3Path);
+
+            // 音を順番に再生
+            audio1.play();
+            audio1.onended = () => {
+                setTimeout(() => {
+                    audio2.play();
+                    audio2.onended = () => {
+                        setTimeout(() => {
+                            audio3.play();
+                        }, 500);
+                    };
+                }, 500);
+            };
+
+            // 開始時に選択状態をリセット
+            selectedKey = null;
+            document.getElementById("buttonF").classList.remove("selected");
+            document.getElementById("buttonJ").classList.remove("selected");
+            document.getElementById("result").innerText = "";
+        }
+
+        async function submitResponse(response) {
+            const res = await fetch('/submit_response', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ response: response === "f" ? "1" : "3" })  // Fキー -> "1", Jキー -> "3"
+            });
+            const data = await res.json();
+
+            // 結果の表示
+            const resultElement = document.getElementById("result");
+            if (data.correct) {
+                resultElement.innerText = "正解！";
+            } else {
+                resultElement.innerText = "不正解...";
+            }
+
+            // 1秒後に結果をクリア
+            setTimeout(() => {
+                resultElement.innerText = "";
+            }, 1000);
+
+            // 実験が終了した場合
+            if (data.completed) {
+                window.location.href = "/complete";  // complete.html に遷移
+            }
+        }
+    </script>
+</body>
+</html>

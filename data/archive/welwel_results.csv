@@ -1,0 +1,5 @@
+Trial,CorrectResponse,Response,Correct,Offset,Reversals,StepSize
+1,1,1,True,gallops_64.00ms.wav,0,4
+2,1,3,False,gallops_64.00ms.wav,0,4
+3,1,1,True,gallops_64.00ms.wav,0,4
+4,1,3,False,gallops_64.00ms.wav,0,4

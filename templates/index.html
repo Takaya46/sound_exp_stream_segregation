@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>実験開始</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .popup-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .popup-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Web実験</h1>
+
+    <!-- 被験者ID入力 -->
+    <label for="participant_id">被験者IDを入力してね
+        <input id="participant_id"  type="text" placeholder="IDを入力">
+    </label>
+    <br><br>
+
+    <!-- 周波数ディレクトリ選択 -->
+    <label for="frequency_dir">周波数条件を選択してね 
+        <select id="frequency_dir">
+            <option value="g_base">g_base</option>
+            <option value="as_semitone">as_semitone</option>
+            <option value="g_1octave">g_1octave</option>
+            <option value="g_2octave">g_2octave</option>
+            <option value="g_3octave">g_3octave</option>
+        </select>
+    </label>
+    <br><br>
+
+    <!-- 最大トライアル数設定 -->
+    <label for="max_trials">トライアル数を決めてね 
+        <input id="max_trials" type="number" min="1" max="500" value="50">
+    </label>
+    <br><br>
+
+    <!-- 実験開始ボタン -->
+    <button onclick="startExperiment()">実験へ進む</button>
+
+    <!-- 確認ポップアップ -->
+    <div id="confirmationPopup" class="popup">
+        <div class="popup-content">
+            <p id="confirmationMessage"></p>
+                <div class="popup-buttons">
+                    <button id="backButton">戻る</button>
+                    <button id="startExperimentButton">実験へ</button>
+                </div>
+        </div>
+    </div>
+
+    <script>
+        // フォーム送信時に実行
+        async function startExperiment() {
+            const participantId = document.getElementById('participant_id').value;
+            const frequencyDir = document.getElementById('frequency_dir').value;
+            const maxTrials = document.getElementById('max_trials').value;
+
+            // 被験者IDが入力されていなかった場合
+            if (!participantId) {
+                alert("被験者IDを入力してください！");
+                return;  // 送信をキャンセル
+            }
+
+            // ポップアップに内容を表示
+            const confirmationMessage = `
+                <p style="margin-bottom:30px;">以下の設定で間違いないですか？<\p>
+                <p>被験者ID： ${participantId}<\p>
+                <p>周波数条件： ${frequencyDir}<\p>
+                <p>トライアル数： ${maxTrials}<\p>
+            `;
+            document.getElementById("confirmationMessage").innerHTML = confirmationMessage;
+
+            // ポップアップを表示
+            document.getElementById("confirmationPopup").style.display = "flex";
+        }
+
+        // 戻るボタンの動作
+        document.getElementById("backButton").addEventListener("click", function() {
+            document.getElementById("confirmationPopup").style.display = "none";
+        });
+
+        // 実験開始ボタンの動作
+        document.getElementById("startExperimentButton").addEventListener("click", function() {
+            const participantId = document.getElementById('participant_id').value;
+            const frequencyDir = document.getElementById('frequency_dir').value;
+            const maxTrials = document.getElementById('max_trials').value;
+
+            // サーバーにデータを送信して実験を開始
+            fetch('/start', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    participant_id: participantId,
+                    frequency_dir: frequencyDir,
+                    max_trials: parseInt(maxTrials) || 50
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                window.location.href = "/experiment";  // 実験ページに移動
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
