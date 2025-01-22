@@ -51,7 +51,7 @@ def perform_mle_analysis(data_file, output_dir):
 
     # フィッティング結果を描画
     fig_path = os.path.join(output_dir, 'mle_fitted_curve.png')
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(7, 4))
 
     # データ点の描画（ジッター付き）
     jittered_x = log2_offset + np.random.uniform(-0.1, 0.1, size=len(log2_offset))

@@ -24,30 +24,69 @@
         .selected {
             background-color: yellow;
         }
+
+        /* 説明文を囲むスタイル */
+        .instruction {
+            background-color: #f9f9f9; /* 背景色 */
+            border: 2px solid #ddd;   /* 枠線 */
+            border-radius: 10px;      /* 角丸 */
+            padding: 15px;            /* 内側の余白 */
+            margin: 20px auto;        /* 上下の余白 */
+            width: 90%;               /* 横幅 */
+            max-width: 600px;         /* 最大横幅 */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 軽い影 */
+        }
+
+        /* 箇条書きのスタイル */
+        .instruction ul {
+            list-style-type: disc;    /* 箇条書きのマーカーをディスクに */
+            padding-left: 20px;       /* 左余白 */
+        }
+
+        .instruction li {
+            margin-bottom: 10px;      /* 項目間の余白 */
+            font-size: 16px;          /* 文字サイズ */
+            line-height: 1.5;         /* 行間 */
+            color: #333;              /* テキストの色 */
+        }
     </style>
 </head>
 <body>
-    <h1>Which is target?</h1>
+    <h1>ターゲットはどっち？</h1>
 
     <!-- 音声要素 -->
     <audio id="tone1" preload="auto"></audio>
     <audio id="tone2" preload="auto"></audio>
     <audio id="tone3" preload="auto"></audio>
 
-    <!-- 開始ボタン -->
-    <button id="startButton" onclick="startExperiment()">Start!!</button>
+    <!-- 説明文1 -->
+    <div id="instructionTop" class="instruction">
+        <ul>
+            <li>[タタタ]というリズムが4回連続したものを1つのセットとするよ。</li>
+            <li>[タッタタ]というリズムの音セットがターゲットだ！</li>
+            <li>3つの音セットが連続して流れるから、1番目と3番目のどちらがターゲットか回答してね。</li>
+            <li>2番目は必ず崩れていない通常セットになっているよ。</li>
+        </ul>
+    </div>
 
     <!-- 選択ボタン（視覚的表示用） -->
+    <p>1番目と思ったらFキーを、3番目と思ったらJキーを押してね</p>
     <div class="button-container">
         <button id="buttonF" class="button">1st(F)</button>
         <button id="buttonJ" class="button">3rd(J)</button>
     </div>
-    
+    <p>Spaceキーを押すと回答が送信されて次のトライアルに行くよ</p>
     <!-- エラーメッセージ -->
     <div id="error" style="color: red; margin-top: 20px; font-size: 16px;"></div>
 
     <!-- 結果表示 -->
     <div id="result" style="margin-top: 20px; font-size: 20px;"></div>
+
+    <!-- 説明文2 -->
+    <div id="instructionStart" class="instruction">Start!!ボタンをクリックして実験を始めよう！</div>
+
+    <!-- 開始ボタン -->
+    <button id="startButton" onclick="startExperiment()">Start!!</button>
 
     <script>
         let isExperimentStarted = false; // 実験が開始されたかどうかを示すフラグ
@@ -91,7 +130,7 @@
 
                 // 実験が開始されていない場合のエラーチェック
                 if (!isExperimentStarted) {
-                    errorElement.innerText = "実験開始ボタンを押してください。";
+                    errorElement.innerText = "回答が送信されるよ";
                     return;
                 } else {
 
@@ -126,6 +165,10 @@
             isExperimentStarted = true; // 実験を開始
             const startButton = document.getElementById("startButton");
             startButton.disabled = true; // 開始ボタンを無効化
+            const instructionTop = document.getElementById("instructionTop");
+            instructionTop.disabled = true; // 説明文を無効化
+            const instructionStart = document.getElementById("instructionStart");
+            instructionStart.disabled = true; // 説明文を無効化
             nextTrial();
         }
         // トライアル開始処理
@@ -143,6 +186,17 @@
                 startButton.style.display = 'none';
             }
             
+            // 説明文を非表示
+            const instructionTop = document.getElementById('instructionTop');
+            if (instructionTop) {
+                instructionTop.style.display = 'none';
+            }
+
+            const instructionStart = document.getElementById('instructionStart');
+            if (instructionStart) {
+                instructionStart.style.display = 'none';
+            }
+
             isAudioPlaying = true; // 再生フラグを設定
 
             const res = await fetch('/next_trial', { method: 'POST' });
@@ -209,9 +263,9 @@
 
             const resultElement = document.getElementById("result");
             if (data.correct) {
-                resultElement.innerText = "Correct！";
+                resultElement.innerText = "正解です！";
             } else {
-                resultElement.innerText = "Miss";
+                resultElement.innerText = "ざんねん！不正解です、、";
             }
 
             if (data.completed) {

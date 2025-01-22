@@ -7,11 +7,17 @@
 </head>
 <body>
     <h1>実験は終了です！</h1>
-    <h2>75%閾値: {{ threshold }}</h2>
-    <h2>あなたの心理物理関数❤️</h2>
+    
+    <h2>あなたの心理測定関数📈</h2>
+    
     <div class="image-container">
         <img src="{{ url_for('static', filename=fig_path.replace('static/', '')) }}" alt="MLE Fitted Curve", class="responsive-image">
     </div>
+    <h2>あなたの75%検出閾: {{ threshold }}ms</h2>
+    <p>
+        実験データから予想された難易度(横軸)に対する正解確率(縦軸)です!!<br>
+        緑の点線の値(75%検出閾)が小さいほど難易度が高いものでも正解できることを示しています👍
+    </p>
     <p></p>
     <!-- トップページに戻るボタン -->
     <button onclick="window.location.href='/'">トップページに戻る</button>
