@@ -221,5 +221,7 @@ def complete():
     # 結果をテンプレートに渡す
     return render_template('complete.html', fig_path=results["fig_path"], threshold=f"{results['threshold']:.2f}")
 
+# 開発用のFlaskサーバーを起動
+# gunicornを使う場合は関係ない
 if __name__ == '__main__':
     app.run(debug=True)
