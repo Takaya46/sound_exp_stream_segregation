@@ -52,7 +52,7 @@
     </style>
 </head>
 <body>
-    <h1>ターゲットはどっち？</h1>
+    <h1>ターゲットを当てよう！</h1>
 
     <!-- 音声要素 -->
     <audio id="tone1" preload="auto"></audio>
@@ -62,10 +62,28 @@
     <!-- 説明文1 -->
     <div id="instructionTop" class="instruction">
         <ul>
-            <li>[タタタ]というリズムが4回連続したものを1つのセットとするよ。</li>
-            <li>[タッタタ]というリズムの音セットがターゲットだ！</li>
-            <li>3つの音セットが連続して流れるから、1番目と3番目のどちらがターゲットか回答してね。</li>
-            <li>2番目は必ず崩れていない通常セットになっているよ。</li>
+            <li>
+                [タタタ]というリズムが4回連続したものを1つのセットとします。
+                <audio controls style="padding: 10px 0;">
+                    <source id="example_audio_source" src="{{ url_for('static', filename='stimuli/successive_0.52*4/' + session['frequency_dir'] + '/gallops_0.00ms.wav') }}" type="audio/mpeg">
+                    お使いのブラウザはオーディオ要素をサポートしていません。
+                    <br>
+                    <button type="button" onclick="document.getElementById('instruction_audio').play()">再生</button>
+                    <button type="button" onclick="document.getElementById('instruction_audio').pause()">停止</button>
+                </audio>
+            </li >
+            <li>
+                [タッタタ]というリズムのセットがターゲットだ！
+                <audio controls style="padding: 10px 0;">
+                    <source id="example_audio_source" src="{{ url_for('static', filename='stimuli/successive_0.52*4/' + session['frequency_dir'] + '/gallops_64.00ms.wav') }}" type="audio/mpeg">
+                    お使いのブラウザはオーディオ要素をサポートしていません。
+                    <br>
+                    <button type="button" onclick="document.getElementById('instruction_audio').play()">再生</button>
+                    <button type="button" onclick="document.getElementById('instruction_audio').pause()">停止</button>
+                </audio>
+            </li >
+            <li>3つのセットが連続して流れるので、1番目と3番目のどちらがターゲットか回答してください！</li>
+            <li>2番目は必ず崩れていない通常セットになっています。</li>
         </ul>
     </div>
 

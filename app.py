@@ -33,6 +33,7 @@ def initialize_experiment(frequency_dir):
     session['double_flag'] = False
     session['reversals_double_flag'] = False
 
+# ステップサイズの決定をする関数
 def decide_step_size():
     step_size = session['step_size']
     offset_index = session['offset_index']
