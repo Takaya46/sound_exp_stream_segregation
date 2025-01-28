@@ -5,56 +5,72 @@
     <title>実験開始</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <style>
-        .popup {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-        }
-        .popup-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-            text-align: center;
-        }
-
-        .popup-buttons {
+        .meta-media-container {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>Web実験</h1>
+    <h1>リズム聞き取りweb実験</h1>
+        <!-- 説明文 -->
+        <div id="instruction_first" class="instruction" style="margin-bottom: 40px;">
+            <h2>リズム変化の気づきやすさは変化する？</h2>
+            <p>
+                リズム変化の気づきやすさが音の周波数差によって変わるかを調べる実験です！<br>
+                あなたは同じリズム変化に対してちゃんと気づくことができるでしょうか？？ <br>
+                <br>
+                以下の音は、2つのリズムパターン①と②を異なる周波数条件のもとで作成したものです。<br>
+                実験ではこれらの識別問題に挑戦していただき、周波数差条件ごとの能力変化を可視化します！<br>
+            </p>
+            <ul style="text-align: center;">
+                <p class="section-title">同じ音（難易度：易）</p>
+                <div class="meta-media-container">
+                    <div class="media-container">
+                        <p style="font-size: 24px">①</p>
+                        <audio id="normal_base" src="{{ url_for('static', filename='stimuli/successive_0.52*4/g_base/gallops_0.00ms.wav') }}" controls></audio>
+                    </div>
+                    <div class="media-container">
+                        <p style="font-size: 24px">②</p>
+                        <audio id="target_base" src="{{ url_for('static', filename='stimuli/successive_0.52*4/g_base/gallops_32.00ms.wav') }}" controls></audio>
+                    </div>
+                </div >
+                <p class="section-title">2オクターブ（難易度：難）</p>
+                <div class="meta-media-container">
+                    <div class="media-container">
+                        <p style="font-size: 24px">①</p>
+                        <audio id="normal_high" src="{{ url_for('static', filename='stimuli/successive_0.52*4/g_2octave/gallops_0.00ms.wav') }}" controls></audio>
+                    </div>
+                    <div class="media-container">
+                        <p style="font-size: 24px">②</p>
+                        <audio id="target_high" src="{{ url_for('static', filename='stimuli/successive_0.52*4/g_2octave/gallops_32.00ms.wav') }}" controls></audio>
+                    </div>
+                </div>
+            </ul>
+        </div >
+
 
     <!-- 被験者ID入力 -->
-    <label for="participant_id">被験者ID(名前_日付)を入力してね
+    <label for="participant_id">被験者IDを入力（例: sub046）
         <input id="participant_id"  type="text" placeholder="IDを入力">
     </label>
     <br><br>
 
     <!-- 周波数ディレクトリ選択 -->
-    <label for="frequency_dir">周波数条件を選択してね 
+    <label for="frequency_dir">周波数差条件を選択
         <select id="frequency_dir">
-            <option value="g_base">g_base</option>
-            <option value="as_semitone">as_semitone</option>
-            <option value="g_1octave">g_1octave</option>
-            <option value="g_2octave">g_2octave</option>
-            <option value="g_3octave">g_3octave</option>
+            <option value="g_base">同じ音（難易度：易）</option>
+            <option value="as_semitone">半音（難易度：易）</option>
+            <option value="g_1octave">1オクターブ（難易度：中）</option>
+            <option value="g_2octave">2オクターブ（難易度：難）</option>
+            <option value="g_3octave">3オクターブ（難易度：鬼）</option>
         </select>
     </label>
     <br><br>
 
     <!-- 最大トライアル数設定 -->
-    <label for="max_trials">トライアル数を決めてね 
-        <input id="max_trials" type="number" min="1" max="500" value="20">
+    <label for="max_trials">問題数を設定（1~50問） 
+        <input id="max_trials" type="number" min="1" max="50" value="20">
     </label>
     <br><br>
 
@@ -73,6 +89,12 @@
     </div>
 
     <script>
+        // 音声再生
+        function playAudio(id) {
+            const audio = document.getElementById(id);
+            audio.play();
+        }
+
         // フォーム送信時に実行
         async function startExperiment() {
             const participantId = document.getElementById('participant_id').value;
@@ -87,7 +109,7 @@
 
             // ポップアップに内容を表示
             const confirmationMessage = `
-                <p style="margin-bottom:30px;">以下の設定で間違いないですか？<\p>
+                <p style="margin-bottom:30px;">以下の設定で実験に進みます<\p>
                 <p>被験者ID： ${participantId}<\p>
                 <p>周波数条件： ${frequencyDir}<\p>
                 <p>トライアル数： ${maxTrials}<\p>

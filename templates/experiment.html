@@ -4,56 +4,9 @@
     <meta charset="UTF-8">
     <title>実験</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <style>
-        /* ボタンの基本スタイル */
-        .button {
-            width: 100px;
-            height: 50px;
-            font-size: 18px;
-            margin: 10px;
-        }
-
-        /* ボタンを横並びにする */
-        .button-container {
-            display: flex;
-            justify-content: center; /* 中央揃え */
-            gap: 20px; /* ボタン間の間隔 */
-        }
-
-        /* 選択時のハイライトスタイル */
-        .selected {
-            background-color: yellow;
-        }
-
-        /* 説明文を囲むスタイル */
-        .instruction {
-            background-color: #f9f9f9; /* 背景色 */
-            border: 2px solid #ddd;   /* 枠線 */
-            border-radius: 10px;      /* 角丸 */
-            padding: 15px;            /* 内側の余白 */
-            margin: 20px auto;        /* 上下の余白 */
-            width: 90%;               /* 横幅 */
-            max-width: 600px;         /* 最大横幅 */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 軽い影 */
-        }
-
-        /* 箇条書きのスタイル */
-        .instruction ul {
-            list-style-type: disc;    /* 箇条書きのマーカーをディスクに */
-            padding-left: 20px;       /* 左余白 */
-        }
-
-        .instruction li {
-            margin-bottom: 10px;      /* 項目間の余白 */
-            font-size: 16px;          /* 文字サイズ */
-            line-height: 1.5;         /* 行間 */
-            color: #333;              /* テキストの色 */
-        }
-    </style>
 </head>
 <body>
-    <h1>ターゲットを当てよう！</h1>
-
+    <h1></h1>
     <!-- 音声要素 -->
     <audio id="tone1" preload="auto"></audio>
     <audio id="tone2" preload="auto"></audio>
@@ -61,39 +14,36 @@
 
     <!-- 説明文1 -->
     <div id="instructionTop" class="instruction">
+        <h3>3つの音の中からターゲットの音を見つける課題に挑戦しましょう！</h3>
         <ul>
-            <li>
-                [タタタ]というリズムが4回連続したものを1つのセットとします。
-                <audio controls style="padding: 10px 0;">
-                    <source id="example_audio_source" src="{{ url_for('static', filename='stimuli/successive_0.52*4/' + session['frequency_dir'] + '/gallops_0.00ms.wav') }}" type="audio/mpeg">
-                    お使いのブラウザはオーディオ要素をサポートしていません。
-                    <br>
-                    <button type="button" onclick="document.getElementById('instruction_audio').play()">再生</button>
-                    <button type="button" onclick="document.getElementById('instruction_audio').pause()">停止</button>
-                </audio>
-            </li >
-            <li>
-                [タッタタ]というリズムのセットがターゲットだ！
-                <audio controls style="padding: 10px 0;">
-                    <source id="example_audio_source" src="{{ url_for('static', filename='stimuli/successive_0.52*4/' + session['frequency_dir'] + '/gallops_64.00ms.wav') }}" type="audio/mpeg">
-                    お使いのブラウザはオーディオ要素をサポートしていません。
-                    <br>
-                    <button type="button" onclick="document.getElementById('instruction_audio').play()">再生</button>
-                    <button type="button" onclick="document.getElementById('instruction_audio').pause()">停止</button>
-                </audio>
-            </li >
-            <li>3つのセットが連続して流れるので、1番目と3番目のどちらがターゲットか回答してください！</li>
-            <li>2番目は必ず崩れていない通常セットになっています。</li>
-        </ul>
-    </div>
+            <li>「タタタ」というリズムが4回連続したものを1つの音とします</li>
+            <li>音は2種類です。均等なリズムのノーマル音「タタタ」とリズムが崩れたターゲット音「タッタタ」です（再生して確かめてください）</li>
+                <ul>
+                    ノーマル音「タタタ」
+                    <div class="media-container">
+                        <audio id="sample_audio_normal" src="{{ url_for('static', filename='stimuli/successive_0.52*4/' + session['frequency_dir'] + '/gallops_0.00ms.wav') }}"></audio>
+                        <button class="play-button" onclick="playAudio('sample_audio_normal')"></button>
+                        <img src="{{ url_for('static', filename='sample_fig/stimuli_normal.png') }}" style="height: 70px;">
+                    </div>
+                    ターゲット音「タッタタ」
+                    <div class="media-container">
+                        <audio id="sample_audio_target" src="{{ url_for('static', filename='stimuli/successive_0.52*4/' + session['frequency_dir'] + '/gallops_64.00ms.wav') }}"></audio>
+                        <button class="play-button" onclick="playAudio('sample_audio_target')" style="margin-bottom: 20px;"></button>
+                        <img src="{{ url_for('static', filename='sample_fig/stimuli_target.png') }}" style="height: 70px; margin-bottom: 20px;">
+                    </div>
+                </ul>
+            <li>3つの音が連続して流れます。1番目と3番目のどちらかがターゲット音なので、ターゲットだと思ったものをキーボードで回答してください！（⚠️ 2番目は必ずノーマル音です）</li>
+            <li>問題に正解するとリズムの変化が少ない問題にレベルアップします💪</li>
+        </ul >
+    </div >
 
     <!-- 選択ボタン（視覚的表示用） -->
-    <p>1番目と思ったらFキーを、3番目と思ったらJキーを押してね</p>
+    <p>ターゲット音が1番目だと思ったらFキー、3番目だと思ったらJキーを押してください</p>
     <div class="button-container">
         <button id="buttonF" class="button">1st(F)</button>
         <button id="buttonJ" class="button">3rd(J)</button>
     </div>
-    <p>Spaceキーを押すと回答が送信されて次のトライアルに行くよ</p>
+    <p>Spaceキーを押すと回答が送信され、次の問題に進みます！</p>
     <!-- エラーメッセージ -->
     <div id="error" style="color: red; margin-top: 20px; font-size: 16px;"></div>
 
@@ -101,7 +51,7 @@
     <div id="result" style="margin-top: 20px; font-size: 20px;"></div>
 
     <!-- 説明文2 -->
-    <div id="instructionStart" class="instruction">Start!!ボタンをクリックして実験を始めよう！</div>
+    <div id="instructionStart" class="instruction" style="text-align: center;">Start!!ボタンをクリックして実験を始めましょう！</div>
 
     <!-- 開始ボタン -->
     <button id="startButton" onclick="startExperiment()">Start!!</button>
@@ -112,7 +62,12 @@
         let isAudioPlaying = false; // 音声再生中かどうかを示すフラグ
         let isTrialRunning = false; // トライアル実行中かどうかを示すフラグ
         let isSubmitting = false; // 応答送信中かどうかを示すフラグ
-
+        
+        function playAudio(id) {
+            const audio = document.getElementById(id);
+            audio.play();
+        }
+        
         // キー入力のリスナー
         document.addEventListener("keydown", (event) => {
             const errorElement = document.getElementById("error");
@@ -148,7 +103,7 @@
 
                 // 実験が開始されていない場合のエラーチェック
                 if (!isExperimentStarted) {
-                    errorElement.innerText = "回答が送信されるよ";
+                    errorElement.innerText = "選択した回答が送信されます！";
                     return;
                 } else {
 
@@ -159,7 +114,7 @@
                 }
             }
         });
-
+        
         // キー選択処理
         function selectKey(key) {
             selectedKey = key;

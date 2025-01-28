@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify, session
 import os
+import datetime
 import random
 import csv
 from analysis_MLE_v2 import perform_mle_analysis
@@ -95,13 +96,16 @@ def start_experiment():
     session['participant_id'] = participant_id
     session['max_trials'] = max_trials
 
+    # 日付の追加
+    today = datetime.datetime.now().strftime('%Y-%m-%d')
+
     # データファイルの作成
-    data_dir = os.path.join(DATA_FOLDER, participant_id, frequency_dir)
+    data_dir = os.path.join(DATA_FOLDER, today, participant_id, frequency_dir)
     os.makedirs(data_dir, exist_ok=True)
     session['data_file'] = os.path.join(data_dir, f"{participant_id}_{frequency_dir}_results.csv")
 
     # figディレクトリの作成
-    fig_dir = os.path.join('static', FIG_FOLDER, participant_id, frequency_dir)
+    fig_dir = os.path.join('static', FIG_FOLDER, today, participant_id, frequency_dir)
     os.makedirs(fig_dir, exist_ok=True)
     session['fig_dir'] = fig_dir
 
