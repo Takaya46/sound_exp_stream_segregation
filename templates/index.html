@@ -1,76 +1,139 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
-    <title>実験開始</title>
+    <title>web音実験</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <style>
         .meta-media-container {
             display: flex;
             justify-content: center;
         }
+        audio {
+            max-width: 250px;
+        }
+
+        /* チェックボックスをラベルの左に配置するためのスタイル */
+        #frequency_dir_checkboxes label {
+            display: flex;
+            /* Flexbox レイアウトを適用 */
+            flex-direction: row;
+            /* 横並び */
+            align-items: center;
+            /* 垂直方向中央揃え */
+            margin: 0.5em 0;
+            /* ラベル間の余白 */
+        }
+
+        #frequency_dir_checkboxes input[type="checkbox"] {
+            margin-right: 0.5em;
+            /* チェックボックスとラベルの間隔を調整 */
+            width: 20px;
+            /* チェックボックスの幅 */
+            height: 20px;
+            /* チェックボックスの高さ */
+        }
+
+        h3 {
+            margin-block-end: 0.5em;
+        }
+
+        p.section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-block-end: 0;
+        }
     </style>
 </head>
+
 <body>
-    <h1>リズム聞き取りweb実験</h1>
-        <!-- 説明文 -->
-        <div id="instruction_first" class="instruction" style="margin-bottom: 40px;">
-            <h2>リズム変化の気づきやすさは変化する？</h2>
-            <p>
-                リズム変化の気づきやすさが音の周波数差によって変わるかを調べる実験です！<br>
-                あなたは同じリズム変化に対してちゃんと気づくことができるでしょうか？？ <br>
-                <br>
-                以下の音は、2つのリズムパターン①と②を異なる周波数条件のもとで作成したものです。<br>
-                実験ではこれらの識別問題に挑戦していただき、周波数差条件ごとの能力変化を可視化します！<br>
-            </p>
-            <ul style="text-align: center;">
-                <p class="section-title">同じ音（難易度：易）</p>
-                <div class="meta-media-container">
-                    <div class="media-container">
-                        <p style="font-size: 24px">①</p>
-                        <audio id="normal_base" src="{{ url_for('static', filename='stimuli/successive_0.52*4/g_base/gallops_0.00ms.wav') }}" controls></audio>
-                    </div>
-                    <div class="media-container">
-                        <p style="font-size: 24px">②</p>
-                        <audio id="target_base" src="{{ url_for('static', filename='stimuli/successive_0.52*4/g_base/gallops_32.00ms.wav') }}" controls></audio>
-                    </div>
-                </div >
-                <p class="section-title">2オクターブ（難易度：難）</p>
-                <div class="meta-media-container">
-                    <div class="media-container">
-                        <p style="font-size: 24px">①</p>
-                        <audio id="normal_high" src="{{ url_for('static', filename='stimuli/successive_0.52*4/g_2octave/gallops_0.00ms.wav') }}" controls></audio>
-                    </div>
-                    <div class="media-container">
-                        <p style="font-size: 24px">②</p>
-                        <audio id="target_high" src="{{ url_for('static', filename='stimuli/successive_0.52*4/g_2octave/gallops_32.00ms.wav') }}" controls></audio>
-                    </div>
+    <h1>WEB音実験へようこそ！</h1>
+    <!-- 説明文 -->
+    <div id="instruction_first" class="instruction" style="margin-bottom: 40px;">
+        <h2>リズム変化の気づきやすさは変化する？</h2>
+        <p>
+            リズム変化の気づきやすさが音の周波数差によって変わるかを調べる実験です！<br>
+            あなたは同じリズム変化に対してちゃんと気づくことができるでしょうか？？ <br>
+            <br>
+            以下の音は、2つのリズムパターン①と②を異なる周波数差条件で鳴らしたものです。<br>
+            実験では①と②のリズムの識別問題に挑戦していただきます！<br>
+        </p>
+        <br>
+        <ul style="text-align: center;">
+            <p class="section-title">同じ音（難易度：易）</p>
+            <div class="meta-media-container">
+                <div class="media-container">
+                    <p style="font-size: 24px">①</p>
+                    <audio id="normal_base"
+                        src="{{ url_for('static', filename='stimuli/successive_0.52*4/g_base/gallops_0.00ms.wav') }}"
+                        controls></audio>
                 </div>
-            </ul>
-        </div >
+                <div class="media-container">
+                    <p style="font-size: 24px">②</p>
+                    <audio id="target_base"
+                        src="{{ url_for('static', filename='stimuli/successive_0.52*4/g_base/gallops_32.00ms.wav') }}"
+                        controls></audio>
+                </div>
+            </div>
+            <p class="section-title">2オクターブ（難易度：難）</p>
+            <div class="meta-media-container">
+                <div class="media-container">
+                    <p style="font-size: 24px">①</p>
+                    <audio id="normal_high"
+                        src="{{ url_for('static', filename='stimuli/successive_0.52*4/g_2octave/gallops_0.00ms.wav') }}"
+                        controls></audio>
+                </div>
+                <div class="media-container">
+                    <p style="font-size: 24px">②</p>
+                    <audio id="target_high"
+                        src="{{ url_for('static', filename='stimuli/successive_0.52*4/g_2octave/gallops_32.00ms.wav') }}"
+                        controls></audio>
+                </div>
+            </div>
+        </ul>
+    </div>
 
 
     <!-- 被験者ID入力 -->
-    <label for="participant_id">被験者IDを入力（例: sub046）
-        <input id="participant_id"  type="text" placeholder="IDを入力">
+    <label for="participant_id">
+        <h3>被験者IDを入力（例: sub046）</h3>
+        <input id="participant_id" type="text" placeholder="IDを入力">
     </label>
     <br><br>
 
     <!-- 周波数ディレクトリ選択 -->
-    <label for="frequency_dir">周波数差条件を選択
-        <select id="frequency_dir">
-            <option value="g_base">同じ音（難易度：易）</option>
-            <option value="as_semitone">半音（難易度：易）</option>
-            <option value="g_1octave">1オクターブ（難易度：中）</option>
-            <option value="g_2octave">2オクターブ（難易度：難）</option>
-            <option value="g_3octave">3オクターブ（難易度：鬼）</option>
-        </select>
+    <label for="frequency_dir_checkboxes">
+        <h3>周波数差条件（複数選択OK）</h3>
+        <div id="frequency_dir_checkboxes">
+            <label>
+                <input type="checkbox" name="frequency_dir" value="g_base">
+                同じ音（難易度：易）
+            </label>
+            <label>
+                <input type="checkbox" name="frequency_dir" value="as_semitone">
+                半音（難易度：易）
+            </label>
+            <label>
+                <input type="checkbox" name="frequency_dir" value="g_1octave">
+                1オクターブ（難易度：中）
+            </label>
+            <label>
+                <input type="checkbox" name="frequency_dir" value="g_2octave">
+                2オクターブ（難易度：難）
+            </label>
+            <label>
+                <input type="checkbox" name="frequency_dir" value="g_3octave">
+                3オクターブ（難易度：鬼）
+            </label>
+        </div>
     </label>
     <br><br>
 
     <!-- 最大トライアル数設定 -->
-    <label for="max_trials">問題数を設定（1~50問） 
-        <input id="max_trials" type="number" min="1" max="50" value="20">
+    <label for="trials_per_cond">
+        <h3>各周波数差条件の問題数</h3>
+        <input id="trials_per_cond" type="number" min="1" max="50" value="20">
     </label>
     <br><br>
 
@@ -81,10 +144,10 @@
     <div id="confirmationPopup" class="popup">
         <div class="popup-content">
             <p id="confirmationMessage"></p>
-                <div class="popup-buttons">
-                    <button id="backButton">戻る</button>
-                    <button id="startExperimentButton">実験へ</button>
-                </div>
+            <div class="popup-buttons">
+                <button id="backButton">戻る</button>
+                <button id="startExperimentButton">進む</button>
+            </div>
         </div>
     </div>
 
@@ -98,8 +161,13 @@
         // フォーム送信時に実行
         async function startExperiment() {
             const participantId = document.getElementById('participant_id').value;
-            const frequencyDir = document.getElementById('frequency_dir').value;
-            const maxTrials = document.getElementById('max_trials').value;
+
+            // value（プログラム用）とラベルのテキスト（表示用）を別々に取得
+            const checkedCheckboxes = Array.from(document.querySelectorAll('input[name="frequency_dir"]:checked'));
+
+            const frequencyDirs = checkedCheckboxes.map(checkbox => checkbox.value); // value の値
+            const frequencyLabels = checkedCheckboxes.map(checkbox => checkbox.closest('label').textContent.trim()); // ラベルのテキスト
+            const Trials_per_cond = document.getElementById('trials_per_cond').value;
 
             // 被験者IDが入力されていなかった場合
             if (!participantId) {
@@ -107,12 +175,31 @@
                 return;  // 送信をキャンセル
             }
 
-            // ポップアップに内容を表示
+            if (frequencyDirs.length === 0) {
+                alert("周波数差条件を1つ以上選択してください！");
+                return;
+            }
+
+            if (!Trials_per_cond) {
+                alert("問題数を入力してください！")
+                return;
+            }
+
+            // ポップアップに内容を表示（`:` の前後を上下に分割）
             const confirmationMessage = `
-                <p style="margin-bottom:30px;">以下の設定で実験に進みます<\p>
-                <p>被験者ID： ${participantId}<\p>
-                <p>周波数条件： ${frequencyDir}<\p>
-                <p>トライアル数： ${maxTrials}<\p>
+                <h2>以下の設定で実験に進みます</h2>
+                <div class="popup-item">
+                    <p class="popup-title">被験者ID</p>
+                    <p class="popup-value">${participantId}</p>
+                </div>
+                <div class="popup-item">
+                    <p class="popup-title">周波数差条件</p>
+                    <p class="popup-value">${frequencyLabels.join("<br>")}</p> <!-- 改行 -->
+                </div>
+                <div class="popup-item">
+                    <p class="popup-title">各条件での問題数</p>
+                    <p class="popup-value">${Trials_per_cond}</p>
+                </div>
             `;
             document.getElementById("confirmationMessage").innerHTML = confirmationMessage;
 
@@ -121,15 +208,17 @@
         }
 
         // 戻るボタンの動作
-        document.getElementById("backButton").addEventListener("click", function() {
+        document.getElementById("backButton").addEventListener("click", function () {
             document.getElementById("confirmationPopup").style.display = "none";
         });
 
         // 実験開始ボタンの動作
-        document.getElementById("startExperimentButton").addEventListener("click", function() {
+        document.getElementById("startExperimentButton").addEventListener("click", function () {
             const participantId = document.getElementById('participant_id').value;
-            const frequencyDir = document.getElementById('frequency_dir').value;
-            const maxTrials = document.getElementById('max_trials').value;
+            // 選択されたチェックボックスの値（frequencyDirs）
+            const checkedCheckboxes = Array.from(document.querySelectorAll('input[name="frequency_dir"]:checked'));
+            const frequencyDirs = checkedCheckboxes.map(checkbox => checkbox.value); // 送信する値
+            const Trials_per_cond = parseInt(document.getElementById('trials_per_cond').value) || 20;
 
             // サーバーにデータを送信して実験を開始
             fetch('/start', {
@@ -137,8 +226,8 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     participant_id: participantId,
-                    frequency_dir: frequencyDir,
-                    max_trials: parseInt(maxTrials) || 50
+                    frequency_dirs: frequencyDirs,
+                    trials_per_cond: Trials_per_cond
                 })
             })
             .then(response => response.json())
@@ -150,4 +239,5 @@
         });
     </script>
 </body>
+
 </html>

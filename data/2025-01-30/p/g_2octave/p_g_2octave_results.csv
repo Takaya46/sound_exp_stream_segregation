@@ -1,0 +1,7 @@
+Trial,CorrectResponse,Response,Correct,Offset,NextStepSize,Reversals,NextDirection,SameDirectionCount
+2,3,3,True,64.00,4,0,,0
+3,1,1,True,64.00,2,1,down,0
+4,1,1,True,32.00,2,1,down,0
+5,3,3,True,32.00,2,1,down,1
+6,3,3,True,16.00,2,1,down,1
+7,3,3,True,16.00,4,1,down,2

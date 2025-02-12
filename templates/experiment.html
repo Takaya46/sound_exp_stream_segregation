@@ -12,22 +12,26 @@
     <audio id="tone2" preload="auto"></audio>
     <audio id="tone3" preload="auto"></audio>
 
+    <!-- 周波数条件の提示 -->
+    <h3>周波数条件: {{ frequency_labels.get(session['current_block_freq'], '不明')}}</h3>
+    <h3>完了したブロック数: {{ session['block_index'] }} / {{ session['total_blocks'] }}</h3>
+
     <!-- 説明文1 -->
     <div id="instructionTop" class="instruction">
         <h3>3つの音の中からターゲットの音を見つける課題に挑戦しましょう！</h3>
         <ul>
             <li>「タタタ」というリズムが4回連続したものを1つの音とします</li>
-            <li>音は2種類です。均等なリズムのノーマル音「タタタ」とリズムが崩れたターゲット音「タッタタ」です（再生して確かめてください）</li>
+            <li>音は2種類です。均等なリズムのノーマル音「タタタ」と、リズムが崩れたターゲット音「タッタタ」です（再生して確かめてみてください）</li>
                 <ul>
                     ノーマル音「タタタ」
                     <div class="media-container">
-                        <audio id="sample_audio_normal" src="{{ url_for('static', filename='stimuli/successive_0.52*4/' + session['frequency_dir'] + '/gallops_0.00ms.wav') }}"></audio>
+                        <audio id="sample_audio_normal" src="{{ url_for('static', filename='stimuli/successive_0.52*4/' + session['current_block_freq'] + '/gallops_0.00ms.wav') }}"></audio>
                         <button class="play-button" onclick="playAudio('sample_audio_normal')"></button>
                         <img src="{{ url_for('static', filename='sample_fig/stimuli_normal.png') }}" style="height: 70px;">
                     </div>
                     ターゲット音「タッタタ」
                     <div class="media-container">
-                        <audio id="sample_audio_target" src="{{ url_for('static', filename='stimuli/successive_0.52*4/' + session['frequency_dir'] + '/gallops_64.00ms.wav') }}"></audio>
+                        <audio id="sample_audio_target" src="{{ url_for('static', filename='stimuli/successive_0.52*4/' + session['current_block_freq'] + '/gallops_64.00ms.wav') }}"></audio>
                         <button class="play-button" onclick="playAudio('sample_audio_target')" style="margin-bottom: 20px;"></button>
                         <img src="{{ url_for('static', filename='sample_fig/stimuli_target.png') }}" style="height: 70px; margin-bottom: 20px;">
                     </div>
@@ -50,8 +54,11 @@
     <!-- 結果表示 -->
     <div id="result" style="margin-top: 20px; font-size: 20px;"></div>
 
+    <!-- フィードバックメッセージ -->
+    <div id="feedback_message" style="display: none; font-size: 16px; font-weight: bold; color: blue;"></div>
+
     <!-- 説明文2 -->
-    <div id="instructionStart" class="instruction" style="text-align: center;">Start!!ボタンをクリックして実験を始めましょう！</div>
+    <div id="instructionStart" class="instruction-start" style="text-align: center;">Start!!ボタンをクリックして実験を始めましょう！</div>
 
     <!-- 開始ボタン -->
     <button id="startButton" onclick="startExperiment()">Start!!</button>
@@ -150,6 +157,8 @@
                 return; // すでにトライアルが実行中の場合、処理を中断
             }
 
+            console.log("🚀 nextTrial() が実行された！");  // ← これでトレースできる
+
             isTrialRunning = true; // トライアル開始フラグを設定
             isSubmitting = false; // 応答送信中フラグを解除
 
@@ -175,7 +184,7 @@
             const res = await fetch('/next_trial', { method: 'POST' });
             const data = await res.json();
 
-            const frequencyDir = "{{ session['frequency_dir'] }}";
+            const frequencyDir = "{{ session['current_block_freq'] }}";
 
             const tone1Path = `/static/stimuli/successive_0.52*4/${frequencyDir}/gallops_${data.tones[0]}ms.wav`;
             const tone2Path = `/static/stimuli/successive_0.52*4/${frequencyDir}/gallops_${data.tones[1]}ms.wav`;
@@ -241,16 +250,23 @@
                 resultElement.innerText = "ざんねん！不正解です、、";
             }
 
+            // **フィードバックメッセージを表示**
+            const feedbackDiv = document.getElementById("feedback_message");
+            if (data.feedback) {
+                feedbackDiv.innerText = data.feedback;
+                feedbackDiv.style.display = "block";
+            }
+            
             if (data.completed) {
                 setTimeout(() => {
-                    window.location.href = "/complete";
-                }, 1000);
+                    window.location.href = "/next_block"; // 休憩ページに移動
+                }, 500);
                 return;
             }
 
             setTimeout(() => {
                 nextTrial();
-            }, 1000);
+            }, 500);
         }
     </script>
 </body>

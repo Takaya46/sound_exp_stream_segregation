@@ -26,7 +26,7 @@ def perform_mle_analysis(data_file, output_dir):
     data = pd.read_csv(data_file)
     if 'Offset' not in data or 'Correct' not in data:
         return {"error": "Required data columns not found in the file."}
-
+    
     data['log2_offset'] = np.log2(data['Offset'])
     log2_offset = data['log2_offset'].values
     correct = data['Correct'].astype(int).values
@@ -48,9 +48,8 @@ def perform_mle_analysis(data_file, output_dir):
     x_plot = np.linspace(0, 6, 100)
     z_mle = a_mle * x_plot + b_mle
     p_mle = 0.5 + 0.5 * (0.5 + 0.5 * erf(z_mle / np.sqrt(2)))
-
-    # フィッティング結果を描画
-    fig_path = os.path.join(output_dir, 'mle_fitted_curve.png')
+    
+    # 図の作成
     plt.figure(figsize=(7, 4))
 
     # データ点の描画（ジッター付き）
@@ -75,6 +74,13 @@ def perform_mle_analysis(data_file, output_dir):
     plt.xlim(0, 6)
     plt.ylim(-0.1, 1.1)
 
+    # 図を保存するパス。既存のファイルがある場合、新しい名前を付ける
+    base_fig_path = os.path.join(output_dir, 'mle_fitted_curve.png')
+    fig_path = base_fig_path
+    count = 1
+    while os.path.exists(fig_path):
+        fig_path = os.path.join(output_dir, f"mle_fitted_curve_{count}.png")
+        count += 1
     # 図の保存
     plt.tight_layout()
     plt.savefig(fig_path)

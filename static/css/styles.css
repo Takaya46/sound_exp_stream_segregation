@@ -30,8 +30,13 @@ h1 {
   margin-bottom: 20px;
 }
 
-h2, h3, p {
+h2, p {
   text-align: center;
+}
+
+h3 {
+  text-align: center;
+  margin-block-end: 0;
 }
 
 .section-title {
@@ -39,14 +44,11 @@ h2, h3, p {
   font-weight: bold; /* 太字にする */
 }
 
-
-
 /* ラベルと入力フィールドのスタイル */
 label {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
   width: 100%;
   max-width: 300px;
   font-size: 18px;
@@ -65,27 +67,6 @@ input[type="text"], input[type="number"], select {
   font-size: 16px;
 }
 
-/* セレクトボックスのスタイル */
-select {
-  height: 70px; /* 高さを設定 */
-  width: 100%; /* 横幅を親要素に合わせる */
-  max-width: 300px; /* 最大横幅 */
-  padding: 10px; /* 内側の余白 */
-  border: 1px solid #ccc; /* 枠線 */
-  border-radius: 5px; /* 角を丸く */
-  font-size: 16px; /* フォントサイズ */
-  background-color: #e8e7e7; /* 背景色 */
-  color: #333; /* テキスト色 */
-  appearance: none; /* ブラウザのデフォルトスタイルを無効化（必要に応じて） */
-}
-
-/* セレクトボックスにフォーカス時のスタイル */
-select:focus {
-  outline: none; /* フォーカス時のアウトラインを削除 */
-  border-color: #4CAF50; /* フォーカス時の枠線色 */
-  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); /* フォーカス時の影 */
-}
-
 /* ボタンのデザイン */
 button {
   background-color: #3498db;
@@ -97,7 +78,7 @@ button {
   border: none;
   border-radius: 5px;
   display: block;
-  margin: 0 auto;
+  margin: 20px auto;
 }
 
 button:hover {
@@ -137,6 +118,26 @@ section {
   border-radius: 5px;
   text-align: center;
 }
+
+.popup-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.popup-title {
+  font-weight: bold;
+  font-size: 18px;
+  text-align: center;
+  margin-block-end: 0;
+}
+
+.popup-value {
+  font-size: 16px;
+  text-align: center;
+}
+
 .popup-buttons {
   display: flex;
   justify-content: center;
@@ -169,13 +170,23 @@ section {
   background-color: #f9f9f9; /* 背景色 */
   border: 2px solid #ddd;   /* 枠線 */
   border-radius: 10px;      /* 角丸 */
-  padding: 30px;            /* 内側の余白 */
+  padding: 25px;            /* 内側の余白 */
   margin: 20px auto;        /* 上下の余白 */
   width: 90%;               /* 横幅 */
   max-width: 700px;         /* 最大横幅 */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 軽い影 */
 }
-
+.instruction-start {
+  background-color: #f9f9f9; /* 背景色 */
+  border: 2px solid #ddd;   /* 枠線 */
+  border-radius: 10px;      /* 角丸 */
+  padding: 10px;            /* 内側の余白 */
+  margin-top: 0;
+  margin-bottom: 20px;        /* 上下の余白 */
+  width: 90%;               /* 横幅 */
+  max-width: 700px;         /* 最大横幅 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 軽い影 */
+}
 /* 箇条書きのスタイル */
 .instruction ul {
   list-style-type: disc;    /* 箇条書きのマーカーをディスクに */
@@ -244,7 +255,8 @@ section {
 
 .image-container {
   display: flex;
-  justify-content: center; /* 水平方向の中央揃え */
+  flex-direction: column;
+  justify-content: center; /* 横方向の中央揃え */ 
   align-items: center; /* 垂直方向の中央揃え（必要なら） */
   margin-top: 20px; /* 画像の上部に余白を追加 */
   margin-left: auto; /* 画像の左右に余白を追加 */
@@ -267,6 +279,7 @@ section {
 }
 
 #startButton {
+  margin-bottom: 50px;
   background-color: #4CAF50; /* 緑 */
   color: white;
   font-size: 20px;
