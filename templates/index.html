@@ -14,6 +14,9 @@
             max-width: 250px;
         }
 
+        #frequency_dir {
+            display: block;
+        }
         /* チェックボックスをラベルの左に配置するためのスタイル */
         #frequency_dir_checkboxes label {
             display: flex;
@@ -24,8 +27,8 @@
             /* 垂直方向中央揃え */
             margin: 0.5em 0;
             /* ラベル間の余白 */
+            margin-left: 1em;
         }
-
         #frequency_dir_checkboxes input[type="checkbox"] {
             margin-right: 0.5em;
             /* チェックボックスとラベルの間隔を調整 */
@@ -51,17 +54,13 @@
     <h1>WEB音実験へようこそ！</h1>
     <!-- 説明文 -->
     <div id="instruction_first" class="instruction" style="margin-bottom: 40px;">
-        <h2>リズム変化の気づきやすさは変化する？</h2>
+        <h2>リズム変化を見つけるゲームにチャレンジ！</h2>
         <p>
-            リズム変化の気づきやすさが音の周波数差によって変わるかを調べる実験です！<br>
-            あなたは同じリズム変化に対してちゃんと気づくことができるでしょうか？？ <br>
-            <br>
-            以下の音は、2つのリズムパターン①と②を異なる周波数差条件で鳴らしたものです。<br>
-            実験では①と②のリズムの識別問題に挑戦していただきます！<br>
+            以下の音は2つのリズム①と②を異なる音の高さの条件で鳴らしたものです。<br>
         </p>
         <br>
         <ul style="text-align: center;">
-            <p class="section-title">同じ音（難易度：易）</p>
+            <p class="section-title">音条件 Ⅰ</p>
             <div class="meta-media-container">
                 <div class="media-container">
                     <p style="font-size: 24px">①</p>
@@ -72,11 +71,11 @@
                 <div class="media-container">
                     <p style="font-size: 24px">②</p>
                     <audio id="target_base"
-                        src="{{ url_for('static', filename='stimuli/successive_0.52*4/g_base/gallops_32.00ms.wav') }}"
+                        src="{{ url_for('static', filename='stimuli/successive_0.52*4/g_base/gallops_22.63ms.wav') }}"
                         controls></audio>
                 </div>
             </div>
-            <p class="section-title">2オクターブ（難易度：難）</p>
+            <p class="section-title">音条件 Ⅱ</p>
             <div class="meta-media-container">
                 <div class="media-container">
                     <p style="font-size: 24px">①</p>
@@ -87,11 +86,17 @@
                 <div class="media-container">
                     <p style="font-size: 24px">②</p>
                     <audio id="target_high"
-                        src="{{ url_for('static', filename='stimuli/successive_0.52*4/g_2octave/gallops_32.00ms.wav') }}"
+                        src="{{ url_for('static', filename='stimuli/successive_0.52*4/g_2octave/gallops_22.63ms.wav') }}"
                         controls></audio>
                 </div>
             </div>
         </ul>
+        <p>
+            条件によってリズムの聞こえ方は変わりましたか？？<br>
+        </p>
+        <p>
+            色々な音の高さの条件でリズム①と②の識別問題にチャレンジしましょう！<br>
+        </p>
     </div>
 
 
@@ -103,28 +108,28 @@
     <br><br>
 
     <!-- 周波数ディレクトリ選択 -->
-    <label for="frequency_dir_checkboxes">
-        <h3>周波数差条件（複数選択OK）</h3>
+    <label id="frequency_dir" for="frequency_dir_checkboxes">
+        <h3>音条件（複数選択）</h3>
         <div id="frequency_dir_checkboxes">
             <label>
                 <input type="checkbox" name="frequency_dir" value="g_base">
-                同じ音（難易度：易）
+                音条件１
             </label>
             <label>
                 <input type="checkbox" name="frequency_dir" value="as_semitone">
-                半音（難易度：易）
+                音条件２
             </label>
             <label>
                 <input type="checkbox" name="frequency_dir" value="g_1octave">
-                1オクターブ（難易度：中）
+                音条件３
             </label>
             <label>
                 <input type="checkbox" name="frequency_dir" value="g_2octave">
-                2オクターブ（難易度：難）
+                音条件４
             </label>
             <label>
                 <input type="checkbox" name="frequency_dir" value="g_3octave">
-                3オクターブ（難易度：鬼）
+                音条件５
             </label>
         </div>
     </label>
@@ -132,13 +137,13 @@
 
     <!-- 最大トライアル数設定 -->
     <label for="trials_per_cond">
-        <h3>各周波数差条件の問題数</h3>
-        <input id="trials_per_cond" type="number" min="1" max="50" value="20">
+        <h3>各条件の問題数</h3>
+        <input id="trials_per_cond" type="number" min="1" max="50" value="30">
     </label>
     <br><br>
 
     <!-- 実験開始ボタン -->
-    <button onclick="startExperiment()">実験へ進む</button>
+    <button onclick="startExperiment()" style="margin-block-end: 100px;">練習へ進む</button>
 
     <!-- 確認ポップアップ -->
     <div id="confirmationPopup" class="popup">
@@ -176,7 +181,7 @@
             }
 
             if (frequencyDirs.length === 0) {
-                alert("周波数差条件を1つ以上選択してください！");
+                alert("音条件を1つ以上選択してください！");
                 return;
             }
 
@@ -193,7 +198,7 @@
                     <p class="popup-value">${participantId}</p>
                 </div>
                 <div class="popup-item">
-                    <p class="popup-title">周波数差条件</p>
+                    <p class="popup-title">音条件</p>
                     <p class="popup-value">${frequencyLabels.join("<br>")}</p> <!-- 改行 -->
                 </div>
                 <div class="popup-item">
@@ -233,7 +238,7 @@
             .then(response => response.json())
             .then(data => {
                 console.log(data);
-                window.location.href = "/experiment";  // 実験ページに移動
+                window.location.href = "/practice";  // 実験ページに移動
             })
             .catch(error => console.error('Error:', error));
         });

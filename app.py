@@ -19,23 +19,23 @@ OFFSET_LIST = [f"{(2 ** (i / 2)):.2f}" for i in range(13)]
 OFFSET_LIST.reverse()
 FREQUENCY_CONDITIONS_ORDERED = ['g_base', 'as_semitone', 'g_1octave', 'g_2octave', 'g_3octave']
 FREQUENCY_LABELS = {
-    "g_base": "同じ音（難易度：易）",
-    "as_semitone": "半音（難易度：易）",
-    "g_1octave": "1オクターブ（難易度：中）",
-    "g_2octave": "2オクターブ（難易度：難）",
-    "g_3octave": "3オクターブ（難易度：鬼）"
+    "g_base": "音条件１",
+    "as_semitone": "音条件２",
+    "g_1octave": "音条件３",
+    "g_2octave": "音条件４",
+    "g_3octave": "音条件５"
 }
 
 # 各周波数条件の実験パラメータ初期化関数 (freq_cond_param を初期化する関数に変更)
 def initialize_condition_session(frequency_dir):
     return {
         'offset_index': 0,  # OFFSET_LIST の初期インデックス
-        'current_direction': None, # 'smaller', 'larger', or None
+        'current_direction': 'down', # 'down', 'up', or None
         'next_direction': None,
         'same_direction_count': 0,
         'step_size': 4,
         'double_flag': False,
-        'reversals_double_flag': False,
+        'reversals_double_flag': True,
         'max_step_size': 4, # step_sizeが大きくなりすぎないようにlimitを設ける
         'correct_count': 0,
         'reversals': 0,
@@ -174,6 +174,9 @@ def start_experiment():
     print("Session data:", dict(session))
     return jsonify({'status': 'success'})
 
+@app.route('/practice')
+def practice():
+    return render_template('practice.html', frequency_labels=FREQUENCY_LABELS)
 
 @app.route('/experiment')
 def experiment():

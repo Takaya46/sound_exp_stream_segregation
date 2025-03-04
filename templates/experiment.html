@@ -13,32 +13,28 @@
     <audio id="tone3" preload="auto"></audio>
 
     <!-- 周波数条件の提示 -->
-    <h3>周波数条件: {{ frequency_labels.get(session['current_block_freq'], '不明')}}</h3>
-    <h3>完了したブロック数: {{ session['block_index'] }} / {{ session['total_blocks'] }}</h3>
+    <h3>進行状況</h3>
+        <h4>今から行う音条件: {{ frequency_labels.get(session['current_block_freq'], '不明')}}</h4>
+        <h4>完了したブロックの数: {{ session['block_index'] }} / {{ session['total_blocks'] }}</h4>
 
     <!-- 説明文1 -->
     <div id="instructionTop" class="instruction">
-        <h3>3つの音の中からターゲットの音を見つける課題に挑戦しましょう！</h3>
+        <h3>次のブロックの音条件の刺激例</h3>
         <ul>
-            <li>「タタタ」というリズムが4回連続したものを1つの音とします</li>
-            <li>音は2種類です。均等なリズムのノーマル音「タタタ」と、リズムが崩れたターゲット音「タッタタ」です（再生して確かめてみてください）</li>
-                <ul>
-                    ノーマル音「タタタ」
-                    <div class="media-container">
-                        <audio id="sample_audio_normal" src="{{ url_for('static', filename='stimuli/successive_0.52*4/' + session['current_block_freq'] + '/gallops_0.00ms.wav') }}"></audio>
-                        <button class="play-button" onclick="playAudio('sample_audio_normal')"></button>
-                        <img src="{{ url_for('static', filename='sample_fig/stimuli_normal.png') }}" style="height: 70px;">
-                    </div>
-                    ターゲット音「タッタタ」
-                    <div class="media-container">
-                        <audio id="sample_audio_target" src="{{ url_for('static', filename='stimuli/successive_0.52*4/' + session['current_block_freq'] + '/gallops_64.00ms.wav') }}"></audio>
-                        <button class="play-button" onclick="playAudio('sample_audio_target')" style="margin-bottom: 20px;"></button>
-                        <img src="{{ url_for('static', filename='sample_fig/stimuli_target.png') }}" style="height: 70px; margin-bottom: 20px;">
-                    </div>
-                </ul>
-            <li>3つの音が連続して流れます。1番目と3番目のどちらかがターゲット音なので、ターゲットだと思ったものをキーボードで回答してください！（⚠️ 2番目は必ずノーマル音です）</li>
-            <li>問題に正解するとリズムの変化が少ない問題にレベルアップします💪</li>
-        </ul >
+            <div class="media-container">
+                <p>ノーマル音</p>
+                <audio id="sample_audio_normal" src="{{ url_for('static', filename='stimuli/successive_0.52*4/' + session['current_block_freq'] + '/gallops_0.00ms.wav') }}"></audio>
+                <button class="play-button" onclick="playAudio('sample_audio_normal')"></button>
+                <img src="{{ url_for('static', filename='sample_fig/stimuli_normal.png') }}" style="height: 70px;">
+            </div>
+            
+            <div class="media-container">
+                <p><span style="color: red;">ターゲット音</span></p>
+                <audio id="sample_audio_target" src="{{ url_for('static', filename='stimuli/successive_0.52*4/' + session['current_block_freq'] + '/gallops_64.00ms.wav') }}"></audio>
+                <button class="play-button" onclick="playAudio('sample_audio_target')" style="margin-bottom: 20px;"></button>
+                <img src="{{ url_for('static', filename='sample_fig/stimuli_target_v3.png') }}" style="height: 70px; margin-bottom: 20px;">
+            </div>
+        </ul>
     </div >
 
     <!-- 選択ボタン（視覚的表示用） -->
@@ -47,7 +43,7 @@
         <button id="buttonF" class="button">1st(F)</button>
         <button id="buttonJ" class="button">3rd(J)</button>
     </div>
-    <p>Spaceキーを押すと回答が送信され、次の問題に進みます！</p>
+    <p>Spaceキーを押すと回答が送信され、すぐに次の問題が始まります！</p>
     <!-- エラーメッセージ -->
     <div id="error" style="color: red; margin-top: 20px; font-size: 16px;"></div>
 
@@ -58,10 +54,12 @@
     <div id="feedback_message" style="display: none; font-size: 16px; font-weight: bold; color: blue;"></div>
 
     <!-- 説明文2 -->
-    <div id="instructionStart" class="instruction-start" style="text-align: center;">Start!!ボタンをクリックして実験を始めましょう！</div>
+    <div id="instructionStart" class="instruction-start" style="text-align: center;">
+        ブロックを開始ボタンをクリックして本番を始めましょう！<br>
+    </div>
 
     <!-- 開始ボタン -->
-    <button id="startButton" onclick="startExperiment()">Start!!</button>
+    <button id="startButton" onclick="startExperiment()">ブロックを開始</button>
 
     <script>
         let isExperimentStarted = false; // 実験が開始されたかどうかを示すフラグ
