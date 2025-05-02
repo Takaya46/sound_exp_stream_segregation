@@ -7,9 +7,8 @@
 </head>
 <body>
     <h1>休憩をとりましょう🍵</h1>
-    <p>現在、 {{ session['block_index'] }} / {{ session['total_blocks'] }} ブロックが終了しました。</p>
-    <p>次の周波数条件は {{ frequency_labels.get(session['current_block_freq'], '不明')}} です。</p>
-    <p>準備ができたら「次のブロックへ」ボタンを押して本番の準備画面へ進んでください🔥</p>
+    <h3>{{ session['block_index'] }} / {{ session['total_blocks'] }} ブロックが終了しました。</h3>
+    <h4>次の周波数条件は {{ frequency_labels.get(session['current_block_freq'], '不明')}} です。</h4>
     <button onclick="goToNextTrial()">次のブロックへ</button>
 
     <script>

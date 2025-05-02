@@ -74,7 +74,7 @@ button {
   color: white;
   padding: 10px 20px;
   text-align: center;
-  font-size: 16px;
+  font-size: 24px;
   cursor: pointer;
   border: none;
   border-radius: 5px;
@@ -178,8 +178,8 @@ section {
   padding: 25px;            /* 内側の余白 */
   margin: 20px auto;        /* 上下の余白 */
   margin-bottom: 40px;
-  width: 90%;               /* 横幅 */
-  max-width: 700px;         /* 最大横幅 */
+  width: 95%;               /* 横幅 */
+  max-width: 1600px;         /* 最大横幅 */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 軽い影 */
 }
 .instruction-start {

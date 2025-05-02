@@ -12,14 +12,18 @@
     <audio id="tone2" preload="auto"></audio>
     <audio id="tone3" preload="auto"></audio>
 
-    <!-- 周波数条件の提示 -->
-    <h3>進行状況</h3>
-        <h4>今から行う音条件: {{ frequency_labels.get(session['current_block_freq'], '不明')}}</h4>
-        <h4>完了したブロックの数: {{ session['block_index'] }} / {{ session['total_blocks'] }}</h4>
 
     <!-- 説明文1 -->
     <div id="instructionTop" class="instruction">
-        <h3>次のブロックの音条件の刺激例</h3>
+        <h2>実験を始めよう！</h2>
+        <p>
+            本番の実験は全部で{{ session['total_blocks'] }}ブロックから構成されます！<br>
+            今から行う音の条件と音刺激を確認しましょう！
+        </p>
+        <h4>完了したブロックの数: {{ session['block_index'] }} / {{ session['total_blocks'] }}</h4>
+        
+        <br>
+        <h3>次の音条件の刺激:  {{ frequency_labels.get(session['current_block_freq'], '不明')}}</h3>
         <ul>
             <div class="media-container">
                 <p>ノーマル音</p>
@@ -35,7 +39,12 @@
                 <img src="{{ url_for('static', filename='sample_fig/stimuli_target_v3.png') }}" style="height: 70px; margin-bottom: 20px;">
             </div>
         </ul>
+        
     </div >
+
+
+
+
 
     <!-- 選択ボタン（視覚的表示用） -->
     <p>ターゲット音が1番目だと思ったらFキー、3番目だと思ったらJキーを押してください</p>
@@ -55,11 +64,11 @@
 
     <!-- 説明文2 -->
     <div id="instructionStart" class="instruction-start" style="text-align: center;">
-        ブロックを開始ボタンをクリックして本番を始めましょう！<br>
+        開始ボタンをクリックして本番を始めましょう！<br>
     </div>
 
     <!-- 開始ボタン -->
-    <button id="startButton" onclick="startExperiment()">ブロックを開始</button>
+    <button id="startButton" onclick="startExperiment()">本番を開始</button>
 
     <script>
         let isExperimentStarted = false; // 実験が開始されたかどうかを示すフラグ

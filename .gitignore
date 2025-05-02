@@ -1,2 +1,7 @@
 data/
 static/fig/
+__pycache__
+flask_session/
+script_archived/
+templates/templates_archive/
+venv/

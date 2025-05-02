@@ -191,14 +191,15 @@
     <!-- 音条件選択 -->
     <div class="container">
         <h2>練習問題</h2>
-        <p>プルダウンから音条件を選択し「次の問題」ボタンを押すと練習問題が流れます</p>
+        
+        <p>音条件を選択し「問題を再生」ボタンを押すと問題が再生されます</p>
         <div class="dropdown-container">
             <select id="frequencyDirSelect">
                 {% for freq in session['frequency_dirs'] %}
                     <option value="{{ freq }}">{{ frequency_labels.get(freq, freq) }}</option>
                 {% endfor %}
             </select>
-            <button id="startPracticeBtn" class="button" onclick="startPracticeTrial()">次の問題</button>
+            <button id="startPracticeBtn" class="button" onclick="startPracticeTrial()">問題を再生</button>
         </div>
     
         <!-- トライアルエリア -->
@@ -209,7 +210,7 @@
                 <button id="buttonF" class="button">1st(F)</button>
                 <button id="buttonJ" class="button">3rd(J)</button>
             </div>
-            <p>Spaceキーを押して正誤を確認してください!<br>（本番ではそのまま次の問題に進みます）</p>
+            <p>Spaceキーを押すと正誤が表示されます!<br>（本番ではそのまま次の問題に進みます）</p>
             <!-- エラーメッセージ -->
             <div id="error" style="color: red; margin-top: 20px; font-size: 16px;"></div>
 
@@ -217,16 +218,18 @@
             <h3 id="resultText"></h3>
             <div id="resultImage"></div>
 
+            <p>※本番は図によるフィードバックはありません</p>
             <!-- もう一度聞くボタン -->
             <button id="replayTrialBtn" class="button" onclick="replayTrial()">もう一度聞く</button>
+            
         </div>
     </div>
 
     <!-- 実験へ進むボタン -->
     <!-- 説明文2 -->
     <div id="instructionStart" class="instruction-start" style="text-align: center;">
-        本番に進む心の準備が整ったら下のボタンから進んでください！<br>
-        これ以降ブラウザの戻るボタンは押さないでください。結果が無効になります。
+        <h3 style="margin-block-end: 20px;">⚠️どの条件でも聞き取りやすい音量に調整してください</h3>
+        <p>これ以降は音量は変えずに実験に取り組んでください🙇🏻‍♂️</p>
     </div>
 
     <!-- 開始ボタン -->

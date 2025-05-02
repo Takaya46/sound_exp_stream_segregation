@@ -19,11 +19,11 @@ OFFSET_LIST = [f"{(2 ** (i / 2)):.2f}" for i in range(13)]
 OFFSET_LIST.reverse()
 FREQUENCY_CONDITIONS_ORDERED = ['g_base', 'as_semitone', 'g_1octave', 'g_2octave', 'g_3octave']
 FREQUENCY_LABELS = {
-    "g_base": "音条件１",
-    "as_semitone": "音条件２",
-    "g_1octave": "音条件３",
-    "g_2octave": "音条件４",
-    "g_3octave": "音条件５"
+    "g_base": "条件１（同じ音）",
+    "as_semitone": "条件２（半音）",
+    "g_1octave": "条件３（１オクターブ）",
+    "g_2octave": "条件４（２オクターブ）",
+    "g_3octave": "条件５（３オクターブ）"
 }
 
 # 各周波数条件の実験パラメータ初期化関数 (freq_cond_param を初期化する関数に変更)
@@ -49,6 +49,7 @@ def set_data_file_path(freq_list):
     session['today'] = today
     participant_id = session['participant_id']
     session['data_file_index'] = 0
+    mail_address = session['mail_address']
 
     for freq in freq_list:
         # データファイルの作成
@@ -72,6 +73,10 @@ def set_data_file_path(freq_list):
         fig_dir = os.path.join('static', FIG_FOLDER, today, participant_id, freq)
         os.makedirs(fig_dir, exist_ok=True)
 
+        if mail_address:
+            data_mail_path = os.path.join(DATA_FOLDER, today, participant_id, f"{mail_address}.txt")
+            with open(data_mail_path, 'w') as f:
+                f.write(f'mail: {mail_address}\n')
 
 # ステップサイズの決定をする関数
 def decide_step_size():
@@ -131,11 +136,13 @@ def start_experiment():
     participant_id = data.get('participant_id')
     frequency_dirs = data.get('frequency_dirs')
     trials_per_cond = data.get('trials_per_cond', 20)
+    mail_address = data.get('mail_address')
     # if not participant_id or not frequency_dirs:
     #     return jsonify({'error': 'Missing required data'}), 400
 
     session['participant_id'] = participant_id
     session['frequency_dirs'] = frequency_dirs # frequency_dir のリスト
+    session['mail_address'] = mail_address
 
     selected_frequency_dirs = [fre_dir for fre_dir in frequency_dirs] #例['g_base', 'as_semitone', 'g_1octave', 'g_2octave', 'g_3octave'] 
 
