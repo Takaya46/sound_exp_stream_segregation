@@ -82,13 +82,13 @@ button {
   margin: 20px auto;
 }
 
+
+
 li {
   margin-left: 20px;
 }
 
-button:hover {
-  background-color: #2980b9;
-}
+
 
 /* エラーメッセージのデザイン */
 .alert {
@@ -234,11 +234,6 @@ section {
   box-sizing: border-box; /* box-sizing を border-box に設定 */
 }
 
-/* 再生ボタンのホバー時のスタイル */
-.play-button:hover {
-  background-color: gray; /* ホバー時に少し色を変える */
-}
-
 /* 再生ボタン内の三角形（playアイコン） */
 .play-button::after {
   content: "";
@@ -359,12 +354,6 @@ form {
   }
 }
 
-/* ボタンのホバーエフェクトを無効化 */
-.button:hover, button:hover, #buttonF:hover, #buttonJ:hover, #buttonSubmit:hover, .play-button:hover, #startButton:hover, .slide-nav:hover {
-  background-color: inherit;
-  transform: none;
-  box-shadow: none;
-}
 
 /* 刺激画像のスタイル */
 .stimuli-img {
