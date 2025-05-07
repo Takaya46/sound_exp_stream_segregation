@@ -373,6 +373,26 @@ form {
   margin-bottom: 20px;
 }
 
+/* 中央揃えのスタイル */
+.center-align {
+  text-align: center;
+}
+
+/* セクションタイトルのマージン */
+.section-margin {
+  margin-bottom: 15px;
+}
+
+/* リズムタイトルのスタイル */
+.rhythm-title {
+  font-size: 18px;
+}
+
+/* 練習へ進むボタンのスタイル */
+.start-practice-button {
+  margin-block-end: 100px;
+}
+
 /* モバイル対応（レスポンシブデザイン） */
 @media (max-width: 600px) {
   .container {

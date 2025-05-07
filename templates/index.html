@@ -63,33 +63,33 @@
             音の周波数差によって聞き取りやすさは変わりましたか？？
         </p>
         <br>
-        <ul style="text-align: center;">
-            <p class="section-title" style="margin-bottom: 15px;">音の周波数差: 半音</p>
+        <ul class="center-align">
+            <p class="section-title section-margin">音の周波数差: 半音</p>
             <div class="meta-media-container">
                 <div class="media-container">
-                    <p style="font-size: 18px">リズム①</p>
+                    <p class="rhythm-title">リズム①</p>
                     <audio id="normal_base"
                         src="{{ url_for('static', filename='stimuli/successive_0.52*4/g_base/gallops_0.00ms.wav') }}"
                         controls></audio>
                 </div>
                 <div class="media-container">
-                    <p style="font-size: 18px">リズム②</p>
+                    <p class="rhythm-title">リズム②</p>
                     <audio id="target_base"
                         src="{{ url_for('static', filename='stimuli/successive_0.52*4/g_base/gallops_22.63ms.wav') }}"
                         controls></audio>
                 </div>
             </div>
             <br>
-            <p class="section-title" style="margin-bottom: 15px;">音の周波数差: 2オクターブ</p>
+            <p class="section-title section-margin">音の周波数差: 2オクターブ</p>
             <div class="meta-media-container">
                 <div class="media-container">
-                    <p style="font-size: 18px">リズム①</p>
+                    <p class="rhythm-title">リズム①</p>
                     <audio id="normal_high"
                         src="{{ url_for('static', filename='stimuli/successive_0.52*4/g_2octave/gallops_0.00ms.wav') }}"
                         controls></audio>
                 </div>
                 <div class="media-container">
-                    <p style="font-size: 18px">リズム②</p>
+                    <p class="rhythm-title">リズム②</p>
                     <audio id="target_high"
                         src="{{ url_for('static', filename='stimuli/successive_0.52*4/g_2octave/gallops_22.63ms.wav') }}"
                         controls></audio>
@@ -166,7 +166,7 @@
     </label>
 
     <!-- 実験開始ボタン -->
-    <button onclick="startExperiment()" style="margin-block-end: 100px;">練習へ進む</button>
+    <button onclick="startExperiment()" class="start-practice-button">練習へ進む</button>
 
     <!-- 確認ポップアップ -->
     <div id="confirmationPopup" class="popup">
