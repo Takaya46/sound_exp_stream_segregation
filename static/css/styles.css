@@ -321,6 +321,20 @@ form {
   display: none;
 }
 
+/* PCブラウザでは送信ボタンを非表示 */
+@media (min-width: 601px) {
+  .submit-container {
+    display: none;
+  }
+}
+
+/* ボタンのホバーエフェクトを無効化 */
+.button:hover {
+  background-color: #4b4b4b;
+  transform: none;
+  box-shadow: none;
+}
+
 /* モバイル対応（レスポンシブデザイン） */
 @media (max-width: 600px) {
   .container {
