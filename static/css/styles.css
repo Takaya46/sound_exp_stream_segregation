@@ -165,6 +165,12 @@ section {
   gap: 20px; /* ボタン間の間隔 */
 }
 
+/* 送信ボタン用のスタイル */
+.submit-button {
+  background-color: #4CAF50; /* 緑色 */
+  margin-top: 5px;
+}
+
 /* 選択時のハイライトスタイル */
 .selected {
   background-color: yellow;
@@ -315,5 +321,24 @@ form {
 
   button {
       width: 100%;
+  }
+  
+  /* モバイル用のボタンサイズ調整 */
+  .button {
+      width: 150px;
+      height: 60px;
+      font-size: 20px;
+      margin: 15px;
+  }
+  
+  /* 説明文のサイズ調整 */
+  p {
+      font-size: 14px;
+  }
+  
+  /* フィードバックメッセージの調整 */
+  #feedback_message, #result, #error {
+      font-size: 16px;
+      padding: 5px;
   }
 }

@@ -52,6 +52,9 @@
         <button id="buttonF" class="button">1st(F)</button>
         <button id="buttonJ" class="button">3rd(J)</button>
     </div>
+    <div class="button-container submit-container">
+        <button id="buttonSubmit" class="button submit-button">送信</button>
+    </div>
     <p>Spaceキーを押すと回答が送信され、すぐに次の問題が始まります！</p>
     <!-- エラーメッセージ -->
     <div id="error" style="color: red; margin-top: 20px; font-size: 16px;"></div>
@@ -82,6 +85,29 @@
             audio.play();
         }
         
+        // ボタンのクリック/タップイベントリスナー
+        document.getElementById("buttonF").addEventListener("click", function() {
+            selectKey("f");
+        });
+        
+        document.getElementById("buttonJ").addEventListener("click", function() {
+            selectKey("j");
+        });
+        
+        document.getElementById("buttonSubmit").addEventListener("click", function() {
+            // スペースキーと同じ機能を実行
+            if (selectedKey) {
+                if (!isAudioPlaying && !isTrialRunning && !isSubmitting && isExperimentStarted) {
+                    isSubmitting = true;
+                    submitResponse(selectedKey);
+                } else {
+                    handleSubmitErrors();
+                }
+            } else {
+                document.getElementById("error").innerText = "FキーまたはJキーを選択してください！";
+            }
+        });
+        
         // キー入力のリスナー
         document.addEventListener("keydown", (event) => {
             const errorElement = document.getElementById("error");
@@ -91,42 +117,38 @@
             } else if (event.code === "KeyJ") {
                 selectKey("j");
             } else if (event.code === "Space") {
-                // 音声再生中のエラーチェックを最優先
-                if (isAudioPlaying) {
-                    errorElement.innerText = "音声再生中です。すべての音が再生された後で応答してください。";
-                    return;
-                }
-
-                // トライアル実行中のエラーチェック
-                if (isTrialRunning) {
-                    errorElement.innerText = "現在のトライアルが実行中です。少しお待ちください。";
-                    return;
-                }
-
-                // 応答送信中のエラーチェック
-                if (isSubmitting) {
-                    errorElement.innerText = "応答を処理中です。次のトライアルを待機中です。";
-                    return;
-                }
-
                 // 選択されていない場合のエラーチェック
                 if (!selectedKey) {
                     errorElement.innerText = "FキーまたはJキーを選択してください！";
                     return;
                 }
-
-                // 実験が開始されていない場合のエラーチェック
-                if (!isExperimentStarted) {
-                    errorElement.innerText = "選択した回答が送信されます！";
+                
+                // その他のエラーチェック
+                if (isAudioPlaying || isTrialRunning || isSubmitting || !isExperimentStarted) {
+                    handleSubmitErrors();
                     return;
-                } else {
+                }
 
                 // エラー表示をクリアして応答送信
                 errorElement.innerText = "";
                 isSubmitting = true; // 応答送信中フラグを設定
                 submitResponse(selectedKey);
-                }
             }
+        });
+        
+        // 送信時のエラーチェック処理を共通化
+        function handleSubmitErrors() {
+            const errorElement = document.getElementById("error");
+            if (isAudioPlaying) {
+                errorElement.innerText = "音声再生中です。すべての音が再生された後で応答してください。";
+            } else if (isTrialRunning) {
+                errorElement.innerText = "現在のトライアルが実行中です。少しお待ちください。";
+            } else if (isSubmitting) {
+                errorElement.innerText = "応答を処理中です。次のトライアルを待機中です。";
+            } else if (!isExperimentStarted) {
+                errorElement.innerText = "選択した回答が送信されます！";
+            }
+        }
         });
         
         // キー選択処理
