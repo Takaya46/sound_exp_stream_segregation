@@ -393,6 +393,27 @@ form {
   margin-block-end: 100px;
 }
 
+/* 例示画像のスタイル */
+.example-img {
+  height: 100px;
+}
+
+/* 結果画像のスタイル */
+.result-img {
+  height: 100px;
+}
+
+/* ターゲットコンテナのスタイル */
+.target-container {
+  margin-top: 20px;
+}
+
+/* ルール見出しのスタイル */
+.rule-heading {
+  margin-block-start: 0;
+  margin-block-end: 10px;
+}
+
 /* モバイル対応（レスポンシブデザイン） */
 @media (max-width: 600px) {
   .container {
@@ -440,6 +461,16 @@ form {
   /* メディアコンテナのモバイル調整 */
   .media-container {
       margin: 10px 0;
+  }
+  
+  /* 例示画像のモバイル調整 */
+  .example-img {
+      height: 80px;
+  }
+  
+  /* 結果画像のモバイル調整 */
+  .result-img {
+      height: 80px;
   }
   
   /* PC/モバイル表示切り替え */

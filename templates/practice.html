@@ -127,7 +127,7 @@
                     <div class="media-container">
                         <audio id="sample_audio_normal" src="{{ url_for('static', filename='stimuli/successive_0.52*4/as_semitone/gallops_0.00ms.wav') }}"></audio>
                         <button class="play-button" onclick="playAudio('sample_audio_normal')"></button>
-                        <img src="{{ url_for('static', filename='sample_fig/stimuli_normal.png') }}" style="height: 70px;">
+                        <img src="{{ url_for('static', filename='sample_fig/stimuli_normal.png') }}" class="stimuli-img">
                     </div>
                     <p>この音をノーマル音とします</p>
                 </div>
@@ -136,26 +136,26 @@
                     <p>この音が間を開けて、3回流れます</p>
                     <div class="trial-example">
                         <button class="play-button" onclick="playSlide2Trial()"></button>
-                        <img src="{{ url_for('static', filename='sample_fig/trial_target_third.png') }}" style="height: 100px;">
+                        <img src="{{ url_for('static', filename='sample_fig/trial_target_third.png') }}" class="example-img">
                     </div>
                     <p>ノーマル音、ノーマル音、ノーマル音？<br>3つ目の音はリズムが違いますね！
                     </p>
                 </div>
                 <!-- スライド3 -->
                 <div class="slide">     
-                    <p>このようにリズムの崩れた音を<span style="color: red;">ターゲット音</span>とします</p>
-                    <h4>皆さんにはこの<span style="color: red;">ターゲット音</span>を当てる問題に挑戦してもらいます！！</h4>
+                    <p>このようにリズムの崩れた音を<span class="target-text">ターゲット音</span>とします</p>
+                    <h4>皆さんにはこの<span class="target-text">ターゲット音</span>を当てる問題に挑戦してもらいます！！</h4>
                     <p>実際の問題のルールは次のようになっています</p>
                     <ul class="rule">
-                        <h5 style="margin-block-start: 0; margin-block-end: 10px;">問題のルール</h5>
+                        <h5 class="rule-heading">問題のルール</h5>
                         <li>３回音が流れます</li>
                         <li>１番目か３番目のどちらか一方がターゲット音です</li>
                         <li>２番目は必ずノーマル音です</li>
                         <li>ターゲット音は、高い音のタイミングが後ろにずれた音で「タッタタ」というリズムになります（※音条件１ではズレる音の高さは周りと同じです）
-                            <div class="media-container" style="margin-top: 20px;">
+                            <div class="media-container target-container">
                                 <audio id="sample_audio_target" src="{{ url_for('static', filename='stimuli/successive_0.52*4/as_semitone/gallops_64.00ms.wav') }}"></audio>
-                                <button class="play-button" onclick="playAudio('sample_audio_target')" style="margin-bottom: 20px;"></button>
-                                <img src="{{ url_for('static', filename='sample_fig/stimuli_target_v3.png') }}" style="height: 70px; margin-bottom: 20px;">
+                                <button class="play-button target-button" onclick="playAudio('sample_audio_target')"></button>
+                                <img src="{{ url_for('static', filename='sample_fig/stimuli_target_v3.png') }}" class="stimuli-img target-img">
                             </div>
                         </li>            
                     </ul>
@@ -165,7 +165,7 @@
                 <div class="slide">
                     <h4>練習問題に下のセクションで取り組んでみてください！</h4>
                     <ul class="rule">
-                        <h5 style="margin-block-start: 0; margin-block-end: 10px;">ターゲットの回答方法</h5>
+                        <h5 class="rule-heading">ターゲットの回答方法</h5>
                         <li>ターゲット音が１番目だと思ったらFキー、３番目だと思ったらJキーを押す</li>
                         <li>Spaceキーを押して正誤を確認し次の問題に進む</li>
                     </ul>
@@ -217,7 +217,7 @@
             <p class="pc-only">Spaceキーを押すと正誤が表示されます!<br>（本番ではそのまま次の問題に進みます）</p>
             <p class="mobile-only">送信ボタンをタップすると正誤が表示されます</p>
             <!-- エラーメッセージ -->
-            <div id="error" style="color: red; margin-top: 20px; font-size: 16px;"></div>
+            <div id="error"></div>
 
             <!-- 結果表示 -->
             <h3 id="resultText"></h3>
@@ -291,18 +291,18 @@
             if (selectedKey === practiceTarget) {
                 if (practiceTarget === "f") {
                     resultText.innerText = "正解です🔥１番目がターゲットでした";
-                    resultImage.innerHTML = "<img src='static/sample_fig/trial_target_first.png' style='height: 100px;'>";
+                    resultImage.innerHTML = "<img src='static/sample_fig/trial_target_first.png' class='result-img'>";
                 } else if (practiceTarget === "j") {
                     resultText.innerText = "正解です🔥３番目がターゲットでした";
-                    resultImage.innerHTML = "<img src='static/sample_fig/trial_target_third.png' style='height: 100px;'>";
+                    resultImage.innerHTML = "<img src='static/sample_fig/trial_target_third.png' class='result-img'>";
                 }
             } else {
                 if (practiceTarget === "f") {
                     resultText.innerText = "不正解です💦１番目がターゲットでした";
-                    resultImage.innerHTML = "<img src='static/sample_fig/trial_target_first.png' style='height: 100px;'>";
+                    resultImage.innerHTML = "<img src='static/sample_fig/trial_target_first.png' class='result-img'>";
                 } else if (practiceTarget === "j") {
                     resultText.innerText = "不正解です💦３番目がターゲットでした";
-                    resultImage.innerHTML = "<img src='static/sample_fig/trial_target_third.png' style='height: 100px;'>";
+                    resultImage.innerHTML = "<img src='static/sample_fig/trial_target_third.png' class='result-img'>";
                 }
             }
             
@@ -347,18 +347,18 @@
                 if (selectedKey === practiceTarget) {
                     if (practiceTarget === "f") {
                         resultText.innerText = "正解です🔥１番目がターゲットでした";
-                        resultImage.innerHTML = "<img src='static/sample_fig/trial_target_first.png' style='height: 100px;'>";
+                        resultImage.innerHTML = "<img src='static/sample_fig/trial_target_first.png' class='result-img'>";
                     } else if (practiceTarget === "j") {
                         resultText.innerText = "正解です🔥３番目がターゲットでした";
-                        resultImage.innerHTML = "<img src='static/sample_fig/trial_target_third.png' style='height: 100px;'>";
+                        resultImage.innerHTML = "<img src='static/sample_fig/trial_target_third.png' class='result-img'>";
                     }
                 } else {
                     if (practiceTarget === "f") {
                         resultText.innerText = "不正解です💦１番目がターゲットでした";
-                        resultImage.innerHTML = "<img src='static/sample_fig/trial_target_first.png' style='height: 100px;'>";
+                        resultImage.innerHTML = "<img src='static/sample_fig/trial_target_first.png' class='result-img'>";
                     } else if (practiceTarget === "j") {
                         resultText.innerText = "不正解です💦３番目がターゲットでした";
-                        resultImage.innerHTML = "<img src='static/sample_fig/trial_target_third.png' style='height: 100px;'>";
+                        resultImage.innerHTML = "<img src='static/sample_fig/trial_target_third.png' class='result-img'>";
                     }
 
                 // エラー表示をクリア
