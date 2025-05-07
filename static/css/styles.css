@@ -360,8 +360,8 @@ form {
 }
 
 /* ボタンのホバーエフェクトを無効化 */
-.button:hover, button:hover, #buttonF:hover, #buttonJ:hover, #buttonSubmit:hover, .play-button:hover {
-  background-color: #4b4b4b;
+.button:hover, button:hover, #buttonF:hover, #buttonJ:hover, #buttonSubmit:hover, .play-button:hover, #startButton:hover, .slide-nav:hover {
+  background-color: inherit;
   transform: none;
   box-shadow: none;
 }
@@ -479,14 +479,27 @@ form {
       margin: 10px 0;
   }
   
-  /* 例示画像のモバイル調整 */
-  .example-img {
-      height: 80px;
+  /* index.htmlの音の周波数差セクションを縦並びに */
+  .meta-media-container {
+      flex-direction: column;
+      align-items: center;
   }
   
-  /* 結果画像のモバイル調整 */
-  .result-img {
+  /* practice.htmlのスライダー調整 */
+  .slider-container {
+      width: 95%;
+      max-width: 500px;
+  }
+  
+  .slide {
+      padding: 10px;
+      width: 100%;
+      box-sizing: border-box;
+  }
+  
+  .example-img, .result-img {
       height: 80px;
+      max-width: 100%;
   }
   
   /* PC/モバイル表示切り替え */
