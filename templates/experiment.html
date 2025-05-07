@@ -29,14 +29,14 @@
                 <p>ノーマル音</p>
                 <audio id="sample_audio_normal" src="{{ url_for('static', filename='stimuli/successive_0.52*4/' + session['current_block_freq'] + '/gallops_0.00ms.wav') }}"></audio>
                 <button class="play-button" onclick="playAudio('sample_audio_normal')"></button>
-                <img src="{{ url_for('static', filename='sample_fig/stimuli_normal.png') }}" style="height: 70px;">
+                <img src="{{ url_for('static', filename='sample_fig/stimuli_normal.png') }}" class="stimuli-img">
             </div>
             
             <div class="media-container">
-                <p><span style="color: red;">ターゲット音</span></p>
+                <p><span class="target-text">ターゲット音</span></p>
                 <audio id="sample_audio_target" src="{{ url_for('static', filename='stimuli/successive_0.52*4/' + session['current_block_freq'] + '/gallops_64.00ms.wav') }}"></audio>
-                <button class="play-button" onclick="playAudio('sample_audio_target')" style="margin-bottom: 20px;"></button>
-                <img src="{{ url_for('static', filename='sample_fig/stimuli_target_v3.png') }}" style="height: 70px; margin-bottom: 20px;">
+                <button class="play-button target-button" onclick="playAudio('sample_audio_target')"></button>
+                <img src="{{ url_for('static', filename='sample_fig/stimuli_target_v3.png') }}" class="stimuli-img target-img">
             </div>
         </ul>
         

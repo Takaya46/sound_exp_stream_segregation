@@ -353,6 +353,26 @@ form {
   box-shadow: none;
 }
 
+/* 刺激画像のスタイル */
+.stimuli-img {
+  height: 70px;
+}
+
+/* ターゲット音テキストのスタイル */
+.target-text {
+  color: red;
+}
+
+/* ターゲットボタンのスタイル */
+.target-button {
+  margin-bottom: 20px;
+}
+
+/* ターゲット画像のスタイル */
+.target-img {
+  margin-bottom: 20px;
+}
+
 /* モバイル対応（レスポンシブデザイン） */
 @media (max-width: 600px) {
   .container {
@@ -390,6 +410,16 @@ form {
       margin: 10px 15px;
       width: calc(100% - 30px);
       box-sizing: border-box;
+  }
+  
+  /* 刺激画像のモバイル調整 */
+  .stimuli-img {
+      height: 60px;
+  }
+  
+  /* メディアコンテナのモバイル調整 */
+  .media-container {
+      margin: 10px 0;
   }
   
   /* PC/モバイル表示切り替え */
