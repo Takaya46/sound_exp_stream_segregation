@@ -289,6 +289,24 @@ section {
 #error {
   text-align: center;  /* エラーメッセージを中央揃え */
   color: red;  /* エラーメッセージは赤 */
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+/* 結果表示のスタイル */
+#result {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 20px;
+}
+
+/* フィードバックメッセージのスタイル */
+#feedback_message {
+  text-align: center;
+  display: none;
+  font-size: 16px;
+  font-weight: bold;
+  color: blue;
 }
 
 #startButton {
