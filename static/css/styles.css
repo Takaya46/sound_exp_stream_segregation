@@ -329,7 +329,7 @@ form {
 }
 
 /* ボタンのホバーエフェクトを無効化 */
-.button:hover {
+.button:hover, button:hover, #buttonF:hover, #buttonJ:hover, #buttonSubmit:hover, .play-button:hover {
   background-color: #4b4b4b;
   transform: none;
   box-shadow: none;
@@ -338,8 +338,9 @@ form {
 /* モバイル対応（レスポンシブデザイン） */
 @media (max-width: 600px) {
   .container {
-      width: 100%;
+      width: calc(100% - 20px);
       padding: 10px;
+      margin: 0 10px;
   }
 
   button {
@@ -366,10 +367,11 @@ form {
   }
   
   /* 説明文の表示/非表示切り替え */
-  .instruction {
+  .instruction, .instruction-start {
       padding: 15px;
-      margin: 10px auto;
-      width: 100%;
+      margin: 10px 15px;
+      width: calc(100% - 30px);
+      box-sizing: border-box;
   }
   
   /* PC/モバイル表示切り替え */
