@@ -195,18 +195,18 @@
             // 実験開始ボタンを非表示
             const startButton = document.getElementById('startButton');
             if (startButton) {
-                startButton.style.display = 'none';
+                startButton.classList.add('hidden');
             }
             
             // 説明文を非表示
             const instructionTop = document.getElementById('instructionTop');
             if (instructionTop) {
-                instructionTop.style.display = 'none';
+                instructionTop.classList.add('hidden');
             }
 
             const instructionStart = document.getElementById('instructionStart');
             if (instructionStart) {
-                instructionStart.style.display = 'none';
+                instructionStart.classList.add('hidden');
             }
 
             isAudioPlaying = true; // 再生フラグを設定
@@ -284,7 +284,7 @@
             const feedbackDiv = document.getElementById("feedback_message");
             if (data.feedback) {
                 feedbackDiv.innerText = data.feedback;
-                feedbackDiv.style.display = "block";
+                feedbackDiv.classList.add('visible');
             }
             
             if (data.completed) {

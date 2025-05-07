@@ -233,12 +233,12 @@
             document.getElementById("confirmationMessage").innerHTML = confirmationMessage;
 
             // ポップアップを表示
-            document.getElementById("confirmationPopup").style.display = "flex";
+            document.getElementById("confirmationPopup").classList.add("popup-visible");
         }
 
         // 戻るボタンの動作
         document.getElementById("backButton").addEventListener("click", function () {
-            document.getElementById("confirmationPopup").style.display = "none";
+            document.getElementById("confirmationPopup").classList.remove("popup-visible");
         });
 
         // 練習へ進むボタンの動作

@@ -309,6 +309,19 @@ section {
   color: blue;
 }
 
+/* 表示/非表示のためのユーティリティクラス */
+.hidden {
+  display: none !important;
+}
+
+.visible {
+  display: block !important;
+}
+
+.popup-visible {
+  display: flex !important;
+}
+
 #startButton {
   margin-bottom: 50px;
   background-color: #4CAF50; /* 緑 */
