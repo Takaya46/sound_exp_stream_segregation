@@ -354,6 +354,23 @@ form {
   }
 }
 
+/* iOSデバイス向けの特別な対応 */
+@media (max-width: 812px), (max-device-width: 812px), 
+       (-webkit-min-device-pixel-ratio: 2), 
+       (min-resolution: 192dpi) {
+  .mobile-only {
+    display: inline-block !important;
+  }
+  
+  .pc-only {
+    display: none !important;
+  }
+  
+  .submit-container {
+    display: flex !important;
+  }
+}
+
 
 /* 刺激画像のスタイル */
 .stimuli-img {
