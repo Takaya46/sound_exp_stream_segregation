@@ -204,13 +204,18 @@
     
         <!-- トライアルエリア -->
         <div id="trialArea" class="trial-container">
-            <!-- 選択ボタン（視覚的表示用） -->
-            <p>ターゲット音が1番目ならFキー、3番目ならJキーを押してください<br>（クリックには反応しません）</p>
+            <!-- 選択ボタン -->
+            <p class="pc-only">ターゲット音が1番目ならFキー、3番目ならJキーを押してください</p>
+            <p class="mobile-only">ターゲット音が1番目か3番目かを選んでください</p>
             <div class="button-container">
-                <button id="buttonF" class="button">1st(F)</button>
-                <button id="buttonJ" class="button">3rd(J)</button>
+                <button id="buttonF" class="button"><span class="pc-only">1st(F)</span><span class="mobile-only">1番目</span></button>
+                <button id="buttonJ" class="button"><span class="pc-only">3rd(J)</span><span class="mobile-only">3番目</span></button>
             </div>
-            <p>Spaceキーを押すと正誤が表示されます!<br>（本番ではそのまま次の問題に進みます）</p>
+            <div class="button-container submit-container">
+                <button id="buttonSubmit" class="button submit-button"><span class="pc-only">送信(Space)</span><span class="mobile-only">送信</span></button>
+            </div>
+            <p class="pc-only">Spaceキーを押すと正誤が表示されます!<br>（本番ではそのまま次の問題に進みます）</p>
+            <p class="mobile-only">送信ボタンをタップすると正誤が表示されます</p>
             <!-- エラーメッセージ -->
             <div id="error" style="color: red; margin-top: 20px; font-size: 16px;"></div>
 
@@ -246,6 +251,65 @@
             const audio = document.getElementById(id);
             audio.play();
         }
+        
+        // ボタンのクリック/タップイベントリスナー
+        document.getElementById("buttonF").addEventListener("click", function() {
+            selectKey("f");
+        });
+        
+        document.getElementById("buttonJ").addEventListener("click", function() {
+            selectKey("j");
+        });
+        
+        document.getElementById("buttonSubmit").addEventListener("click", function() {
+            // スペースキーと同じ機能を実行
+            if (!isTrialRunning) {
+                document.getElementById("error").innerText = "問題が再生されていません。再生ボタンを押してください。";
+                return;
+            }
+            
+            if (isAudioPlaying) {
+                document.getElementById("error").innerText = "音声再生中です。すべての音が再生された後で応答してください。";
+                setTimeout(() => {
+                    document.getElementById("error").innerText = "";
+                }, 1000);
+                return;
+            }
+            
+            if (!selectedKey) {
+                document.getElementById("error").innerText = "FキーまたはJキーを選択してください！";
+                setTimeout(() => {
+                    document.getElementById("error").innerText = "";
+                }, 1000);
+                return;
+            }
+            
+            // 正誤判定と結果表示
+            const resultText = document.getElementById("resultText");
+            const resultImage = document.getElementById("resultImage");
+            
+            if (selectedKey === practiceTarget) {
+                if (practiceTarget === "f") {
+                    resultText.innerText = "正解です🔥１番目がターゲットでした";
+                    resultImage.innerHTML = "<img src='static/sample_fig/trial_target_first.png' style='height: 100px;'>";
+                } else if (practiceTarget === "j") {
+                    resultText.innerText = "正解です🔥３番目がターゲットでした";
+                    resultImage.innerHTML = "<img src='static/sample_fig/trial_target_third.png' style='height: 100px;'>";
+                }
+            } else {
+                if (practiceTarget === "f") {
+                    resultText.innerText = "不正解です💦１番目がターゲットでした";
+                    resultImage.innerHTML = "<img src='static/sample_fig/trial_target_first.png' style='height: 100px;'>";
+                } else if (practiceTarget === "j") {
+                    resultText.innerText = "不正解です💦３番目がターゲットでした";
+                    resultImage.innerHTML = "<img src='static/sample_fig/trial_target_third.png' style='height: 100px;'>";
+                }
+            }
+            
+            // エラー表示をクリア
+            document.getElementById("error").innerText = "";
+            selectedKey = null;
+        });
         
         // キー入力のリスナー
         document.addEventListener("keydown", (event) => {

@@ -47,15 +47,17 @@
 
 
     <!-- 選択ボタン（視覚的表示用） -->
-    <p>ターゲット音が1番目だと思ったらFキー、3番目だと思ったらJキーを押してください</p>
+    <p class="pc-only">ターゲット音が1番目だと思ったらFキー、3番目だと思ったらJキーを押してください</p>
+    <p class="mobile-only">ターゲット音が1番目か3番目かを選んでください</p>
     <div class="button-container">
-        <button id="buttonF" class="button">1st(F)</button>
-        <button id="buttonJ" class="button">3rd(J)</button>
+        <button id="buttonF" class="button"><span class="pc-only">1st(F)</span><span class="mobile-only">1番目</span></button>
+        <button id="buttonJ" class="button"><span class="pc-only">3rd(J)</span><span class="mobile-only">3番目</span></button>
     </div>
     <div class="button-container submit-container">
-        <button id="buttonSubmit" class="button submit-button">送信</button>
+        <button id="buttonSubmit" class="button submit-button"><span class="pc-only">送信(Space)</span><span class="mobile-only">送信</span></button>
     </div>
-    <p>Spaceキーを押すと回答が送信され、すぐに次の問題が始まります！</p>
+    <p class="pc-only">Spaceキーを押すと回答が送信され、すぐに次の問題が始まります！</p>
+    <p class="mobile-only">送信ボタンをタップすると回答が送信され、次の問題が始まります</p>
     <!-- エラーメッセージ -->
     <div id="error" style="color: red; margin-top: 20px; font-size: 16px;"></div>
 

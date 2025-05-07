@@ -312,6 +312,15 @@ form {
   align-items: center;
 }
 
+/* PC/モバイル表示切り替え用クラス */
+.pc-only {
+  display: inline-block;
+}
+
+.mobile-only {
+  display: none;
+}
+
 /* モバイル対応（レスポンシブデザイン） */
 @media (max-width: 600px) {
   .container {
@@ -340,5 +349,21 @@ form {
   #feedback_message, #result, #error {
       font-size: 16px;
       padding: 5px;
+  }
+  
+  /* 説明文の表示/非表示切り替え */
+  .instruction {
+      padding: 15px;
+      margin: 10px auto;
+      width: 100%;
+  }
+  
+  /* PC/モバイル表示切り替え */
+  .pc-only {
+      display: none;
+  }
+  
+  .mobile-only {
+      display: inline-block;
   }
 }
