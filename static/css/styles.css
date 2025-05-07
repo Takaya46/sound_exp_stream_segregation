@@ -448,9 +448,12 @@ form {
   /* 説明文の表示/非表示切り替え */
   .instruction, .instruction-start {
       padding: 15px;
-      margin: 10px 15px;
-      width: calc(100% - 30px);
+      margin: 10px auto;
+      width: 90%;
+      max-width: 500px;
       box-sizing: border-box;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   
   /* 刺激画像のモバイル調整 */
