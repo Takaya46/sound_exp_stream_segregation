@@ -46,7 +46,7 @@
     <div id="instructionTopMobile" class="instruction mobile-only">
         <h3>{{ frequency_labels.get(session['current_block_freq'], '不明')}}</h3>
         <p>ブロック {{ session['block_index'] }} / {{ session['total_blocks'] }}</p>
-        
+        <p style="font-size: 12px; margin-top: 10px;">音を確認したら、下の開始ボタンで実験を始めよう！</p> 
         <div style="display: flex; justify-content: space-around; margin: 10px 0;">
             <div style="text-align: center;">
                 <p style="margin: 5px 0; font-size: 12px;">ノーマル音</p>
@@ -60,7 +60,6 @@
                 <button class="play-button target-button" onclick="playAudio('sample_audio_target_mobile')" style="width: 35px; height: 35px;"></button>
             </div>
         </div>
-        <p style="font-size: 12px; margin-top: 10px;">音を確認したら、下の開始ボタンで実験を始めよう！</p>
         
     </div>
 
@@ -261,7 +260,12 @@
             const audio2 = new Audio(tone2Path);
             const audio3 = new Audio(tone3Path);
 
-            audio1.play();
+            // 0.1秒の無音ファイルを再生してから音声シーケンスを開始（音声システム初期化のため）
+            const silentAudio = new Audio('{{ url_for('static', filename='stimuli/successive_0.52*4/silence/silence_0.1s.wav') }}');
+            silentAudio.play();
+            silentAudio.onended = () => {
+                audio1.play();
+            };
             audio1.onended = () => {
                 setTimeout(() => {
                     audio2.play();
@@ -338,7 +342,7 @@
 
             setTimeout(() => {
                 nextTrial();
-            }, 500);
+            }, 400);
         }
     </script>
 </body>
