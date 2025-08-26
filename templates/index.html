@@ -143,6 +143,25 @@
     </label>
     <br><br>
 
+    <!-- 音の種類選択 -->
+    <label for="sound_type">
+        <h3>音の種類</h3>
+        <div style="display: flex; flex-direction: column; align-items: flex-start; margin-left: 1em;">
+            <label style="display: flex; align-items: center; margin: 0.5em 0;">
+                <input type="radio" name="sound_type" value="pure_tone" checked style="margin-right: 0.5em; width: 20px; height: 20px;">
+                純音
+            </label>
+            <label style="display: flex; align-items: center; margin: 0.5em 0;">
+                <input type="radio" name="sound_type" value="piano" style="margin-right: 0.5em; width: 20px; height: 20px;">
+                ピアノ音
+            </label>
+        </div>
+        <p>
+            ※純音は聞き取りやすく、ピアノ音はより自然な音です<br>
+        </p>
+    </label>
+    <br><br>
+
     <!-- トライアル数設定 -->
     <label for="trials_per_cond">
         <h3>各条件の問題数</h3>
@@ -196,6 +215,11 @@
 
             const frequencyDirs = checkedCheckboxes.map(checkbox => checkbox.value); // value の値
             const frequencyLabels = checkedCheckboxes.map(checkbox => checkbox.closest('label').textContent.trim()); // ラベルのテキスト
+            
+            // 音の種類を取得
+            const soundType = document.querySelector('input[name="sound_type"]:checked').value;
+            const soundTypeLabel = document.querySelector('input[name="sound_type"]:checked').closest('label').textContent.trim();
+            
             const Trials_per_cond = document.getElementById('trials_per_cond').value;
             const Mail_address = document.getElementById('mail_address').value.trim() || null;
 
@@ -228,6 +252,10 @@
                     <p class="popup-value">${participantId}</p>
                 </div>
                 <div class="popup-item">
+                    <p class="popup-title">音の種類</p>
+                    <p class="popup-value">${soundTypeLabel}</p>
+                </div>
+                <div class="popup-item">
                     <p class="popup-title">音条件</p>
                     <p class="popup-value">${frequencyLabels.join("<br>")}</p> <!-- 改行 -->
                 </div>
@@ -253,6 +281,10 @@
             // 選択されたチェックボックスの値（frequencyDirs）
             const checkedCheckboxes = Array.from(document.querySelectorAll('input[name="frequency_dir"]:checked'));
             const frequencyDirs = checkedCheckboxes.map(checkbox => checkbox.value); // 送信する値
+            
+            // 音の種類を取得
+            const soundType = document.querySelector('input[name="sound_type"]:checked').value;
+            
             const Trials_per_cond = parseInt(document.getElementById('trials_per_cond').value);
             const Mail_address = document.getElementById('mail_address').value.trim() || null;
 
@@ -262,6 +294,7 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     participant_id: participantId,
+                    sound_type: soundType,
                     frequency_dirs: frequencyDirs,
                     trials_per_cond: Trials_per_cond,
                     mail_address: Mail_address

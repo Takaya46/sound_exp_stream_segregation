@@ -278,13 +278,13 @@
         <div style="display: flex; justify-content: space-around; margin: 10px 0;">
             <div style="text-align: center;">
                 <p style="margin: 5px 0; font-size: 12px;">ノーマル音</p>
-                <audio id="sample_audio_normal_mobile" src="{{ url_for('static', filename='stimuli/successive_0.52*4/as_semitone/gallops_0.00ms.wav') }}"></audio>
+                <audio id="sample_audio_normal_mobile" src="{{ url_for('static', filename='stimuli/' + ('piano_successive_0.52*4' if session['sound_type'] == 'piano' else 'successive_0.52*4') + '/as_semitone/' + ('piano_gallops_' if session['sound_type'] == 'piano' else 'gallops_') + '0.00ms.wav') }}"></audio>
                 <button class="play-button" onclick="playAudio('sample_audio_normal_mobile')" style="width: 35px; height: 35px;"></button>
             </div>
             
             <div style="text-align: center;">
                 <p style="margin: 5px 0; font-size: 12px;"><span class="target-text">ターゲット音</span></p>
-                <audio id="sample_audio_target_mobile" src="{{ url_for('static', filename='stimuli/successive_0.52*4/as_semitone/gallops_64.00ms.wav') }}"></audio>
+                <audio id="sample_audio_target_mobile" src="{{ url_for('static', filename='stimuli/' + ('piano_successive_0.52*4' if session['sound_type'] == 'piano' else 'successive_0.52*4') + '/as_semitone/' + ('piano_gallops_' if session['sound_type'] == 'piano' else 'gallops_') + '64.00ms.wav') }}"></audio>
                 <button class="play-button target-button" onclick="playAudio('sample_audio_target_mobile')" style="width: 35px; height: 35px;"></button>
             </div>
         </div>
@@ -562,6 +562,11 @@
             console.log("startPracticeTrial");
             const freqSelect = document.getElementById("frequencyDirSelect");
             const frequencyDir = freqSelect.value;  // プルダウンから選択された周波数条件（ディレクトリ名）
+            const soundType = "{{ session['sound_type'] }}";
+            
+            // 音の種類に応じてディレクトリとファイル名プレフィックスを決定
+            const audioDir = soundType === 'piano' ? 'piano_successive_0.52*4' : 'successive_0.52*4';
+            const filePrefix = soundType === 'piano' ? 'piano_gallops_' : 'gallops_';
             document.getElementById("trialArea").style.display = "block";
             document.getElementById("resultText").innerText = "";
             document.getElementById("resultImage").innerHTML = "";
@@ -575,14 +580,14 @@
             let tone1Path, tone2Path, tone3Path;
             if (targetPosition === 1) {
                 // tone1 がターゲット
-                tone1Path = `/static/stimuli/successive_0.52*4/${frequencyDir}/gallops_64.00ms.wav`;
-                tone2Path = `/static/stimuli/successive_0.52*4/${frequencyDir}/gallops_0.00ms.wav`;
-                tone3Path = `/static/stimuli/successive_0.52*4/${frequencyDir}/gallops_0.00ms.wav`;
+                tone1Path = `/static/stimuli/${audioDir}/${frequencyDir}/${filePrefix}64.00ms.wav`;
+                tone2Path = `/static/stimuli/${audioDir}/${frequencyDir}/${filePrefix}0.00ms.wav`;
+                tone3Path = `/static/stimuli/${audioDir}/${frequencyDir}/${filePrefix}0.00ms.wav`;
             } else {
                 // tone3 がターゲット
-                tone1Path = `/static/stimuli/successive_0.52*4/${frequencyDir}/gallops_0.00ms.wav`;
-                tone2Path = `/static/stimuli/successive_0.52*4/${frequencyDir}/gallops_0.00ms.wav`;
-                tone3Path = `/static/stimuli/successive_0.52*4/${frequencyDir}/gallops_64.00ms.wav`;
+                tone1Path = `/static/stimuli/${audioDir}/${frequencyDir}/${filePrefix}0.00ms.wav`;
+                tone2Path = `/static/stimuli/${audioDir}/${frequencyDir}/${filePrefix}0.00ms.wav`;
+                tone3Path = `/static/stimuli/${audioDir}/${frequencyDir}/${filePrefix}64.00ms.wav`;
             }
 
             currentTonePaths = { tone1: tone1Path, tone2: tone2Path, tone3: tone3Path };
@@ -639,10 +644,14 @@
 
         function playSlide2Trial() {
             // frequencyDirは固定で "as_semitone"
+            const soundType = "{{ session['sound_type'] }}";
+            const audioDir = soundType === 'piano' ? 'piano_successive_0.52*4' : 'successive_0.52*4';
+            const filePrefix = soundType === 'piano' ? 'piano_gallops_' : 'gallops_';
+            
             // ファイルパスを固定値で生成（必要に応じて、パス内の特殊文字の扱いを確認してください）
-            const tone1Path = `/static/stimuli/successive_0.52*4/as_semitone/gallops_0.00ms.wav`;
-            const tone2Path = `/static/stimuli/successive_0.52*4/as_semitone/gallops_0.00ms.wav`;
-            const tone3Path = `/static/stimuli/successive_0.52*4/as_semitone/gallops_64.00ms.wav`;
+            const tone1Path = `/static/stimuli/${audioDir}/as_semitone/${filePrefix}0.00ms.wav`;
+            const tone2Path = `/static/stimuli/${audioDir}/as_semitone/${filePrefix}0.00ms.wav`;
+            const tone3Path = `/static/stimuli/${audioDir}/as_semitone/${filePrefix}64.00ms.wav`;
 
             // 各音声オブジェクトを生成
             const audio1 = new Audio(tone1Path);

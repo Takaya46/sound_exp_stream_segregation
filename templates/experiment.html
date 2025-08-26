@@ -28,14 +28,14 @@
         <ul>
             <div class="media-container">
                 <p>ノーマル音</p>
-                <audio id="sample_audio_normal" src="{{ url_for('static', filename='stimuli/successive_0.52*4/' + session['current_block_freq'] + '/gallops_0.00ms.wav') }}"></audio>
+                <audio id="sample_audio_normal" src="{{ url_for('static', filename='stimuli/' + ('piano_successive_0.52*4' if session['sound_type'] == 'piano' else 'successive_0.52*4') + '/' + session['current_block_freq'] + '/' + ('piano_gallops_' if session['sound_type'] == 'piano' else 'gallops_') + '0.00ms.wav') }}"></audio>
                 <button class="play-button" onclick="playAudio('sample_audio_normal')"></button>
                 <img src="{{ url_for('static', filename='sample_fig/stimuli_normal.png') }}" class="stimuli-img">
             </div>
             
             <div class="media-container">
                 <p><span class="target-text">ターゲット音</span></p>
-                <audio id="sample_audio_target" src="{{ url_for('static', filename='stimuli/successive_0.52*4/' + session['current_block_freq'] + '/gallops_64.00ms.wav') }}"></audio>
+                <audio id="sample_audio_target" src="{{ url_for('static', filename='stimuli/' + ('piano_successive_0.52*4' if session['sound_type'] == 'piano' else 'successive_0.52*4') + '/' + session['current_block_freq'] + '/' + ('piano_gallops_' if session['sound_type'] == 'piano' else 'gallops_') + '64.00ms.wav') }}"></audio>
                 <button class="play-button target-button" onclick="playAudio('sample_audio_target')"></button>
                 <img src="{{ url_for('static', filename='sample_fig/stimuli_target_v3.png') }}" class="stimuli-img target-img">
             </div>
@@ -50,13 +50,13 @@
         <div style="display: flex; justify-content: space-around; margin: 10px 0;">
             <div style="text-align: center;">
                 <p style="margin: 5px 0; font-size: 12px;">ノーマル音</p>
-                <audio id="sample_audio_normal_mobile" src="{{ url_for('static', filename='stimuli/successive_0.52*4/' + session['current_block_freq'] + '/gallops_0.00ms.wav') }}"></audio>
+                <audio id="sample_audio_normal_mobile" src="{{ url_for('static', filename='stimuli/' + ('piano_successive_0.52*4' if session['sound_type'] == 'piano' else 'successive_0.52*4') + '/' + session['current_block_freq'] + '/' + ('piano_gallops_' if session['sound_type'] == 'piano' else 'gallops_') + '0.00ms.wav') }}"></audio>
                 <button class="play-button" onclick="playAudio('sample_audio_normal_mobile')" style="width: 35px; height: 35px;"></button>
             </div>
             
             <div style="text-align: center;">
                 <p style="margin: 5px 0; font-size: 12px;"><span class="target-text">ターゲット音</span></p>
-                <audio id="sample_audio_target_mobile" src="{{ url_for('static', filename='stimuli/successive_0.52*4/' + session['current_block_freq'] + '/gallops_64.00ms.wav') }}"></audio>
+                <audio id="sample_audio_target_mobile" src="{{ url_for('static', filename='stimuli/' + ('piano_successive_0.52*4' if session['sound_type'] == 'piano' else 'successive_0.52*4') + '/' + session['current_block_freq'] + '/' + ('piano_gallops_' if session['sound_type'] == 'piano' else 'gallops_') + '64.00ms.wav') }}"></audio>
                 <button class="play-button target-button" onclick="playAudio('sample_audio_target_mobile')" style="width: 35px; height: 35px;"></button>
             </div>
         </div>
@@ -251,12 +251,17 @@
             const data = await res.json();
 
             const frequencyDir = "{{ session['current_block_freq'] }}";
+            const soundType = "{{ session['sound_type'] }}";
+            
+            // 音の種類に応じてディレクトリとファイル名プレフィックスを決定
+            const audioDir = soundType === 'piano' ? 'piano_successive_0.52*4' : 'successive_0.52*4';
+            const filePrefix = soundType === 'piano' ? 'piano_gallops_' : 'gallops_';
 
             const silnecePath = `/static/stimuli/successive_0.52*4/silence/silence_0.1s.wav`;
             // 3つの音声ファイルのパスを生成
-            const tone1Path = `/static/stimuli/successive_0.52*4/${frequencyDir}/gallops_${data.tones[0]}ms.wav`;
-            const tone2Path = `/static/stimuli/successive_0.52*4/${frequencyDir}/gallops_${data.tones[1]}ms.wav`;
-            const tone3Path = `/static/stimuli/successive_0.52*4/${frequencyDir}/gallops_${data.tones[2]}ms.wav`;
+            const tone1Path = `/static/stimuli/${audioDir}/${frequencyDir}/${filePrefix}${data.tones[0]}ms.wav`;
+            const tone2Path = `/static/stimuli/${audioDir}/${frequencyDir}/${filePrefix}${data.tones[1]}ms.wav`;
+            const tone3Path = `/static/stimuli/${audioDir}/${frequencyDir}/${filePrefix}${data.tones[2]}ms.wav`;
 
             // Audioオブジェクトを作成
             const silentAudio = new Audio(silnecePath);

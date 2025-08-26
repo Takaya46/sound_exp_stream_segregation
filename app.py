@@ -43,6 +43,13 @@ def initialize_condition_session(frequency_dir):
     }
 
 
+# 音声ファイルのディレクトリとプレフィックスを取得
+def get_audio_settings(sound_type):
+    if sound_type == 'piano':
+        return 'piano_successive_0.52*4', 'piano_gallops_'
+    else:  # pure_tone
+        return 'successive_0.52*4', 'gallops_'
+
 # データ保存用のファイル、figのディレクトリを設定
 def set_data_file_path(freq_list):
     today = datetime.datetime.now().strftime('%Y-%m-%d')
@@ -134,6 +141,7 @@ def start_experiment():
         # return jsonify({'error': 'No data received'}), 400
     # キーの確認
     participant_id = data.get('participant_id')
+    sound_type = data.get('sound_type', 'pure_tone')  # デフォルトは純音
     frequency_dirs = data.get('frequency_dirs')
     trials_per_cond = data.get('trials_per_cond', 20)
     mail_address = data.get('mail_address')
@@ -141,6 +149,7 @@ def start_experiment():
     #     return jsonify({'error': 'Missing required data'}), 400
 
     session['participant_id'] = participant_id
+    session['sound_type'] = sound_type
     session['frequency_dirs'] = frequency_dirs # frequency_dir のリスト
     session['mail_address'] = mail_address
 
