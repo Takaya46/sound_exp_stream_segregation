@@ -626,8 +626,8 @@ form {
       box-sizing: border-box;
   }
   
-  /* モバイル版instruction（実験開始前）を画面中央に配置 */
-  #instructionTopMobile {
+  /* experiment.htmlでのモバイル版instruction（実験開始前）を画面中央に配置 */
+  body.experiment-page #instructionTopMobile {
       position: fixed;
       top: 50%;
       left: 50%;
@@ -642,8 +642,8 @@ form {
       text-align: center;
   }
   
-  /* モバイルでのブロック開始ボタンをinstructionの下に配置 */
-  #startButton {
+  /* experiment.htmlでのモバイルでのブロック開始ボタンをinstructionの下に配置 */
+  body.experiment-page #startButton {
       position: fixed;
       top: 75%; /* もっと下に配置 */
       left: 50%;
