@@ -5,3 +5,4 @@ flask_session/
 script_archived/
 templates/templates_archive/
 venv/
+.claude/
