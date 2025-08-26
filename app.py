@@ -58,7 +58,7 @@ def set_data_file_path(freq_list):
         # ファイル名の決定
         base_filename = f"{participant_id}_{freq}_results"
         data_file_path = os.path.join(data_dir, f"{base_filename}.csv")
-        # 既存のファイルがある場合、新しい名前をつける
+        # 既存のファイルがある場合、名前をつける
         file_index = 1
         while os.path.exists(data_file_path):
             data_file_path = os.path.join(data_dir, f"{base_filename}_{file_index}.csv")
@@ -302,7 +302,7 @@ def submit_response():
     next_offset = OFFSET_LIST[next_offset_index]
 
     # **レベルアップ or レベルダウンの判定**
-    feedback_message = "Stay"
+    feedback_message = "Good!"
     if float(next_offset) < float(current_offset):
         feedback_message = "Level UP🔥"
     elif float(next_offset) > float(current_offset):
@@ -374,16 +374,54 @@ def complete():
         # `fig_path` と `threshold` の存在チェック
         fig_path = results.get("fig_path")
         threshold = results.get("threshold")
-        if not fig_path or threshold is None:
+        log2_threshold = results.get("log2_threshold")
+        if not fig_path or threshold is None or log2_threshold is None:
             print(f"Error: Missing results for {freq} ({data_file_path})")
             continue
 
+        # レベル判定
+        def get_level(freq_key, log2_thresh):
+            if freq_key in ['g_base', 'as_semitone']:
+                if log2_thresh <= 2:
+                    return "天才！"
+                elif log2_thresh <= 2.5:
+                    return "すごい音楽家♫"
+                elif log2_thresh <= 3:
+                    return "音楽家"
+                else:
+                    return "凡人👍️"
+            elif freq_key == 'g_1octave':
+                if log2_thresh <= 2.5:
+                    return "天才！"
+                elif log2_thresh <= 3.0:
+                    return "すごい音楽家♫"
+                elif log2_thresh <= 3.5:
+                    return "音楽家"
+                else:
+                    return "凡人👍️"
+            elif freq_key in ['g_2octave', 'g_3octave']:
+                if log2_thresh <= 3:
+                    return "天才！"
+                elif log2_thresh <= 4:
+                    return "すごい音楽家♫"
+                elif log2_thresh <= 5:
+                    return "音楽家"
+                else:
+                    return "凡人👍️"
+            else:
+                return "判定不能"
+
+        level = get_level(freq, log2_threshold)
+        
         # 結果をリストに追加
         results_list.append({
-            "frequency_label": FREQUENCY_LABELS.get(freq, freq),  # ラベルがない場合はそのまま表示
-            "fig_path": fig_path.replace('static/', ''),  # `static/` を取り除く
+            "frequency_label": FREQUENCY_LABELS.get(freq, freq),
+            "freq_key": freq,  # レベル判定用のキー
+            "fig_path": fig_path.replace('static/', ''),
             "threshold": f"{threshold:.2f}",
-            "file_name": os.path.basename(data_file_path)  # どのデータファイルの結果かを表示
+            "log2_threshold": f"{log2_threshold:.2f}",
+            "level": level,
+            "file_name": os.path.basename(data_file_path)
         })
 
     # **MLE分析が1つも成功しなかった場合**

@@ -2,11 +2,44 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>実験結果</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <h1>あなたの結果</h1>
+    <h1>🌸結果発表🌸</h1>
+    
+    <!-- 結果サマリーテーブル -->
+    <div class="container">
+        <h2>あなたのレベル診断📊</h2>
+        <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+            <thead>
+                <tr style="background-color: #f8f9fa;">
+                    <th style="border: 1px solid #ddd; padding: 12px; text-align: left;">音条件</th>
+                    <th style="border: 1px solid #ddd; padding: 12px; text-align: center;">閾値</th>
+                    <th style="border: 1px solid #ddd; padding: 12px; text-align: center;">レベル</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in results_list %}
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 12px; font-weight: bold;">{{ result.frequency_label }}</td>
+                    <td style="border: 1px solid #ddd; padding: 12px; text-align: center;">{{ result.log2_threshold }}</td>
+                    <td style="border: 1px solid #ddd; padding: 12px; text-align: center; font-size: 18px; font-weight: bold;">{{ result.level }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0;">
+            <h4>レベル判定基準</h4>
+            <div style="font-size: 14px; line-height: 1.5;">
+                <strong>同じ音・半音上:</strong> 0-2: 天才！ | 2-2.5: すごい音楽家♫ | 2.5-3: 音楽家 | 3-: 凡人👍️<br>
+                <strong>1オクターブ:</strong> -2.5: 天才！ | 2.5-3.0: すごい音楽家♫ | 3-3.5: 音楽家 | 3.5-: 凡人👍️<br>
+                <strong>2・3オクターブ:</strong> -3: 天才！ | 3-4: すごい音楽家♫ | 4-5: 音楽家 | 5-: 凡人👍️
+            </div>
+        </div>
+    </div>
     
     <h2>心理測定関数📈</h2>
     <p>
@@ -15,8 +48,11 @@
     </p>
     {% for result in results_list %}
     <div class="image-container">
-        <h2>{{ result.frequency_label }}</h2>
-        <p>75%検出閾 (Threshold): {{ result.threshold }}</p>
+        <h2>{{ result.frequency_label }} - {{ result.level }}</h2>
+        <p>
+            75%検出閾: {{ result.threshold }} ms (log2: {{ result.log2_threshold }})<br>
+            <strong style="font-size: 20px; color: #2c3e50;">{{ result.level }}</strong>
+        </p>
         <img src="{{ url_for('static', filename=result.fig_path) }}" alt="{{ result.frequency_label }} MLE Curve" class="responsive-image">
     </div>
     {% endfor %}

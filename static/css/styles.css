@@ -9,6 +9,8 @@ body {
   padding: 0;
   background-color: #f4f4f9; /* 背景色 */
   color: #333;
+  width: 100%; /* 画面の横幅に合わせる */
+  min-height: 100vh; /* 最小高さを画面の高さに設定 */
 }
 
 /* ページ全体のラッパー */
@@ -19,8 +21,10 @@ body {
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 80%;
+  max-width: 800px; /* PC用の最大幅を設定 */
   margin: 0 auto;
   margin-bottom: 40px;
+  box-sizing: border-box; /* パディングを含めた幅計算 */
 }
 
 /* ヘッダーのデザイン */
@@ -169,6 +173,7 @@ section {
 .submit-button {
   background-color: #4CAF50; /* 緑色 */
   margin-top: 5px;
+  width: 270px !important; /* 横幅を1.5倍に（180px × 1.5） */
 }
 
 /* 選択時のハイライトスタイル */
@@ -185,7 +190,7 @@ section {
   margin: 20px auto;        /* 上下の余白 */
   margin-bottom: 40px;
   width: 95%;               /* 横幅 */
-  max-width: 1600px;         /* 最大横幅 */
+  max-width: 800px;         /* 最大横幅 */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 軽い影 */
 }
 .instruction-start {
@@ -295,13 +300,37 @@ section {
   font-size: 20px;
 }
 
-/* フィードバックメッセージのスタイル */
+/* フィードバックメッセージのスタイル - オーバーレイ表示 */
 #feedback_message {
-  text-align: center;
   display: none;
-  font-size: 16px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  font-size: 48px;
   font-weight: bold;
-  color: blue;
+  text-align: center;
+  z-index: 9999;
+  
+  /* フレックスボックスで中央配置 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+  /* 初期は非表示 */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* フィードバック表示時のクラス */
+#feedback_message.show {
+  opacity: 1;
+  visibility: visible;
 }
 
 /* 表示/非表示のためのユーティリティクラス */
@@ -347,10 +376,40 @@ form {
   display: none;
 }
 
-/* PCブラウザでは送信ボタンを非表示 */
+/* PCブラウザでも送信ボタンを表示（デバッグ用） */
 @media (min-width: 601px) {
   .submit-container {
-    display: none;
+    display: block;
+  }
+  
+  /* PC表示でtargetSelectionAreaを画面中央に配置 */
+  #targetSelectionArea {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+    min-width: 400px;
+  }
+}
+
+/* 送信ボタンコンテナの中央揃え */
+.submit-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* モバイルブラウザでは送信ボタンを表示 */
+@media (max-width: 600px) {
+  .submit-container {
+    display: flex !important;
+    justify-content: center !important;
+    visibility: visible !important;
   }
 }
 
@@ -418,45 +477,96 @@ form {
 
 /* モバイル対応（レスポンシブデザイン） */
 @media (max-width: 600px) {
+  /* 全てのボックス要素を95%幅に統一 */
   .container {
-      width: calc(100% - 20px);
-      padding: 10px;
-      margin: 0 10px;
+      width: 95% !important;
+      max-width: none !important; /* 最大幅制限を削除 */
+      padding: 15px;
+      margin: 10px auto;
+      box-sizing: border-box;
   }
 
-  button {
+  /* モバイルでの横いっぱいボタンを普通のボタンデザインに */
+  #startButton, 
+  button[onclick*="goToNextTrial"], 
+  button[onclick*="finishPractice"],
+  .start-practice-button {
+      width: 250px !important; /* 固定幅に変更 */
+      margin: 20px auto !important; /* 中央配置 */
+      background-color: #3498db !important; /* 普通の青色 */
+      border: none;
+      padding: 12px 20px;
+      font-size: 18px;
+  }
+  
+  #startButton:hover,
+  button[onclick*="goToNextTrial"]:hover,
+  button[onclick*="finishPractice"]:hover,
+  .start-practice-button:hover {
+      background-color: #2980b9 !important; /* ホバー時の濃い青 */
+  }
+  
+  /* その他のボタンは従来通り */
+  button:not(#startButton):not([onclick*="goToNextTrial"]):not([onclick*="finishPractice"]):not(.start-practice-button) {
       width: 100%;
   }
   
   /* モバイル用のボタンサイズ調整 */
   .button {
-      width: 150px;
-      height: 60px;
+      width: 160px;
+      height: 70px;
       font-size: 20px;
       margin: 15px;
   }
   
   /* 説明文のサイズ調整 */
   p {
-      font-size: 14px;
+      font-size: 15px;
+      line-height: 1.4;
+  }
+  
+  /* 見出しのサイズ調整 */
+  h1 {
+      font-size: 2em;
+  }
+  
+  h2 {
+      font-size: 1.8em;
+  }
+  
+  h3 {
+      font-size: 1.5em;
+  }
+  
+  h4 {
+      font-size: 1.3em;
+  }
+  
+  h5 {
+      font-size: 1.2em;
   }
   
   /* フィードバックメッセージの調整 */
-  #feedback_message, #result, #error {
+  #feedback_message {
+      font-size: 36px !important; /* モバイルでも大きく */
+  }
+  
+  #result, #error {
       font-size: 16px;
       padding: 5px;
   }
   
   /* 説明文の表示/非表示切り替え */
   .instruction, .instruction-start {
-      padding: 15px;
-      margin: 10px auto;
-      width: 90%;
-      max-width: 500px;
+      padding: 12px;
+      margin: 15px auto;
+      width: 95% !important; /* 統一された95%幅 */
+      max-width: none !important; /* 最大幅制限を削除 */
       box-sizing: border-box;
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
+  
   
   /* 刺激画像のモバイル調整 */
   .stimuli-img {
@@ -466,6 +576,54 @@ form {
   /* メディアコンテナのモバイル調整 */
   .media-container {
       margin: 10px 0;
+      width: 95%;
+      box-sizing: border-box;
+  }
+  
+  /* ボタンコンテナのモバイル調整 */
+  .button-container {
+      width: 95%;
+      box-sizing: border-box;
+      justify-content: center;
+      flex-wrap: nowrap; /* 1st/3rdボタンを横並び固定 */
+      margin: 0 auto;
+      gap: 10px; /* ボタン間の間隔 */
+  }
+  
+  /* 1st/3rdボタンのモバイルサイズ調整 */
+  .button-container .button:not(.submit-button) {
+      width: 120px !important; /* 横並びに収まるサイズ */
+      height: 60px !important;
+      font-size: 18px !important;
+  }
+  
+  /* 送信ボタンのモバイル調整 */
+  .submit-button {
+      width: 200px !important; /* 横幅を小さく */
+      height: 50px !important; /* 高さも小さく */
+      font-size: 16px !important;
+      margin: 5px auto !important; /* マージンを最小に */
+  }
+  
+  /* モバイル表示でもtargetSelectionAreaを画面中央に配置 */
+  #targetSelectionArea {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(255, 255, 255, 0.98);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+      z-index: 100;
+      width: 85%; /* 少し狭めて余白を確保 */
+      max-width: 320px;
+  }
+  
+  /* モバイル全体に左右余白を追加 */
+  body {
+      padding: 0 10px; /* 左右に10pxの余白 */
+      box-sizing: border-box;
   }
   
   /* index.htmlの音の周波数差セクションを縦並びに */
@@ -476,12 +634,13 @@ form {
   
   /* practice.htmlのスライダー調整 */
   .slider-container {
-      width: 95%;
-      max-width: 500px;
+      width: 95% !important; /* 統一された95%幅 */
+      max-width: none !important; /* 最大幅制限を削除 */
+      margin: 0 auto;
   }
   
   .slide {
-      padding: 10px;
+      padding: 12px;
       width: 100%;
       box-sizing: border-box;
   }
@@ -498,5 +657,34 @@ form {
   
   .mobile-only {
       display: inline-block;
+  }
+  
+  /* モバイルでは最初の詳細説明を非表示 */
+  #instruction_first {
+      display: none;
+  }
+  
+  /* モバイルでは説明文2も非表示 */
+  #instructionStart {
+      display: none;
+  }
+  
+  /* 基本フォントサイズを適切なサイズに */
+  body {
+      font-size: 16px;
+      margin: 0;
+      padding: 0; /* パディングを完全に削除 */
+      box-sizing: border-box;
+      overflow-x: hidden; /* 横スクロールを防ぐ */
+  }
+  
+  /* ラベルとセレクトボックスを適切なサイズに */
+  label {
+      font-size: 18px;
+  }
+  
+  select, input[type="text"], input[type="number"] {
+      font-size: 16px;
+      padding: 10px;
   }
 }

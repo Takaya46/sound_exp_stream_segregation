@@ -2,13 +2,14 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>休憩</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <h1>休憩をとりましょう🍵</h1>
-    <h3>{{ session['block_index'] }} / {{ session['total_blocks'] }} ブロックが終了しました。</h3>
-    <h4>次の周波数条件は {{ frequency_labels.get(session['current_block_freq'], '不明')}} です。</h4>
+    <h1>🍵ひとやすみ🍵</h1>
+    <h3>Done: {{ session['block_index'] }} / {{ session['total_blocks'] }} </h3>
+    <h4>Next: {{ frequency_labels.get(session['current_block_freq'], '不明')}}</h4>
     <button onclick="goToNextTrial()">次のブロックへ</button>
 
     <script>

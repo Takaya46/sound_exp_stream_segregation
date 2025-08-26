@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WEB音実験(音脈分凝の体験)</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <style>
@@ -54,7 +55,7 @@
 </head>
 
 <body>
-    <h1>WEB音実験へようこそ！</h1>
+    <h1>♫ 音脈分凝クイズ ♫</h1>
     <!-- 説明文 -->
     <div id="instruction_first" class="instruction">
         <h2>リズムの差を聞き取ろう！</h2>
@@ -162,7 +163,7 @@
             メールアドレス（任意）
         </h3>
         <input id="mail_address" type="text" placeholder="メールアドレスを入力してください">
-        <p>京大で実施する音実験(有償)に<br>優先的にご招待します！</p>
+        <p>登録で音実験@京大西田研に<br>ご招待します！</p>
     </label>
 
     <!-- 実験開始ボタン -->
@@ -216,7 +217,7 @@
 
             // ポップアップに内容を表示（`:` の前後を上下に分割）
             const confirmationMessage = `
-                <h2>以下の設定で実験に進みます</h2>
+                <h2>以下の設定でOKですか？</h2>
                 <div class="popup-item">
                     <p class="popup-title">被験者ID</p>
                     <p class="popup-value">${participantId}</p>

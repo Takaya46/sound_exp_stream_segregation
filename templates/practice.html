@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>実験</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <style>
@@ -82,6 +83,14 @@
             align-items: center;
             margin-bottom: 20px;
         }
+        
+        /* モバイル用のドロップダウンコンテナレイアウト調整 */
+        @media (max-width: 600px) {
+            .dropdown-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
 
         #startPracticeBtn {
             width: 150px;
@@ -107,6 +116,76 @@
             cursor: pointer;
             width: 200px;
         }
+
+        /* モバイル対応（practice.htmlページ専用） */
+        @media (max-width: 600px) {
+            .slider-container {
+                width: 95% !important;
+                max-width: none !important;
+                margin: 0 auto;
+                padding: 0 2.5%; /* 両端に余白を追加 */
+                box-sizing: border-box;
+            }
+            
+            .slide {
+                padding: 10px !important;
+                box-sizing: border-box;
+                width: 100%;
+            }
+            
+            .dropdown-container {
+                width: 95%;
+                margin: 0 auto 20px auto;
+                box-sizing: border-box;
+            }
+            
+            #startPracticeBtn {
+                width: 150px;
+                max-width: 150px;
+                font-size: 16px;
+                padding: 8px 12px;
+                margin: 0 !important; /* マージンをなくす */
+            }
+            
+            /* もう一度聞くボタンをモバイルでは非表示 */
+            #replayTrialBtn {
+                display: none;
+            }
+            
+            #finishPractice {
+                width: 95%;
+                max-width: 300px;
+            }
+            
+            .dot-nav-wrapper {
+                width: 95%;
+                margin: 0 auto 20px auto;
+                box-sizing: border-box;
+            }
+            
+            .dot-nav-wrapper .slide-nav {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+            
+            /* instructionボックスのモバイル調整 */
+            .instruction, .instruction-start {
+                width: 95% !important;
+                max-width: none !important;
+                margin: 15px auto !important;
+                padding: 12px !important;
+                box-sizing: border-box;
+            }
+            
+            /* containerクラスのモバイル調整 */
+            .container {
+                width: 95% !important;
+                max-width: none !important;
+                margin: 10px auto !important;
+                padding: 15px !important;
+                box-sizing: border-box;
+            }
+        }
     </style>
 </head>
 <body>
@@ -116,8 +195,8 @@
     <audio id="tone2" preload="auto"></audio>
     <audio id="tone3" preload="auto"></audio>
 
-    <!-- 説明文1 -->
-    <div id="instructionTop" class="instruction">
+    <!-- 説明文1 - PC版 -->
+    <div id="instructionTop" class="instruction pc-only">
         <h3>クイズの説明 (例: 音条件２)</h3>
         <div class="slider-container">
             <div class="slider-wrapper">
@@ -187,12 +266,39 @@
             <button class="slide-nav next" onclick="nextSlide()">次へ</button>
         </div>
     </div>
+    
+    <!-- 説明文1 - モバイル簡略版 -->
+    <div id="instructionTopMobile" class="instruction mobile-only">
+        <h4>問題の流れ</h4>
+        <p style="font-size: 13px; margin: 8px 0; line-height: 1.3;">
+            3回音の塊が流れます。<br>
+            1番目か3番目のどちらかが<span class="target-text">ターゲット音</span>です。<br>
+            音の違いを聞き取って選択してください！<br>
+        </p>
+        <div style="display: flex; justify-content: space-around; margin: 10px 0;">
+            <div style="text-align: center;">
+                <p style="margin: 5px 0; font-size: 12px;">ノーマル音</p>
+                <audio id="sample_audio_normal_mobile" src="{{ url_for('static', filename='stimuli/successive_0.52*4/as_semitone/gallops_0.00ms.wav') }}"></audio>
+                <button class="play-button" onclick="playAudio('sample_audio_normal_mobile')" style="width: 35px; height: 35px;"></button>
+            </div>
+            
+            <div style="text-align: center;">
+                <p style="margin: 5px 0; font-size: 12px;"><span class="target-text">ターゲット音</span></p>
+                <audio id="sample_audio_target_mobile" src="{{ url_for('static', filename='stimuli/successive_0.52*4/as_semitone/gallops_64.00ms.wav') }}"></audio>
+                <button class="play-button target-button" onclick="playAudio('sample_audio_target_mobile')" style="width: 35px; height: 35px;"></button>
+            </div>
+        </div>
+        
+        <p style="font-size: 13px; margin: 8px 0; line-height: 1.3;">
+            正誤に応じて問題の難易度が変わります💪
+        </p>
+    </div>
 
     <!-- 音条件選択 -->
     <div class="container">
         <h2>練習問題</h2>
         
-        <p>音条件を選択し「問題を再生」ボタンを押すと問題が再生されます</p>
+        <p>音条件を選択し問題を解いてみよう</p>
         <div class="dropdown-container">
             <select id="frequencyDirSelect">
                 {% for freq in session['frequency_dirs'] %}
@@ -206,24 +312,22 @@
         <div id="trialArea" class="trial-container">
             <!-- 選択ボタン -->
             <p class="pc-only">ターゲット音が1番目ならFキー、3番目ならJキーを押してください</p>
-            <p class="mobile-only">ターゲット音が1番目か3番目かを選んでください</p>
+            <p class="mobile-only">ターゲット音はどっち？</p>
             <div class="button-container">
-                <button id="buttonF" class="button"><span class="pc-only">1st(F)</span><span class="mobile-only">1番目</span></button>
-                <button id="buttonJ" class="button"><span class="pc-only">3rd(J)</span><span class="mobile-only">3番目</span></button>
+                <button id="buttonF" class="button"><span class="pc-only">1st(F)</span><span class="mobile-only">1st</span></button>
+                <button id="buttonJ" class="button"><span class="pc-only">3rd(J)</span><span class="mobile-only">3rd</span></button>
             </div>
             <div class="button-container submit-container">
-                <button id="buttonSubmit" class="button submit-button"><span class="pc-only">送信(Space)</span><span class="mobile-only">送信</span></button>
+                <button id="buttonSubmit" class="button submit-button"><span class="pc-only">送信(Space)</span><span class="mobile-only">決定</span></button>
             </div>
             <p class="pc-only">Spaceキーを押すと正誤が表示されます!<br>（本番ではそのまま次の問題に進みます）</p>
-            <p class="mobile-only">送信ボタンをタップすると正誤が表示されます</p>
+            <!-- <p class="mobile-only">送信ボタンをタップすると正誤が表示されます</p> -->
             <!-- エラーメッセージ -->
             <div id="error"></div>
 
             <!-- 結果表示 -->
             <h3 id="resultText"></h3>
             <div id="resultImage"></div>
-
-            <p>※本番は図によるフィードバックはありません</p>
             <!-- もう一度聞くボタン -->
             <button id="replayTrialBtn" class="button" onclick="replayTrial()">もう一度聞く</button>
             

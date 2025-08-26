@@ -86,4 +86,4 @@ def perform_mle_analysis(data_file, output_dir):
     plt.savefig(fig_path)
     plt.close()
 
-    return {"threshold": threshold_mle, "fig_path": fig_path}
+    return {"threshold": threshold_mle, "log2_threshold": threshold_log2_mle, "fig_path": fig_path}
