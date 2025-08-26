@@ -117,7 +117,7 @@
         <h3>音の条件（周波数差）</h3>
         <div id="frequency_dir_checkboxes">
             <label>
-                <input type="checkbox" name="frequency_dir" value="g_base" checked>
+                <input type="checkbox" name="frequency_dir" value="g_base">
                 条件１（同じ音）
             </label>
             <label>
@@ -125,15 +125,15 @@
                 条件２（半音上）
             </label>
             <label>
-                <input type="checkbox" name="frequency_dir" value="g_1octave" checked>
+                <input type="checkbox" name="frequency_dir" value="g_1octave">
                 条件３（1オクターブ）
             </label>
             <label>
-                <input type="checkbox" name="frequency_dir" value="g_2octave">
+                <input type="checkbox" name="frequency_dir" value="g_2octave" checked>
                 条件４（2オクターブ）
             </label>
             <label>
-                <input type="checkbox" name="frequency_dir" value="g_3octave" checked>
+                <input type="checkbox" name="frequency_dir" value="g_3octave">
                 条件５（3オクターブ）
             </label>
         </div>
@@ -146,7 +146,7 @@
     <!-- トライアル数設定 -->
     <label for="trials_per_cond">
         <h3>各条件の問題数</h3>
-        <input id="trials_per_cond" type="number" min="1" max="50" value="30">
+        <input id="trials_per_cond" type="number" min="10" max="50" value="10">
         <h5>
             目安の時間
         </h5>
