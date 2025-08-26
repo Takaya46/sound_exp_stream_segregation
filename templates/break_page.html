@@ -6,7 +6,7 @@
     <title>休憩</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
-<body>
+<body class="break-page">
     <h1>🍵ひとやすみ🍵</h1>
     <h3>Done: {{ session['block_index'] }} / {{ session['total_blocks'] }} </h3>
     <h4>Next: {{ frequency_labels.get(session['current_block_freq'], '不明')}}</h4>

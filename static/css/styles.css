@@ -626,6 +626,43 @@ form {
       box-sizing: border-box;
   }
   
+  /* モバイル版instruction（実験開始前）を画面中央に配置 */
+  #instructionTopMobile {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -60%); /* 少し上に配置してボタン用の余裕を作る */
+      background-color: rgba(255, 255, 255, 0.98);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+      z-index: 100;
+      width: 85%;
+      max-width: 320px;
+      text-align: center;
+  }
+  
+  /* モバイルでのブロック開始ボタンをinstructionの下に配置 */
+  #startButton {
+      position: fixed;
+      top: 75%; /* もっと下に配置 */
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 101; /* instructionより前面に */
+      width: 200px !important;
+      margin: 10px 0 !important;
+  }
+  
+  /* break_pageのコンテンツを画面中央に配置 */
+  body.break-page {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
+  }
+  
   /* index.htmlの音の周波数差セクションを縦並びに */
   .meta-media-container {
       flex-direction: column;

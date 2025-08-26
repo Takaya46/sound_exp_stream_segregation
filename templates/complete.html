@@ -32,7 +32,7 @@
         </table>
         
         <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0;">
-            <h4>レベル判定基準</h4>
+            <h4 style="margin-top: 0;">レベル判定基準</h4>
             <div style="font-size: 14px; line-height: 1.5;">
                 <strong>同じ音・半音上:</strong> 0-2: 天才！ | 2-2.5: すごい音楽家♫ | 2.5-3: 音楽家 | 3-: 凡人👍️<br>
                 <strong>1オクターブ:</strong> -2.5: 天才！ | 2.5-3.0: すごい音楽家♫ | 3-3.5: 音楽家 | 3.5-: 凡人👍️<br>
@@ -41,23 +41,25 @@
         </div>
     </div>
     
-    <h2>心理測定関数📈</h2>
-    <p>
-        実験データから予想された難易度(横軸)に対する正解確率(縦軸)です!!<br>
-        75%検出閾(点線)が小さいほどリズムの変化が少ない音でも正解できることを示しています👍
-    </p>
-    {% for result in results_list %}
-    <div class="image-container">
-        <h2>{{ result.frequency_label }} - {{ result.level }}</h2>
+    <div class="container">
+        <h2>心理測定関数📈</h2>
         <p>
-            75%検出閾: {{ result.threshold }} ms (log2: {{ result.log2_threshold }})<br>
-            <strong style="font-size: 20px; color: #2c3e50;">{{ result.level }}</strong>
+            横軸がリズムの変化量(大きいほど変化が大きい)、縦軸が予測される正解確率を示しています<br>
+            75%検出閾(点線)が小さいほどリズムの変化が少ない音でも正解できることを示しています👍
         </p>
-        <img src="{{ url_for('static', filename=result.fig_path) }}" alt="{{ result.frequency_label }} MLE Curve" class="responsive-image">
+        {% for result in results_list %}
+        <div class="image-container">
+            <h2>{{ result.frequency_label }}</h2>
+            <p>
+                75%検出閾: {{ result.threshold }} ms (log2: {{ result.log2_threshold }})<br>
+            </p>
+            <img src="{{ url_for('static', filename=result.fig_path) }}" alt="{{ result.frequency_label }} MLE Curve" class="responsive-image">
+        </div>
+        {% endfor %}
+        <p></p>
+        <!-- トップページに戻るボタン -->
+        
     </div>
-    {% endfor %}
-    <p></p>
-    <!-- トップページに戻るボタン -->
     <button onclick="window.location.href='/'">トップページに戻る</button>
 </body>
 </html>
