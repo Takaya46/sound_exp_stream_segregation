@@ -215,6 +215,11 @@
                 return;
             }
 
+            if (Trials_per_cond < 10) {
+                alert("問題数は10問以上にしてください！");
+                return;
+            }
+
             // ポップアップに内容を表示（`:` の前後を上下に分割）
             const confirmationMessage = `
                 <h2>以下の設定でOKですか？</h2>
