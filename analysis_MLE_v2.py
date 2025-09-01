@@ -62,6 +62,11 @@ def perform_mle_analysis(data_file, output_dir):
 
     # 75% 閾値の計算と描画
     threshold_log2_mle = -b_mle / a_mle
+    
+    # 128ms(log2なら7)を上限として制限
+    if threshold_log2_mle > 7:
+        threshold_log2_mle = 7
+    
     threshold_mle = 2 ** threshold_log2_mle
     plt.axvline(threshold_log2_mle, color='green', linestyle='--', label=f"75% Threshold ({threshold_mle:.2f})")
 
