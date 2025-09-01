@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>音楽経験アンケート</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        .questionnaire-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .question {
+            background-color: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .question h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 80px;
+        }
+        
+        .option:hover {
+            border-color: #007bff;
+            background-color: #e3f2fd;
+        }
+        
+        .option.selected {
+            border-color: #007bff;
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .option input[type="radio"] {
+            display: none;
+        }
+        
+        .option-value {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .option-label {
+            font-size: 12px;
+            margin-top: 5px;
+            text-align: center;
+            line-height: 1.2;
+        }
+        
+        .submit-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .submit-button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .submit-button:hover {
+            background-color: #218838;
+        }
+        
+        .submit-button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        .progress {
+            background-color: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            background-color: #007bff;
+            height: 100%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+        
+        @media (max-width: 600px) {
+            .options {
+                flex-direction: column;
+            }
+            
+            .option {
+                min-width: auto;
+                width: 100%;
+                flex-direction: row;
+                justify-content: space-between;
+                padding: 15px;
+            }
+            
+            .option-label {
+                margin-top: 0;
+                margin-left: 10px;
+                flex: 1;
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="questionnaire-container">
+        <h1>🎵 音楽経験アンケート 🎵</h1>
+        <p>実験お疲れさまでした！最後に、あなたの音楽経験について簡単なアンケートにお答えください。</p>
+        
+        <div class="progress">
+            <div class="progress-bar" id="progressBar" style="width: 0%;"></div>
+        </div>
+        
+        <form id="questionnaireForm">
+            <!-- Question 1 -->
+            <div class="question">
+                <h3>Q1. 自分の音楽的才能や音楽演奏を褒められたことがある</h3>
+                <div class="options">
+                    <label class="option" onclick="selectOption(1, 1, this)">
+                        <input type="radio" name="q1" value="1">
+                        <span class="option-value">1</span>
+                        <span class="option-label">全くない</span>
+                    </label>
+                    <label class="option" onclick="selectOption(1, 2, this)">
+                        <input type="radio" name="q1" value="2">
+                        <span class="option-value">2</span>
+                    </label>
+                    <label class="option" onclick="selectOption(1, 3, this)">
+                        <input type="radio" name="q1" value="3">
+                        <span class="option-value">3</span>
+                    </label>
+                    <label class="option" onclick="selectOption(1, 4, this)">
+                        <input type="radio" name="q1" value="4">
+                        <span class="option-value">4</span>
+                        <span class="option-label">どちらでもない</span>
+                    </label>
+                    <label class="option" onclick="selectOption(1, 5, this)">
+                        <input type="radio" name="q1" value="5">
+                        <span class="option-value">5</span>
+                    </label>
+                    <label class="option" onclick="selectOption(1, 6, this)">
+                        <input type="radio" name="q1" value="6">
+                        <span class="option-value">6</span>
+                    </label>
+                    <label class="option" onclick="selectOption(1, 7, this)">
+                        <input type="radio" name="q1" value="7">
+                        <span class="option-value">7</span>
+                        <span class="option-label">よくある</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question">
+                <h3>Q2. 私は音楽家である</h3>
+                <div class="options">
+                    <label class="option" onclick="selectOption(2, 1, this)">
+                        <input type="radio" name="q2" value="1">
+                        <span class="option-value">1</span>
+                        <span class="option-label">全く違う</span>
+                    </label>
+                    <label class="option" onclick="selectOption(2, 2, this)">
+                        <input type="radio" name="q2" value="2">
+                        <span class="option-value">2</span>
+                    </label>
+                    <label class="option" onclick="selectOption(2, 3, this)">
+                        <input type="radio" name="q2" value="3">
+                        <span class="option-value">3</span>
+                    </label>
+                    <label class="option" onclick="selectOption(2, 4, this)">
+                        <input type="radio" name="q2" value="4">
+                        <span class="option-value">4</span>
+                        <span class="option-label">どちらでもない</span>
+                    </label>
+                    <label class="option" onclick="selectOption(2, 5, this)">
+                        <input type="radio" name="q2" value="5">
+                        <span class="option-value">5</span>
+                    </label>
+                    <label class="option" onclick="selectOption(2, 6, this)">
+                        <input type="radio" name="q2" value="6">
+                        <span class="option-value">6</span>
+                    </label>
+                    <label class="option" onclick="selectOption(2, 7, this)">
+                        <input type="radio" name="q2" value="7">
+                        <span class="option-value">7</span>
+                        <span class="option-label">その通り</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question">
+                <h3>Q3. 私はここ＿＿年間、日常的・定期的に楽器（歌を含む）の練習をしている</h3>
+                <div class="options">
+                    <label class="option" onclick="selectOption(3, 1, this)">
+                        <input type="radio" name="q3" value="1">
+                        <span class="option-value">0年</span>
+                    </label>
+                    <label class="option" onclick="selectOption(3, 2, this)">
+                        <input type="radio" name="q3" value="2">
+                        <span class="option-value">1年</span>
+                    </label>
+                    <label class="option" onclick="selectOption(3, 3, this)">
+                        <input type="radio" name="q3" value="3">
+                        <span class="option-value">2年</span>
+                    </label>
+                    <label class="option" onclick="selectOption(3, 4, this)">
+                        <input type="radio" name="q3" value="4">
+                        <span class="option-value">3年</span>
+                    </label>
+                    <label class="option" onclick="selectOption(3, 5, this)">
+                        <input type="radio" name="q3" value="5">
+                        <span class="option-value">4-5年</span>
+                    </label>
+                    <label class="option" onclick="selectOption(3, 6, this)">
+                        <input type="radio" name="q3" value="6">
+                        <span class="option-value">6-9年</span>
+                    </label>
+                    <label class="option" onclick="selectOption(3, 7, this)">
+                        <input type="radio" name="q3" value="7">
+                        <span class="option-value">10年以上</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question">
+                <h3>Q4. 興味が最も高かった時期には、メインの楽器（歌を含む）を一日に＿＿時間練習した</h3>
+                <div class="options">
+                    <label class="option" onclick="selectOption(4, 1, this)">
+                        <input type="radio" name="q4" value="1">
+                        <span class="option-value">0時間</span>
+                    </label>
+                    <label class="option" onclick="selectOption(4, 2, this)">
+                        <input type="radio" name="q4" value="2">
+                        <span class="option-value">0.5時間</span>
+                    </label>
+                    <label class="option" onclick="selectOption(4, 3, this)">
+                        <input type="radio" name="q4" value="3">
+                        <span class="option-value">1時間</span>
+                    </label>
+                    <label class="option" onclick="selectOption(4, 4, this)">
+                        <input type="radio" name="q4" value="4">
+                        <span class="option-value">1.5時間</span>
+                    </label>
+                    <label class="option" onclick="selectOption(4, 5, this)">
+                        <input type="radio" name="q4" value="5">
+                        <span class="option-value">2時間</span>
+                    </label>
+                    <label class="option" onclick="selectOption(4, 6, this)">
+                        <input type="radio" name="q4" value="6">
+                        <span class="option-value">3-4時間</span>
+                    </label>
+                    <label class="option" onclick="selectOption(4, 7, this)">
+                        <input type="radio" name="q4" value="7">
+                        <span class="option-value">5時間以上</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question">
+                <h3>Q5. 音楽理論の訓練を＿＿年間受けた</h3>
+                <div class="options">
+                    <label class="option" onclick="selectOption(5, 1, this)">
+                        <input type="radio" name="q5" value="1">
+                        <span class="option-value">0年</span>
+                    </label>
+                    <label class="option" onclick="selectOption(5, 2, this)">
+                        <input type="radio" name="q5" value="2">
+                        <span class="option-value">0.5年</span>
+                    </label>
+                    <label class="option" onclick="selectOption(5, 3, this)">
+                        <input type="radio" name="q5" value="3">
+                        <span class="option-value">1年</span>
+                    </label>
+                    <label class="option" onclick="selectOption(5, 4, this)">
+                        <input type="radio" name="q5" value="4">
+                        <span class="option-value">2年</span>
+                    </label>
+                    <label class="option" onclick="selectOption(5, 5, this)">
+                        <input type="radio" name="q5" value="5">
+                        <span class="option-value">3年</span>
+                    </label>
+                    <label class="option" onclick="selectOption(5, 6, this)">
+                        <input type="radio" name="q5" value="6">
+                        <span class="option-value">4-6年</span>
+                    </label>
+                    <label class="option" onclick="selectOption(5, 7, this)">
+                        <input type="radio" name="q5" value="7">
+                        <span class="option-value">7年以上</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question">
+                <h3>Q6. これまでに楽器（歌も含む）の正式な訓練を＿＿年間受けた</h3>
+                <div class="options">
+                    <label class="option" onclick="selectOption(6, 1, this)">
+                        <input type="radio" name="q6" value="1">
+                        <span class="option-value">0年</span>
+                    </label>
+                    <label class="option" onclick="selectOption(6, 2, this)">
+                        <input type="radio" name="q6" value="2">
+                        <span class="option-value">0.5年</span>
+                    </label>
+                    <label class="option" onclick="selectOption(6, 3, this)">
+                        <input type="radio" name="q6" value="3">
+                        <span class="option-value">1年</span>
+                    </label>
+                    <label class="option" onclick="selectOption(6, 4, this)">
+                        <input type="radio" name="q6" value="4">
+                        <span class="option-value">2年</span>
+                    </label>
+                    <label class="option" onclick="selectOption(6, 5, this)">
+                        <input type="radio" name="q6" value="5">
+                        <span class="option-value">3-5年</span>
+                    </label>
+                    <label class="option" onclick="selectOption(6, 6, this)">
+                        <input type="radio" name="q6" value="6">
+                        <span class="option-value">6-9年</span>
+                    </label>
+                    <label class="option" onclick="selectOption(6, 7, this)">
+                        <input type="radio" name="q6" value="7">
+                        <span class="option-value">10年以上</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question">
+                <h3>Q7. 私は＿＿種類の楽器を演奏できる</h3>
+                <div class="options">
+                    <label class="option" onclick="selectOption(7, 1, this)">
+                        <input type="radio" name="q7" value="1">
+                        <span class="option-value">0種類</span>
+                    </label>
+                    <label class="option" onclick="selectOption(7, 2, this)">
+                        <input type="radio" name="q7" value="2">
+                        <span class="option-value">1種類</span>
+                    </label>
+                    <label class="option" onclick="selectOption(7, 3, this)">
+                        <input type="radio" name="q7" value="3">
+                        <span class="option-value">2種類</span>
+                    </label>
+                    <label class="option" onclick="selectOption(7, 4, this)">
+                        <input type="radio" name="q7" value="4">
+                        <span class="option-value">3種類</span>
+                    </label>
+                    <label class="option" onclick="selectOption(7, 5, this)">
+                        <input type="radio" name="q7" value="5">
+                        <span class="option-value">4種類</span>
+                    </label>
+                    <label class="option" onclick="selectOption(7, 6, this)">
+                        <input type="radio" name="q7" value="6">
+                        <span class="option-value">5種類</span>
+                    </label>
+                    <label class="option" onclick="selectOption(7, 7, this)">
+                        <input type="radio" name="q7" value="7">
+                        <span class="option-value">6種類以上</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="submit-container">
+                <button type="button" class="submit-button" id="submitButton" onclick="submitQuestionnaire()" disabled>
+                    回答を送信
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let answers = {};
+        let totalQuestions = 7;
+        
+        function selectOption(questionNum, value, element) {
+            // 同じ質問の他の選択肢を非選択状態に
+            const questionName = `q${questionNum}`;
+            const allOptions = document.querySelectorAll(`input[name="${questionName}"]`).forEach(input => {
+                input.parentElement.classList.remove('selected');
+            });
+            
+            // 選択された選択肢を選択状態に
+            element.classList.add('selected');
+            element.querySelector('input').checked = true;
+            
+            // 回答を記録
+            answers[questionName] = value;
+            
+            // 進捗バーを更新
+            updateProgress();
+            
+            // 全問回答済みかチェック
+            checkAllAnswered();
+        }
+        
+        function updateProgress() {
+            const answered = Object.keys(answers).length;
+            const progress = (answered / totalQuestions) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+        
+        function checkAllAnswered() {
+            const submitButton = document.getElementById('submitButton');
+            if (Object.keys(answers).length === totalQuestions) {
+                submitButton.disabled = false;
+                submitButton.style.backgroundColor = '#28a745';
+            } else {
+                submitButton.disabled = true;
+                submitButton.style.backgroundColor = '#6c757d';
+            }
+        }
+        
+        function submitQuestionnaire() {
+            if (Object.keys(answers).length !== totalQuestions) {
+                alert('すべての質問に回答してください。');
+                return;
+            }
+            
+            // 送信ボタンを無効化
+            const submitButton = document.getElementById('submitButton');
+            submitButton.disabled = true;
+            submitButton.textContent = '送信中...';
+            
+            // サーバーに回答を送信
+            fetch('/submit_questionnaire', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(answers)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('アンケートの回答ありがとうございました！');
+                    window.location.href = '/complete';
+                } else {
+                    alert('送信エラーが発生しました。もう一度お試しください。');
+                    submitButton.disabled = false;
+                    submitButton.textContent = '回答を送信';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('送信エラーが発生しました。もう一度お試しください。');
+                submitButton.disabled = false;
+                submitButton.textContent = '回答を送信';
+            });
+        }
+    </script>
+</body>
+</html>

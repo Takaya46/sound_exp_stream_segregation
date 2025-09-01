@@ -50,6 +50,121 @@ def get_audio_settings(sound_type):
     else:  # pure_tone
         return 'successive_0.52*4', 'gallops_'
 
+# サマリーファイルに実験結果を保存
+def save_summary_file(results_list):
+    today = session.get('today')
+    participant_id = session.get('participant_id')
+    sound_type = session.get('sound_type', 'pure_tone')
+    
+    # サマリーファイルのパスを設定
+    summary_dir = os.path.join(DATA_FOLDER, today, participant_id)
+    os.makedirs(summary_dir, exist_ok=True)
+    
+    base_filename = f"{participant_id}_summary"
+    summary_file_path = os.path.join(summary_dir, f"{base_filename}.csv")
+    
+    # 既存のファイルがある場合、名前を変更
+    file_index = session.get('data_file_index', 0)
+    if file_index > 0:
+        summary_file_path = os.path.join(summary_dir, f"{base_filename}_{file_index}.csv")
+    
+    # サマリーファイルを作成
+    with open(summary_file_path, 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        
+        # ヘッダー行を書き込み（sub_valueも含める）
+        writer.writerow([
+            'participant_id', 'experiment_date', 'sound_type',
+            'frequency_condition', 'frequency_label', 
+            'threshold_ms', 'log2_threshold', 'level', 'sub_value'
+        ])
+        
+        # 各結果を書き込み（sub_valueは未回答時は空白）
+        for result in results_list:
+            writer.writerow([
+                participant_id,
+                today,
+                sound_type,
+                result['freq_key'],
+                result['frequency_label'],
+                result['threshold'],
+                result['log2_threshold'],
+                result['level'],
+                ''  # sub_valueは後でアンケート回答時に更新
+            ])
+    
+    print(f"Summary file saved: {summary_file_path}")
+
+# アンケート結果でサマリーファイルを更新
+def update_summary_with_questionnaire(questionnaire_data):
+    today = session.get('today')
+    participant_id = session.get('participant_id')
+    
+    # セッション情報の確認
+    if not today or not participant_id:
+        print(f"Error: Missing session data - today: {today}, participant_id: {participant_id}")
+        # 最新のディレクトリを探して取得
+        import datetime
+        today = today or datetime.datetime.now().strftime('%Y-%m-%d')
+        
+        # 最近のサマリーファイルを検索
+        import glob
+        summary_pattern = os.path.join(DATA_FOLDER, '*', '*', '*_summary*.csv')
+        summary_files = glob.glob(summary_pattern)
+        if summary_files:
+            # 最新のファイルを取得
+            latest_file = max(summary_files, key=os.path.getmtime)
+            print(f"Found latest summary file: {latest_file}")
+            summary_file_path = latest_file
+        else:
+            print("No summary files found")
+            return
+    else:
+        # 既存のサマリーファイルのパスを取得
+        summary_dir = os.path.join(DATA_FOLDER, today, participant_id)
+        base_filename = f"{participant_id}_summary"
+        summary_file_path = os.path.join(summary_dir, f"{base_filename}.csv")
+        
+        file_index = session.get('data_file_index', 0)
+        if file_index > 0:
+            summary_file_path = os.path.join(summary_dir, f"{base_filename}_{file_index}.csv")
+    
+    # 既存のサマリーファイルを読み込み
+    if os.path.exists(summary_file_path):
+        try:
+            # アンケート結果の合計点数を計算
+            total_score = sum(int(questionnaire_data[f'q{i}']) for i in range(1, 8))
+            print(f"Questionnaire answers: {questionnaire_data}")
+            print(f"Questionnaire total score: {total_score}")
+            
+            # CSVファイルを読み込み
+            rows = []
+            with open(summary_file_path, 'r', newline='', encoding='utf-8') as file:
+                reader = csv.reader(file)
+                header = next(reader)  # ヘッダー行を読み込み
+                rows.append(header)
+                
+                # データ行を読み込み、sub_value列を更新
+                for row in reader:
+                    if len(row) >= 9:  # sub_value列が存在することを確認
+                        row[8] = str(total_score)  # sub_value列を更新（0ベースで8番目）
+                    rows.append(row)
+            
+            # ファイルを上書き保存
+            with open(summary_file_path, 'w', newline='', encoding='utf-8') as file:
+                writer = csv.writer(file)
+                writer.writerows(rows)
+            
+            print(f"Summary file updated with questionnaire results: {summary_file_path}")
+            print(f"Updated sub_value with total score: {total_score}")
+            
+        except Exception as e:
+            print(f"Error updating summary file with questionnaire: {e}")
+            import traceback
+            traceback.print_exc()
+    else:
+        print(f"Summary file not found: {summary_file_path}")
+
 # データ保存用のファイル、figのディレクトリを設定
 def set_data_file_path(freq_list):
     today = datetime.datetime.now().strftime('%Y-%m-%d')
@@ -287,7 +402,7 @@ def submit_response():
     base_filename = f"{participant_id}_{freq}_results"
     data_file_path = os.path.join(DATA_FOLDER, today, participant_id, freq, f"{base_filename}.csv")
     # 既存のファイルがある場合のファイルパス
-    file_index = session['data_file_index']
+    file_index = session.get('data_file_index', 0)
     if file_index > 0:
         data_file_path = os.path.join(DATA_FOLDER, today, participant_id, freq, f"{base_filename}_{file_index}.csv")
     # データ保存
@@ -351,7 +466,32 @@ def complete():
     # セッションから選択した周波数条件リストを取得
     frequency_dirs = session.get('frequency_dirs', [])
     if not frequency_dirs:
-        return "Error: No frequency directories found in session.", 400
+        # セッションが失われている場合、最新のデータディレクトリを検索
+        import glob
+        import datetime
+        today = datetime.datetime.now().strftime('%Y-%m-%d')
+        
+        # 最新の参加者ディレクトリを検索
+        participant_dirs = glob.glob(os.path.join(DATA_FOLDER, today, '*'))
+        if not participant_dirs:
+            return "Error: No experiment data found for today.", 400
+        
+        # 最新の参加者ディレクトリを取得
+        latest_participant_dir = max(participant_dirs, key=os.path.getmtime)
+        participant_id = os.path.basename(latest_participant_dir)
+        
+        # その参加者の周波数条件を検索
+        freq_dirs = [d for d in os.listdir(latest_participant_dir) 
+                     if os.path.isdir(os.path.join(latest_participant_dir, d)) and d != '__pycache__']
+        
+        if not freq_dirs:
+            return "Error: No frequency data found.", 400
+        
+        # セッションに設定
+        session['frequency_dirs'] = freq_dirs
+        session['today'] = today
+        session['participant_id'] = participant_id
+        frequency_dirs = freq_dirs
 
     # MLE分析結果を格納するリスト
     results_list = []
@@ -361,7 +501,7 @@ def complete():
     for freq in frequency_dirs:
         # **データファイルのパスを統一**
         base_filename = f"{participant_id}_{freq}_results"
-        file_index = session['data_file_index']
+        file_index = session.get('data_file_index', 0)
 
         if file_index > 0:
             data_file_path = os.path.join(DATA_FOLDER, today, participant_id, freq, f"{base_filename}_{file_index}.csv")
@@ -436,9 +576,72 @@ def complete():
     # **MLE分析が1つも成功しなかった場合**
     if not results_list:
         return "Error: No valid MLE analysis results.", 500
-    # **`complete.html` にリストを渡す**
-    return render_template('complete.html', results_list=results_list)
+    
+    # **サマリーファイルが存在しない場合のみ保存**
+    today = session.get('today')
+    participant_id = session.get('participant_id')
+    file_index = session.get('data_file_index', 0)
+    
+    if today and participant_id:
+        base_filename = f"{participant_id}_summary"
+        summary_file_path = os.path.join(DATA_FOLDER, today, participant_id, f"{base_filename}.csv")
+        if file_index > 0:
+            summary_file_path = os.path.join(DATA_FOLDER, today, participant_id, f"{base_filename}_{file_index}.csv")
+        
+        if not os.path.exists(summary_file_path):
+            save_summary_file(results_list)
+    
+    # アンケート回答があるかチェック
+    has_questionnaire = False
+    questionnaire_score = 0
+    if results_list:
+        # 最初の結果からsub_valueを確認（全ての行で同じ値のはず）
+        first_result = results_list[0]
+        # CSVファイルからsub_valueを直接読み取り
+        try:
+            summary_file_path = os.path.join(DATA_FOLDER, today, participant_id, f"{participant_id}_summary.csv")
+            file_index = session.get('data_file_index', 0)
+            if file_index > 0:
+                summary_file_path = os.path.join(DATA_FOLDER, today, participant_id, f"{participant_id}_summary_{file_index}.csv")
+            
+            if os.path.exists(summary_file_path):
+                with open(summary_file_path, 'r', encoding='utf-8') as file:
+                    reader = csv.reader(file)
+                    header = next(reader)  # ヘッダーをスキップ
+                    first_row = next(reader, None)
+                    if first_row and len(first_row) >= 9 and first_row[8]:  # sub_value列が存在し、値がある
+                        questionnaire_score = int(first_row[8])
+                        has_questionnaire = True
+        except Exception as e:
+            print(f"Error reading questionnaire score: {e}")
 
+    # **`complete.html` にリストを渡す**
+    return render_template('complete.html', 
+                         results_list=results_list,
+                         has_questionnaire=has_questionnaire,
+                         questionnaire_score=questionnaire_score)
+
+
+@app.route('/questionnaire')
+def questionnaire():
+    # アンケートページを表示
+    return render_template('questionnaire.html')
+
+@app.route('/submit_questionnaire', methods=['POST'])
+def submit_questionnaire():
+    # アンケート回答を処理
+    data = request.get_json()
+    
+    if not data:
+        return jsonify({'success': False, 'error': 'No data received'}), 400
+    
+    # セッションにアンケート結果を保存
+    session['questionnaire_answers'] = data
+    
+    # サマリーファイルを更新（アンケート結果を含む）
+    update_summary_with_questionnaire(data)
+    
+    return jsonify({'success': True})
 
 @app.route('/debug_session')
 def debug_session():
