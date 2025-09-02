@@ -1,0 +1,219 @@
+ * Serving Flask app 'app'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:5000
+Press CTRL+C to quit
+ * Restarting with watchdog (fsevents)
+ * Debugger is active!
+ * Debugger PIN: 452-156-832
+127.0.0.1 - - [01/Sep/2025 10:31:38] "POST /submit_questionnaire HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 13:04:39] "GET /complete HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 13:04:39] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Sep/2025 13:04:39] "GET /static/fig/2025-09-01/takaya2/g_2octave/mle_fitted_curve_2.png HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 13:04:43] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Sep/2025 13:04:43] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+ * Detected change in '/Users/takaya/Codes/Nishida-lab/Music_illusion/web_pest2_combine_condition/app.py.tmp.78844.1756700521138', reloading
+ * Detected change in '/Users/takaya/Codes/Nishida-lab/Music_illusion/web_pest2_combine_condition/app.py', reloading
+Error: Missing session data - today: None, participant_id: None
+Found latest summary file: data/2025-09-01/takaya2/takaya2_summary.csv
+Questionnaire answers: {'q1': '3', 'q2': '4', 'q3': '2', 'q4': '3', 'q5': '1', 'q6': '2', 'q7': '1'}
+Questionnaire total score: 16
+Summary file updated with questionnaire results: data/2025-09-01/takaya2/takaya2_summary.csv
+Updated sub_value with total score: 16
+Summary file saved: data/2025-09-01/takaya2/takaya2_summary.csv
+ * Restarting with watchdog (fsevents)
+ * Debugger is active!
+ * Debugger PIN: 452-156-832
+ * Detected change in '/Users/takaya/Codes/Nishida-lab/Music_illusion/web_pest2_combine_condition/app.py.tmp.78844.1756700677927', reloading
+ * Detected change in '/Users/takaya/Codes/Nishida-lab/Music_illusion/web_pest2_combine_condition/app.py', reloading
+ * Restarting with watchdog (fsevents)
+ * Debugger is active!
+ * Debugger PIN: 452-156-832
+127.0.0.1 - - [01/Sep/2025 13:25:27] "GET /complete HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 13:25:27] "GET /static/fig/2025-09-01/takaya2/g_2octave/mle_fitted_curve_3.png HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 13:25:27] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Sep/2025 13:25:37] "GET /complete HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 13:25:37] "GET /static/fig/2025-09-01/takaya2/g_2octave/mle_fitted_curve_4.png HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 13:25:37] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Sep/2025 13:25:48] "GET /complete HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 13:25:48] "GET /static/fig/2025-09-01/takaya2/g_2octave/mle_fitted_curve_5.png HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 13:25:48] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Sep/2025 13:25:49] "GET /complete HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 13:25:49] "GET /static/fig/2025-09-01/takaya2/g_2octave/mle_fitted_curve_6.png HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 13:25:49] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Sep/2025 13:26:40] "GET /complete HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 13:26:40] "GET /static/fig/2025-09-01/takaya2/g_2octave/mle_fitted_curve_7.png HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 13:26:40] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Sep/2025 13:26:58] "GET /questionnaire HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 13:26:58] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Sep/2025 13:27:09] "POST /submit_questionnaire HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 13:27:11] "GET /complete HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 13:27:11] "GET /static/fig/2025-09-01/takaya2/g_2octave/mle_fitted_curve_8.png HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 13:27:11] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Sep/2025 13:27:21] "GET /complete HTTP/1.1" 400 -
+127.0.0.1 - - [01/Sep/2025 13:27:48] "GET /complete HTTP/1.1" 400 -
+ * Detected change in '/Users/takaya/Codes/Nishida-lab/Music_illusion/web_pest2_combine_condition/app.py.tmp.78844.1756700883898', reloading
+ * Detected change in '/Users/takaya/Codes/Nishida-lab/Music_illusion/web_pest2_combine_condition/app.py', reloading
+Summary file saved: data/2025-09-01/takaya2/takaya2_summary.csv
+Summary file saved: data/2025-09-01/takaya2/takaya2_summary.csv
+Summary file saved: data/2025-09-01/takaya2/takaya2_summary.csv
+Summary file saved: data/2025-09-01/takaya2/takaya2_summary.csv
+Summary file saved: data/2025-09-01/takaya2/takaya2_summary.csv
+Questionnaire answers: {'q1': 3, 'q2': 3, 'q3': 3, 'q4': 3, 'q5': 3, 'q6': 3, 'q7': 3}
+Questionnaire total score: 21
+Summary file updated with questionnaire results: data/2025-09-01/takaya2/takaya2_summary.csv
+Updated sub_value with total score: 21
+Summary file saved: data/2025-09-01/takaya2/takaya2_summary.csv
+ * Restarting with watchdog (fsevents)
+ * Debugger is active!
+ * Debugger PIN: 452-156-832
+127.0.0.1 - - [01/Sep/2025 13:28:15] "GET /complete HTTP/1.1" 500 -
+Traceback (most recent call last):
+  File "/Users/takaya/opt/anaconda3/lib/python3.9/site-packages/flask/app.py", line 1536, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/takaya/opt/anaconda3/lib/python3.9/site-packages/flask/app.py", line 1514, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/takaya/opt/anaconda3/lib/python3.9/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/takaya/opt/anaconda3/lib/python3.9/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/takaya/opt/anaconda3/lib/python3.9/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/takaya/opt/anaconda3/lib/python3.9/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/takaya/Codes/Nishida-lab/Music_illusion/web_pest2_combine_condition/app.py", line 504, in complete
+    file_index = session['data_file_index']
+  File "/Users/takaya/opt/anaconda3/lib/python3.9/site-packages/flask/sessions.py", line 86, in __getitem__
+    return super().__getitem__(key)
+KeyError: 'data_file_index'
+ * Detected change in '/Users/takaya/Codes/Nishida-lab/Music_illusion/web_pest2_combine_condition/app.py.tmp.78844.1756700923187', reloading
+ * Detected change in '/Users/takaya/Codes/Nishida-lab/Music_illusion/web_pest2_combine_condition/app.py', reloading
+ * Restarting with watchdog (fsevents)
+ * Debugger is active!
+ * Debugger PIN: 452-156-832
+127.0.0.1 - - [01/Sep/2025 13:28:51] "GET /complete HTTP/1.1" 200 -
+ * Detected change in '/Users/takaya/Codes/Nishida-lab/Music_illusion/web_pest2_combine_condition/app.py.tmp.78844.1756700962338', reloading
+ * Detected change in '/Users/takaya/Codes/Nishida-lab/Music_illusion/web_pest2_combine_condition/app.py', reloading
+Summary file saved: data/2025-09-01/takaya2/takaya2_summary.csv
+ * Restarting with watchdog (fsevents)
+ * Debugger is active!
+ * Debugger PIN: 452-156-832
+127.0.0.1 - - [01/Sep/2025 13:29:42] "GET /complete HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 13:29:51] "GET /complete HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 13:30:50] "GET /complete HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 13:30:50] "GET /static/fig/2025-09-01/takaya2/g_2octave/mle_fitted_curve_12.png HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 13:30:50] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Sep/2025 14:07:35] "POST /start HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:08:21] "GET /next_trial HTTP/1.1" 500 -
+Traceback (most recent call last):
+  File "/Users/takaya/opt/anaconda3/lib/python3.9/site-packages/flask/app.py", line 1536, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "/Users/takaya/opt/anaconda3/lib/python3.9/site-packages/flask/app.py", line 1514, in wsgi_app
+    response = self.handle_exception(e)
+  File "/Users/takaya/opt/anaconda3/lib/python3.9/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/takaya/opt/anaconda3/lib/python3.9/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/takaya/opt/anaconda3/lib/python3.9/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/takaya/opt/anaconda3/lib/python3.9/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/Users/takaya/Codes/Nishida-lab/Music_illusion/web_pest2_combine_condition/app.py", line 319, in next_trial
+    freq = session['current_block_freq'] # 現在の周波数条件
+  File "/Users/takaya/opt/anaconda3/lib/python3.9/site-packages/flask/sessions.py", line 86, in __getitem__
+    return super().__getitem__(key)
+KeyError: 'current_block_freq'
+127.0.0.1 - - [01/Sep/2025 14:08:59] "GET /complete HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:08:59] "GET /static/fig/2025-09-01/takaya2/g_2octave/mle_fitted_curve_13.png HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:08:59] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Sep/2025 14:09:00] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:09:00] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Sep/2025 14:09:00] "GET /static/stimuli/successive_0.52*4/g_2octave/gallops_0.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:09:00] "GET /static/stimuli/successive_0.52*4/g_base/gallops_22.63ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:09:00] "GET /static/stimuli/successive_0.52*4/g_2octave/gallops_22.63ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:09:00] "GET /static/stimuli/successive_0.52*4/g_base/gallops_0.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:09:00] "GET /static/stimuli/successive_0.52*4/g_2octave/gallops_0.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:09:15] "POST /start HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:09:16] "GET /practice HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:09:16] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Sep/2025 14:09:16] "GET /static/sample_fig/stimuli_normal.png HTTP/1.1" 304 -
+127.0.0.1 - - [01/Sep/2025 14:09:16] "GET /static/sample_fig/stimuli_target_v3.png HTTP/1.1" 304 -
+127.0.0.1 - - [01/Sep/2025 14:09:16] "GET /static/sample_fig/trial_target_third.png HTTP/1.1" 304 -
+127.0.0.1 - - [01/Sep/2025 14:09:16] "GET /static/stimuli/successive_0.52*4/as_semitone/gallops_0.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:09:16] "GET /static/stimuli/successive_0.52*4/as_semitone/gallops_64.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:09:16] "GET /static/stimuli/successive_0.52*4/as_semitone/gallops_0.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:09:16] "GET /static/stimuli/successive_0.52*4/as_semitone/gallops_0.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:09:16] "GET /static/stimuli/successive_0.52*4/as_semitone/gallops_64.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:09:16] "GET /static/stimuli/successive_0.52*4/as_semitone/gallops_64.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:09:18] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [01/Sep/2025 14:09:18] "GET /static/stimuli/successive_0.52*4/as_semitone/gallops_0.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:09:49] "GET /static/stimuli/successive_0.52*4/g_2octave/gallops_0.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:09:49] "GET /static/stimuli/successive_0.52*4/g_2octave/gallops_0.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:09:49] "GET /static/stimuli/successive_0.52*4/g_2octave/gallops_64.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:09:49] "GET /static/stimuli/successive_0.52*4/g_2octave/gallops_64.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:09:53] "GET /experiment HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:09:53] "GET /static/stimuli/successive_0.52*4/g_2octave/gallops_64.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:09:53] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Sep/2025 14:09:53] "GET /static/sample_fig/stimuli_target_v3.png HTTP/1.1" 304 -
+127.0.0.1 - - [01/Sep/2025 14:09:53] "GET /static/stimuli/successive_0.52*4/g_2octave/gallops_0.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:09:53] "GET /static/sample_fig/stimuli_normal.png HTTP/1.1" 304 -
+127.0.0.1 - - [01/Sep/2025 14:09:53] "GET /static/stimuli/successive_0.52*4/g_2octave/gallops_64.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:09:53] "GET /static/stimuli/successive_0.52*4/g_2octave/gallops_0.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:09:53] "GET /static/stimuli/successive_0.52*4/g_2octave/gallops_64.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:09:54] "POST /next_trial HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:09:54] "GET /static/stimuli/successive_0.52*4/silence/silence_0.1s.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:09:54] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [01/Sep/2025 14:10:03] "POST /submit_response HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:10:03] "POST /next_trial HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:10:12] "POST /submit_response HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:10:13] "POST /next_trial HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:10:13] "GET /static/stimuli/successive_0.52*4/g_2octave/gallops_16.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:10:21] "POST /submit_response HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:10:22] "POST /next_trial HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:10:25] "GET /static/stimuli/successive_0.52*4/g_2octave/gallops_0.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:10:25] "GET /static/stimuli/successive_0.52*4/g_2octave/gallops_0.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:10:31] "POST /submit_response HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:10:31] "POST /next_trial HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:10:31] "GET /static/stimuli/successive_0.52*4/g_2octave/gallops_4.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:10:40] "POST /submit_response HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:10:41] "GET /next_block HTTP/1.1" 302 -
+127.0.0.1 - - [01/Sep/2025 14:10:41] "GET /break_page HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:10:41] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Sep/2025 14:10:43] "GET /experiment HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:10:43] "GET /static/stimuli/successive_0.52*4/g_2octave/gallops_0.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:10:43] "GET /static/stimuli/successive_0.52*4/g_2octave/gallops_64.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:10:43] "GET /static/sample_fig/stimuli_normal.png HTTP/1.1" 304 -
+127.0.0.1 - - [01/Sep/2025 14:10:43] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Sep/2025 14:10:43] "GET /static/sample_fig/stimuli_target_v3.png HTTP/1.1" 304 -
+127.0.0.1 - - [01/Sep/2025 14:10:43] "GET /static/stimuli/successive_0.52*4/g_2octave/gallops_0.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:10:43] "GET /static/stimuli/successive_0.52*4/g_2octave/gallops_64.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:10:43] "GET /static/stimuli/successive_0.52*4/g_2octave/gallops_64.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:10:45] "POST /next_trial HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:10:45] "GET /static/stimuli/successive_0.52*4/silence/silence_0.1s.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:10:45] "GET /static/stimuli/successive_0.52*4/g_2octave/gallops_4.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:10:45] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [01/Sep/2025 14:10:54] "POST /submit_response HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:10:54] "POST /next_trial HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:10:54] "GET /static/stimuli/successive_0.52*4/g_2octave/gallops_1.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:11:03] "POST /submit_response HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:11:03] "POST /next_trial HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:11:12] "POST /submit_response HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:11:13] "POST /next_trial HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:11:13] "GET /static/stimuli/successive_0.52*4/g_2octave/gallops_1.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:11:16] "GET /static/stimuli/successive_0.52*4/g_2octave/gallops_0.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:11:22] "POST /submit_response HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:11:22] "POST /next_trial HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:11:23] "GET /static/stimuli/successive_0.52*4/g_2octave/gallops_2.00ms.wav HTTP/1.1" 206 -
+127.0.0.1 - - [01/Sep/2025 14:11:31] "POST /submit_response HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:11:32] "GET /next_block HTTP/1.1" 302 -
+127.0.0.1 - - [01/Sep/2025 14:11:32] "GET /complete HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:11:32] "GET /static/fig/2025-09-01/takayalove/g_2octave/mle_fitted_curve.png HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:11:32] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Sep/2025 14:11:36] "GET /questionnaire HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:11:36] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [01/Sep/2025 14:11:47] "POST /submit_questionnaire HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:11:49] "GET /complete HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:11:49] "GET /static/fig/2025-09-01/takayalove/g_2octave/mle_fitted_curve_1.png HTTP/1.1" 200 -
+127.0.0.1 - - [01/Sep/2025 14:11:49] "GET /static/css/styles.css HTTP/1.1" 304 -
+/Users/takaya/opt/anaconda3/lib/python3.9/multiprocessing/resource_tracker.py:216: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '

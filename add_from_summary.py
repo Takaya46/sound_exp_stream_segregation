@@ -81,12 +81,43 @@ def _render_and_score(points_master: pd.DataFrame,
         "3オクターブ": "3 octave"
     }
 
+    # 参加者のデータがあるグループのみに絞る
+    available_groups = new_points_df["group"].dropna().unique().tolist()
+    # group_orderの順序を保持しつつ、available_groupsにあるものだけをフィルタ
+    filtered_group_order = [g for g in group_order if g in available_groups]
+    
+    if not filtered_group_order:
+        # データがない場合は空の図を返す
+        fig, ax = plt.subplots(1, 1, figsize=(3, 5))
+        ax.text(0.5, 0.5, 'No data available', ha='center', va='center', transform=ax.transAxes)
+        Path(output_dir).mkdir(parents=True, exist_ok=True)
+        stamp = time.strftime("%Y%m%d_%H%M%S")
+        fig_path = Path(output_dir) / f"{fig_prefix}_{participant}_{stamp}_no_data.png"
+        plt.savefig(fig_path, dpi=300)
+        plt.close(fig)
+        return {
+            "participant": participant,
+            "fig_path": str(fig_path),
+            "metrics_by_group": [],
+            "overall": {"hensachi_mean": np.nan, "percentile_mean": np.nan, "groups_count": 0}
+        }
+
     # ---- 図 ----
-    fig, axes = plt.subplots(1, len(group_order), figsize=figsize, sharey=True)
+    # 各パネルの縦横比を固定（元の4パネル時：12x5 → 1パネルあたり3x5）
+    panel_width = 3
+    panel_height = 5
+    total_width = panel_width * len(filtered_group_order)
+    adjusted_figsize = (total_width, panel_height)
+    
+    fig, axes = plt.subplots(1, len(filtered_group_order), figsize=adjusted_figsize, sharey=True)
+    # 1つのグループしかない場合、axesをリストに変換
+    if len(filtered_group_order) == 1:
+        axes = [axes]
+        
     raw_ticks  = np.array([2,4,8,16,32,64,128,256], dtype=float)
     log2_ticks = np.log2(raw_ticks)
 
-    for ax, g in zip(axes, group_order):
+    for ax, g in zip(axes, filtered_group_order):
         gd = pred_grid.loc[pred_grid["group"] == g, ["sub_value","y_pred","y_ci_low","y_ci_high"]].dropna().copy().sort_values("sub_value")
         c = color_map[g]
         if not gd.empty:
@@ -120,7 +151,7 @@ def _render_and_score(points_master: pd.DataFrame,
 
     # ---- 成績（偏差値/順位） ----
     metrics = []
-    for g in group_order:
+    for g in filtered_group_order:
         pd_new = new_points_df.loc[new_points_df["group"] == g, ["sub_value","y_obs"]].dropna().copy()
         if pd_new.empty:
             continue

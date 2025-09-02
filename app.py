@@ -582,31 +582,31 @@ def complete():
         def get_level(freq_key, log2_thresh):
             if freq_key in ['g_base', 'as_semitone']:
                 if log2_thresh <= 2:
-                    return "天才！"
+                    return "天才！🌟"
                 elif log2_thresh <= 2.5:
-                    return "すごい音楽家♫"
+                    return "エキスパート🎯"
                 elif log2_thresh <= 3:
-                    return "音楽家"
+                    return "スキルド💪"
                 else:
-                    return "凡人👍️"
+                    return "ファイター⚡"
             elif freq_key == 'g_1octave':
                 if log2_thresh <= 2.5:
-                    return "天才！"
+                    return "天才！🌟"
                 elif log2_thresh <= 3.0:
-                    return "すごい音楽家♫"
+                    return "エキスパート🎯"
                 elif log2_thresh <= 3.5:
-                    return "音楽家"
+                    return "スキルド💪"
                 else:
-                    return "凡人👍️"
+                    return "ファイター⚡"
             elif freq_key in ['g_2octave', 'g_3octave']:
                 if log2_thresh <= 3:
-                    return "天才！"
+                    return "天才！🌟"
                 elif log2_thresh <= 4:
-                    return "すごい音楽家♫"
+                    return "エキスパート🎯"
                 elif log2_thresh <= 5:
-                    return "音楽家"
+                    return "スキルド💪"
                 else:
-                    return "凡人👍️"
+                    return "ファイター⚡"
             else:
                 return "判定不能"
 

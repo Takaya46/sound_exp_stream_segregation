@@ -40,13 +40,53 @@
         <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0;">
             <h4 style="margin-top: 0;">レベル判定基準</h4>
             <div style="font-size: 14px; line-height: 1.5;">
-                <strong>同じ音・半音上:</strong> 0-2: 天才！ | 2-2.5: すごい音楽家♫ | 2.5-3: 音楽家 | 3-: 凡人👍️<br>
-                <strong>1オクターブ:</strong> -2.5: 天才！ | 2.5-3.0: すごい音楽家♫ | 3-3.5: 音楽家 | 3.5-: 凡人👍️<br>
-                <strong>2・3オクターブ:</strong> -3: 天才！ | 3-4: すごい音楽家♫ | 4-5: 音楽家 | 5-: 凡人👍️
+                <strong>同じ音・半音上:</strong> 0-2: 天才！🌟 | 2-2.5: エキスパート🎯 | 2.5-3: スキルド💪 | 3-: ファイター⚡<br>
+                <strong>1オクターブ:</strong> -2.5: 天才！🌟 | 2.5-3.0: エキスパート🎯 | 3-3.5: スキルド💪 | 3.5-: ファイター⚡<br>
+                <strong>2・3オクターブ:</strong> -3: 天才！🌟 | 3-4: エキスパート🎯 | 4-5: スキルド💪 | 5-: ファイター⚡
             </div>
         </div>
     </div>
     
+    <!-- アンケート結果の図表示 -->
+    {% if has_questionnaire and survey_figure_path %}
+    <div class="container" style="margin-top: 30px;">
+        <h2>🎵 音楽経験と実験結果の比較分析</h2>
+        <p>
+            あなたの実験結果（赤い点）を他の参加者データと比較した図です。<br>
+            横軸は音楽経験スコア、縦軸は75%検出閾値を示しています。
+        </p>
+        {% if survey_results %}
+        <div style="background-color: #f0f8ff; padding: 15px; border-radius: 8px; margin: 15px 0;">
+            <h3 style="margin-top: 0;">📊 あなたの結果分析</h3>
+            {% for metric in survey_results.metrics_by_group %}
+            <div style="margin: 10px 0;">
+                <strong>{{ metric.group }}:</strong>
+                {% if metric.hensachi and not (metric.hensachi|string == 'nan') %}
+                    偏差値 {{ "%.1f"|format(metric.hensachi) }}
+                    {% if metric.rank and metric.n > 0 %}
+                        ({{ metric.rank }}/{{ metric.n }}位)
+                    {% endif %}
+                    {% if metric.percentile and not (metric.percentile|string == 'nan') %}
+                        - 上位{{ "%.1f"|format(100-metric.percentile) }}%
+                    {% endif %}
+                {% else %}
+                    データが不十分です
+                {% endif %}
+            </div>
+            {% endfor %}
+            {% if survey_results.overall.hensachi_mean and not (survey_results.overall.hensachi_mean|string == 'nan') %}
+            <div style="margin-top: 15px; padding: 10px; background-color: #e8f5e8; border-radius: 5px;">
+                <strong>全体平均偏差値: {{ "%.1f"|format(survey_results.overall.hensachi_mean) }}</strong>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+        <div class="image-container">
+            <img src="{{ url_for('static', filename=survey_figure_path) }}" alt="音楽経験と実験結果の比較" class="responsive-image" style="max-width: 100%; max-height: 400px; height: auto; object-fit: contain;">
+        </div>
+    </div>
+    {% endif %}
+
     <div class="container">
         <h2>心理測定関数📈</h2>
         <p>
@@ -62,6 +102,7 @@
             <img src="{{ url_for('static', filename=result.fig_path) }}" alt="{{ result.frequency_label }} MLE Curve" class="responsive-image">
         </div>
         {% endfor %}
+        
         <p></p>
         <!-- アンケートとトップページに戻るボタン -->
         <div style="display: flex; flex-direction: column; align-items: center; gap: 15px; margin: 30px 0;">
