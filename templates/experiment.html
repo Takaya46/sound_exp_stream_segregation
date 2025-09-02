@@ -323,16 +323,27 @@
             const data = await res.json();
 
             const resultElement = document.getElementById("result");
-            // if (data.correct) {
-            //     resultElement.innerText = "正解です！";
-            // } else {
-            //     resultElement.innerText = "ざんねん！不正解です、、";
-            // }
 
             // **フィードバックメッセージをオーバーレイ表示**
             const feedbackDiv = document.getElementById("feedback_message");
+            
+            // 正解/不正解のフィードバックとレベル変化のフィードバックを組み合わせて表示
+            let displayMessage = "";
+            
             if (data.feedback) {
-                feedbackDiv.innerText = data.feedback;
+                displayMessage = data.feedback; // "正解" または "ざんねん"
+            }
+            
+            if (data.level_feedback) {
+                if (displayMessage) {
+                    displayMessage += "\n" + data.level_feedback; // 改行してレベル変化を追加
+                } else {
+                    displayMessage = data.level_feedback; // レベル変化のみ
+                }
+            }
+            
+            if (displayMessage) {
+                feedbackDiv.innerText = displayMessage;
                 feedbackDiv.classList.add('show');
                 
                 // 0.5秒後にオーバーレイを非表示

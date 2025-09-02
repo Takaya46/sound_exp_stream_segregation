@@ -3,7 +3,9 @@ import os
 import datetime
 import random
 import csv
+import pandas as pd
 from analysis_MLE_v2 import perform_mle_analysis
+from add_from_summary import add_from_summary
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -96,6 +98,53 @@ def save_summary_file(results_list):
     print(f"Summary file saved: {summary_file_path}")
 
 # アンケート結果でサマリーファイルを更新
+def update_global_summary_csv(participant_id, results_list, questionnaire_score):
+    """グローバルsummary.csvファイルを更新"""
+    global_summary_path = os.path.join('static', 'thrMt_fig_data', 'summary.csv')
+    
+    # CSVファイルが存在するかチェック
+    file_exists = os.path.exists(global_summary_path)
+    
+    # 現在の日時を取得
+    today = datetime.datetime.now().strftime('%Y-%m-%d')
+    sound_type = session.get('sound_type', 'pure_tone')
+    
+    # 新しいエントリを準備
+    new_entries = []
+    for result in results_list:
+        entry = {
+            'participant_id': participant_id,
+            'experiment_date': today,
+            'sound_type': sound_type,
+            'frequency_condition': result.get('freq_key', ''),
+            'frequency_label': result.get('frequency_label', ''),
+            'threshold_ms': float(result.get('threshold', 0)),
+            'log2_threshold': float(result.get('log2_threshold', 0)),
+            'level': result.get('level', ''),
+            'sub_value': questionnaire_score
+        }
+        new_entries.append(entry)
+    
+    # CSVファイルに書き込み
+    if file_exists:
+        # ファイルが存在する場合、追記モードで開く
+        existing_df = pd.read_csv(global_summary_path)
+        # 同じ参加者の既存エントリを削除（更新のため）
+        existing_df = existing_df[existing_df['participant_id'] != participant_id]
+        # 新しいエントリを追加
+        new_df = pd.DataFrame(new_entries)
+        updated_df = pd.concat([existing_df, new_df], ignore_index=True)
+    else:
+        # ファイルが存在しない場合、新しく作成
+        updated_df = pd.DataFrame(new_entries)
+    
+    # ディレクトリが存在しない場合は作成
+    os.makedirs(os.path.dirname(global_summary_path), exist_ok=True)
+    
+    # CSVファイルに保存
+    updated_df.to_csv(global_summary_path, index=False, encoding='utf-8')
+    print(f"Global summary.csv updated: {global_summary_path}")
+
 def update_summary_with_questionnaire(questionnaire_data):
     today = session.get('today')
     participant_id = session.get('participant_id')
@@ -104,7 +153,6 @@ def update_summary_with_questionnaire(questionnaire_data):
     if not today or not participant_id:
         print(f"Error: Missing session data - today: {today}, participant_id: {participant_id}")
         # 最新のディレクトリを探して取得
-        import datetime
         today = today or datetime.datetime.now().strftime('%Y-%m-%d')
         
         # 最近のサマリーファイルを検索
@@ -190,12 +238,11 @@ def set_data_file_path(freq_list):
         with open(data_file_path, 'w', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(['Trial', 'CorrectResponse', 'Response', 'Correct', 'Offset', 'NextStepSize', 'Reversals', 'NextDirection', 'SameDirectionCount'])
-        print(f"データファイル作成: {data_file_path}")  # デバッグ用
         # figディレクトリの作成
         fig_dir = os.path.join('static', FIG_FOLDER, today, participant_id, freq)
         os.makedirs(fig_dir, exist_ok=True)
 
-        if mail_address:
+        if mail_address and mail_address.strip():
             data_mail_path = os.path.join(DATA_FOLDER, today, participant_id, f"{mail_address}.txt")
             with open(data_mail_path, 'w') as f:
                 f.write(f'mail: {mail_address}\n')
@@ -249,19 +296,14 @@ def index():
 def start_experiment():
     session.clear()
 
-    # JSONのデバッグ
     data = request.get_json()
     print("Received JSON data:", data)
-    # if not data:
-        # return jsonify({'error': 'No data received'}), 400
-    # キーの確認
+    
     participant_id = data.get('participant_id')
     sound_type = data.get('sound_type', 'pure_tone')  # デフォルトは純音
     frequency_dirs = data.get('frequency_dirs')
     trials_per_cond = data.get('trials_per_cond', 20)
     mail_address = data.get('mail_address')
-    # if not participant_id or not frequency_dirs:
-    #     return jsonify({'error': 'Missing required data'}), 400
 
     session['participant_id'] = participant_id
     session['sound_type'] = sound_type
@@ -418,19 +460,27 @@ def submit_response():
         print("データ保存中にエラー:", e)
         return jsonify({"error": "データの保存中にエラーが発生しました"}), 500
 
-    # デバッグ用出力
-    print(f"Trial {session['freq_cond_param'][freq]['freq_cond_trial_count']} saved: Response = {response}, Correct = {correct}, Offset = {current_offset}")
 
     # フィードバックを返す
     current_offset = OFFSET_LIST[current_offset_index]
     next_offset = OFFSET_LIST[next_offset_index]
 
-    # **レベルアップ or レベルダウンの判定**
-    feedback_message = "Good!"
+    # **フィードバックメッセージの決定**
+    feedback_message = ""
+    level_feedback = ""
+    
+    # レベル変化があった場合のフィードバック
     if float(next_offset) < float(current_offset):
-        feedback_message = "Level UP🔥"
+        level_feedback = "Level UP🔥"
     elif float(next_offset) > float(current_offset):
-        feedback_message = "Level DOWN💧"
+        level_feedback = "Level DOWN💧"
+    # レベル変化なしの場合は何も表示しない（level_feedbackは空文字のまま）
+    
+    # 正解/不正解のフィードバック
+    if correct:
+        feedback_message = "正解"
+    else:
+        feedback_message = "ざんねん"
 
     return jsonify({
         "message": "応答受領",
@@ -438,7 +488,8 @@ def submit_response():
         "current_offset": current_offset,
         "next_offset": next_offset,
         "completed": session['block_trial_count'] >= session['num_block_trials'], # ここでブロック間の休憩に行くか判定
-        "feedback": feedback_message
+        "feedback": feedback_message,
+        "level_feedback": level_feedback
     })
 
 @app.route('/next_block', methods=['GET'])
@@ -468,7 +519,6 @@ def complete():
     if not frequency_dirs:
         # セッションが失われている場合、最新のデータディレクトリを検索
         import glob
-        import datetime
         today = datetime.datetime.now().strftime('%Y-%m-%d')
         
         # 最新の参加者ディレクトリを検索
@@ -591,35 +641,70 @@ def complete():
         if not os.path.exists(summary_file_path):
             save_summary_file(results_list)
     
-    # アンケート回答があるかチェック
+    # アンケート結果の統一チェック
     has_questionnaire = False
     questionnaire_score = 0
+    survey_figure_path = None
+    survey_results = None
+    
     if results_list:
-        # 最初の結果からsub_valueを確認（全ての行で同じ値のはず）
-        first_result = results_list[0]
-        # CSVファイルからsub_valueを直接読み取り
-        try:
-            summary_file_path = os.path.join(DATA_FOLDER, today, participant_id, f"{participant_id}_summary.csv")
-            file_index = session.get('data_file_index', 0)
-            if file_index > 0:
-                summary_file_path = os.path.join(DATA_FOLDER, today, participant_id, f"{participant_id}_summary_{file_index}.csv")
-            
-            if os.path.exists(summary_file_path):
-                with open(summary_file_path, 'r', encoding='utf-8') as file:
-                    reader = csv.reader(file)
-                    header = next(reader)  # ヘッダーをスキップ
-                    first_row = next(reader, None)
-                    if first_row and len(first_row) >= 9 and first_row[8]:  # sub_value列が存在し、値がある
-                        questionnaire_score = int(first_row[8])
+        # 個別のsummary.csvパスを構築
+        file_index = session.get('data_file_index', 0)
+        if file_index > 0:
+            individual_summary_path = os.path.join(DATA_FOLDER, today, participant_id, f"{participant_id}_summary_{file_index}.csv")
+        else:
+            individual_summary_path = os.path.join(DATA_FOLDER, today, participant_id, f"{participant_id}_summary.csv")
+        
+        # アンケート結果があるかadd_from_summaryで統一チェック
+        if os.path.exists(individual_summary_path):
+            try:
+                # まず、global summary.csvを更新
+                update_global_summary_csv(participant_id, results_list, 0)  # スコアは後で取得
+                
+                # 各被験者のディレクトリに図を保存
+                participant_dir = os.path.join('static', 'fig', today, participant_id)
+                os.makedirs(participant_dir, exist_ok=True)
+                
+                sound_type = session.get('sound_type', 'pure_tone')
+                print(f"Attempting unified survey analysis for participant: {participant_id}, sound_type: {sound_type}")
+                print(f"Using individual summary file: {individual_summary_path}")
+                
+                survey_results = add_from_summary(
+                    participant_id,
+                    summary_csv_path=individual_summary_path,
+                    sound_type=sound_type,
+                    output_dir=participant_dir
+                )
+                
+                # アンケート結果の有無を統一判定
+                if survey_results and survey_results.get('metrics_by_group'):
+                    # sub_valueがあるかチェック（最初のメトリクスから取得）
+                    first_metric = survey_results['metrics_by_group'][0] if survey_results['metrics_by_group'] else {}
+                    if 'sub_value' in first_metric and first_metric['sub_value'] is not None:
+                        questionnaire_score = int(first_metric['sub_value'])
                         has_questionnaire = True
-        except Exception as e:
-            print(f"Error reading questionnaire score: {e}")
+                        survey_figure_path = survey_results.get('fig_path', '').replace('static/', '')
+                        print(f"Survey analysis completed: {survey_figure_path}")
+                        print(f"Questionnaire score: {questionnaire_score}")
+                
+            except FileNotFoundError as e:
+                print(f"FileNotFoundError in survey analysis: {e}")
+            except ValueError as e:
+                print(f"ValueError in survey analysis: {e}")
+                # アンケートがない場合のエラーは正常なので、survey_resultsをNoneにセット
+                survey_results = None
+            except Exception as e:
+                print(f"Unexpected error generating survey analysis: {e}")
+                import traceback
+                traceback.print_exc()
 
     # **`complete.html` にリストを渡す**
     return render_template('complete.html', 
                          results_list=results_list,
                          has_questionnaire=has_questionnaire,
-                         questionnaire_score=questionnaire_score)
+                         questionnaire_score=questionnaire_score,
+                         survey_figure_path=survey_figure_path,
+                         survey_results=survey_results)
 
 
 @app.route('/questionnaire')
@@ -651,5 +736,5 @@ def debug_session():
 # 開発用のFlaskサーバーを起動
 # gunicornを使う場合は関係ない
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5001)
 
