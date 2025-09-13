@@ -1,195 +1,429 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>実験</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <style>
-        .trial-example {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        /* モダンなカラーパレット（index.htmlと同じ） */
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #f093fb;
+            --gradient-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --border-color: rgba(255, 255, 255, 0.2);
+            --shadow-light: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 15px 35px rgba(0, 0, 0, 0.15);
         }
-                /* スライダーコンテナ */
+
+        /* グラデーション背景 */
+        body {
+            background: var(--gradient-bg) !important;
+            min-height: 100vh;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        }
+
+        /* メインタイトル */
+        h1 {
+            background: linear-gradient(45deg, #fff, #f0f8ff) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            background-clip: text !important;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3) !important;
+            font-size: 2.5rem !important;
+            font-weight: 700 !important;
+            margin-bottom: 2rem !important;
+            letter-spacing: -0.02em !important;
+            text-align: center !important;
+        }
+
+        /* 説明文カード */
+        .instruction,
+        .instruction-start {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            border-radius: 24px !important;
+            padding: 2.5rem !important;
+            margin: 2rem auto !important;
+            box-shadow: var(--shadow-medium) !important;
+            backdrop-filter: blur(15px) !important;
+            max-width: 900px !important;
+            width: 90% !important;
+        }
+
+        /* 練習問題コンテナ */
+        .container {
+            background: rgba(255, 255, 255, 0.9) !important;
+            border-radius: 20px !important;
+            padding: 2rem !important;
+            margin: 2rem auto !important;
+            max-width: 700px !important;
+            width: 90% !important;
+            box-shadow: var(--shadow-medium) !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            backdrop-filter: blur(15px) !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+        }
+
+        /* スライダーコンテナ */
         .slider-container {
-        position: relative;
-        overflow: hidden;
-        width: 100%;
-        max-width: 700px;
-        margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
         }
 
-        /* 横並びにするラッパー */
         .slider-wrapper {
-        display: flex;
-        transition: transform 0.5s ease-in-out;
+            display: flex;
+            transition: transform 0.5s ease-in-out;
         }
 
-        /* 各スライド */
         .slide {
-        flex: 0 0 100%;
-        box-sizing: border-box;
-        padding: 20px;
+            flex: 0 0 100%;
+            box-sizing: border-box;
+            padding: 2rem;
         }
 
+        /* ルール表示の改善 */
         .rule {
-            padding: 15px;
-            background-color: gainsboro;
-            border: 2px solid #333;
-            border-radius: 10px;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);  /* 影を追加 */
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(240, 147, 251, 0.1));
+            border: 2px solid var(--primary-color);
+            border-radius: 16px;
+            box-shadow: var(--shadow-light);
+            backdrop-filter: blur(10px);
         }
+
+        .rule-heading {
+            color: var(--primary-color);
+            margin-top: 0;
+            /* 上マージンを削除 */
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
         /* ドットインジケータ */
         .dots {
-        text-align: center;
+            text-align: center;
+            margin: 0 1rem;
         }
 
         .dot {
-        height: 12px;
-        width: 12px;
-        margin: 0 5px;
-        background-color: #bbb;
-        border-radius: 50%;
-        display: inline-block;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
+            height: 12px;
+            width: 12px;
+            margin: 0 5px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            display: inline-block;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         .dot.active {
-        background-color: #717171;
+            background-color: var(--primary-color);
+            transform: scale(1.2);
         }
 
-        /* ドットとナビゲーションボタンをまとめるラッパー */
+        /* ナビゲーション */
         .dot-nav-wrapper {
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 20px;
+            margin: 2rem 0;
         }
 
         .dot-nav-wrapper .slide-nav {
-            background-color: rgba(0, 0, 0, 0.5);
-            color: #fff;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
             cursor: pointer;
-            margin: 0 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 0 0.5rem;
         }
 
+        .dot-nav-wrapper .slide-nav:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
+        }
+
+        /* ドロップダウンコンテナ */
         .dropdown-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 20px;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
         }
-        
-        /* モバイル用のドロップダウンコンテナレイアウト調整 */
-        @media (max-width: 600px) {
+
+        /* セレクトボックス */
+        select {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            color: var(--text-primary);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            min-width: 200px;
+            text-align: center;
+            width: 100%;
+            max-width: 300px;
+            box-sizing: border-box;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* ボタンスタイルの統一 */
+        .button,
+        #startPracticeBtn,
+        #replayTrialBtn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 12px !important;
+            padding: 0.75rem 1.5rem !important;
+            font-size: 1rem !important;
+            font-weight: 500 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            box-shadow: var(--shadow-light) !important;
+            min-width: 120px !important;
+        }
+
+        /* もう一度聞くボタンの中央揃え（表示/非表示はJSで制御） */
+        #replayTrialBtn {
+            margin: 1rem auto !important;
+            width: 200px !important;
+        }
+
+        .button:hover,
+        #startPracticeBtn:hover,
+        #replayTrialBtn:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: var(--shadow-medium) !important;
+        }
+
+        /* 本番へボタン */
+        #finishPractice {
+            background: linear-gradient(135deg, #4CAF50, #45a049) !important;
+            color: white !important;
+            border: none !important;
+            padding: 1.2rem 3rem !important;
+            font-size: 1.2rem !important;
+            font-weight: 600 !important;
+            border-radius: 50px !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            box-shadow: var(--shadow-light) !important;
+            margin: 2rem auto 4rem auto !important;
+            display: block !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+        }
+
+        #finishPractice:hover {
+            transform: translateY(-3px) !important;
+            box-shadow: var(--shadow-medium) !important;
+        }
+
+        /* 選択状態のボタン */
+        .button.selected {
+            background: linear-gradient(135deg, var(--accent-color), #ff6b9d) !important;
+            transform: scale(1.05) !important;
+        }
+
+        /* ターゲットテキスト */
+        .target-text {
+            color: var(--accent-color) !important;
+            font-weight: 600 !important;
+        }
+
+        /* 結果表示 */
+        #resultText {
+            color: var(--text-primary) !important;
+            font-size: 1.2rem !important;
+            font-weight: 600 !important;
+            text-align: center !important;
+            margin: 1rem 0 !important;
+        }
+
+        /* エラーメッセージ */
+        #error {
+            color: #e53e3e !important;
+            text-align: center !important;
+            font-weight: 500 !important;
+            margin: 1rem 0 !important;
+        }
+
+        /* 実例と音声プレイヤー */
+        .trial-example {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .media-container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* 中央揃え（横方向） */
+            gap: 0.5rem;
+        }
+
+        .media-container:hover {
+            transform: scale(1.02);
+        }
+
+        /* 音声再生ボタン（シンプルデザイン + ホバー効果） */
+        .play-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background-color: lightgray;
+            cursor: pointer;
+            position: relative;
+            margin: 10px;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        /* ホバー効果 */
+        .play-button:hover {
+            background-color: var(--primary-color);
+            transform: scale(1.1);
+            box-shadow: var(--shadow-light);
+        }
+
+        /* 再生アイコン（三角形） */
+        .play-button::after {
+            content: "";
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 55%;
+            transform: translateY(-50%) translateX(-50%);
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-left: 15px solid var(--primary-color);
+            transition: border-left-color 0.3s ease;
+        }
+
+        .play-button:hover::after {
+            border-left-color: white;
+        }
+
+        /* レスポンシブ対応 */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem !important;
+            }
+
+            .instruction,
+            .instruction-start,
+            .container {
+                padding: 1.5rem !important;
+                margin: 1rem !important;
+                width: 95% !important;
+            }
+
+            .slide {
+                padding: 1rem !important;
+            }
+
             .dropdown-container {
                 flex-direction: column;
-                gap: 15px;
-            }
-        }
-
-        #startPracticeBtn {
-            width: 150px;
-            padding: 0;
-        }
-
-        #replayTrialBtn {
-            display: block;
-            background-color: gray;
-            width: 150px;
-            padding: 0;
-            margin: 20px auto;
-        }
-
-        #finishPractice {
-            display: block;
-            background-color: #4CAF50;
-            color: white;
-            padding: 14px 20px;
-            margin: 20px auto;
-            margin-bottom: 100px;
-            border: none;
-            cursor: pointer;
-            width: 200px;
-        }
-
-        /* モバイル対応（practice.htmlページ専用） */
-        @media (max-width: 600px) {
-            .slider-container {
-                width: 95% !important;
-                max-width: none !important;
-                margin: 0 auto;
-                padding: 0 2.5%; /* 両端に余白を追加 */
-                box-sizing: border-box;
-            }
-            
-            .slide {
-                padding: 10px !important;
-                box-sizing: border-box;
+                gap: 1rem;
                 width: 100%;
+                align-items: center;
             }
-            
-            .dropdown-container {
-                width: 95%;
-                margin: 0 auto 20px auto;
-                box-sizing: border-box;
+
+            select {
+                width: 100% !important;
+                max-width: 280px !important;
             }
-            
+
             #startPracticeBtn {
-                width: 150px;
-                max-width: 150px;
-                font-size: 16px;
-                padding: 8px 12px;
-                margin: 0 !important; /* マージンをなくす */
+                width: 100% !important;
+                max-width: 280px !important;
             }
-            
-            /* もう一度聞くボタンをモバイルでは非表示 */
-            #replayTrialBtn {
-                display: none;
-            }
-            
-            #finishPractice {
-                width: 95%;
-                max-width: 300px;
-            }
-            
+
             .dot-nav-wrapper {
-                width: 95%;
-                margin: 0 auto 20px auto;
-                box-sizing: border-box;
+                flex-wrap: wrap;
+                gap: 1rem;
             }
-            
+
             .dot-nav-wrapper .slide-nav {
-                padding: 8px 15px;
-                font-size: 14px;
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
             }
-            
-            /* instructionボックスのモバイル調整 */
-            .instruction, .instruction-start {
-                width: 95% !important;
-                max-width: none !important;
-                margin: 15px auto !important;
-                padding: 12px !important;
-                box-sizing: border-box;
+
+            #finishPractice {
+                padding: 1rem 2rem !important;
+                font-size: 1rem !important;
+                width: 90% !important;
+                max-width: 300px !important;
             }
-            
-            /* containerクラスのモバイル調整 */
-            .container {
-                width: 95% !important;
-                max-width: none !important;
-                margin: 10px auto !important;
-                padding: 15px !important;
-                box-sizing: border-box;
+
+            /* #replayTrialBtn の表示はJSで制御するため、ここではdisplay指定しない */
+        }
+
+        @media (max-width: 480px) {
+
+            /* Ensure block layout for mobile-only sections */
+            .mobile-only { display: block !important; }
+
+            .instruction,
+            .instruction-start,
+            .container,
+            #instructionTopMobile,
+            #instructionStart {
+                width: 95% !important; /* leave breathing room from edges */
+                max-width: 700px !important; /* align with practice container */
+                margin: 0 auto 1rem auto !important; /* center and keep bottom spacing */
+                padding: 1rem !important;
+                box-sizing: border-box !important; /* include padding in width to avoid overflow */
+            }
+
+            .button {
+                min-width: 100px !important;
+                padding: 0.6rem 1rem !important;
             }
         }
     </style>
 </head>
+
 <body>
-    <h1></h1>
+    <h1>🏃‍♀️ 練習問題</h1>
     <!-- 音声要素 -->
     <audio id="tone1" preload="auto"></audio>
     <audio id="tone2" preload="auto"></audio>
@@ -204,24 +438,27 @@
                 <div class="slide">
                     <p>「タタタ」が４回連続したものを１つの音とします</p>
                     <div class="media-container">
-                        <audio id="sample_audio_normal" src="{{ url_for('static', filename='stimuli/successive_0.52*4/as_semitone/gallops_0.00ms.wav') }}"></audio>
+                        <audio id="sample_audio_normal"
+                            src="{{ url_for('static', filename='stimuli/successive_0.52*4/as_semitone/gallops_0.00ms.wav') }}"></audio>
                         <button class="play-button" onclick="playAudio('sample_audio_normal')"></button>
-                        <img src="{{ url_for('static', filename='sample_fig/stimuli_normal.png') }}" class="stimuli-img">
+                        <img src="{{ url_for('static', filename='sample_fig/stimuli_normal.png') }}"
+                            class="stimuli-img">
                     </div>
                     <p>この音をノーマル音とします</p>
                 </div>
                 <!-- スライド2 -->
                 <div class="slide">
                     <p>この音が間を開けて、3回流れます</p>
-                    <div class="trial-example">
+                    <div class="media-container">
                         <button class="play-button" onclick="playSlide2Trial()"></button>
-                        <img src="{{ url_for('static', filename='sample_fig/trial_target_third.png') }}" class="example-img">
+                        <img src="{{ url_for('static', filename='sample_fig/trial_target_third.png') }}"
+                            class="example-img">
                     </div>
                     <p>ノーマル音、ノーマル音、ノーマル音？<br>3つ目の音はリズムが違いますね！
                     </p>
                 </div>
                 <!-- スライド3 -->
-                <div class="slide">     
+                <div class="slide">
                     <p>このようにリズムの崩れた音を<span class="target-text">ターゲット音</span>とします</p>
                     <h4>皆さんにはこの<span class="target-text">ターゲット音</span>を当てる問題に挑戦してもらいます！！</h4>
                     <p>実際の問題のルールは次のようになっています</p>
@@ -232,13 +469,16 @@
                         <li>２番目は必ずノーマル音です</li>
                         <li>ターゲット音は、高い音のタイミングが後ろにずれた音で「タッタタ」というリズムになります（※音条件１ではズレる音の高さは周りと同じです）
                             <div class="media-container target-container">
-                                <audio id="sample_audio_target" src="{{ url_for('static', filename='stimuli/successive_0.52*4/as_semitone/gallops_64.00ms.wav') }}"></audio>
-                                <button class="play-button target-button" onclick="playAudio('sample_audio_target')"></button>
-                                <img src="{{ url_for('static', filename='sample_fig/stimuli_target_v3.png') }}" class="stimuli-img target-img">
+                                <audio id="sample_audio_target"
+                                    src="{{ url_for('static', filename='stimuli/successive_0.52*4/as_semitone/gallops_64.00ms.wav') }}"></audio>
+                                <button class="play-button target-button"
+                                    onclick="playAudio('sample_audio_target')"></button>
+                                <img src="{{ url_for('static', filename='sample_fig/stimuli_target_v3.png') }}"
+                                    class="stimuli-img target-img">
                             </div>
-                        </li>            
+                        </li>
                     </ul>
-                    
+
                 </div>
                 <!-- スライド4 -->
                 <div class="slide">
@@ -266,7 +506,7 @@
             <button class="slide-nav next" onclick="nextSlide()">次へ</button>
         </div>
     </div>
-    
+
     <!-- 説明文1 - モバイル簡略版 -->
     <div id="instructionTopMobile" class="instruction mobile-only">
         <h4>問題の流れ</h4>
@@ -278,17 +518,21 @@
         <div style="display: flex; justify-content: space-around; margin: 10px 0;">
             <div style="text-align: center;">
                 <p style="margin: 5px 0; font-size: 12px;">ノーマル音</p>
-                <audio id="sample_audio_normal_mobile" src="{{ url_for('static', filename='stimuli/' + ('piano_successive_0.52*4' if session['sound_type'] == 'piano' else 'successive_0.52*4') + '/as_semitone/' + ('piano_gallops_' if session['sound_type'] == 'piano' else 'gallops_') + '0.00ms.wav') }}"></audio>
-                <button class="play-button" onclick="playAudio('sample_audio_normal_mobile')" style="width: 35px; height: 35px;"></button>
+                <audio id="sample_audio_normal_mobile"
+                    src="{{ url_for('static', filename='stimuli/' + ('piano_successive_0.52*4' if session['sound_type'] == 'piano' else 'successive_0.52*4') + '/as_semitone/' + ('piano_gallops_' if session['sound_type'] == 'piano' else 'gallops_') + '0.00ms.wav') }}"></audio>
+                <button class="play-button" onclick="playAudio('sample_audio_normal_mobile')"
+                    style="width: 35px; height: 35px;"></button>
             </div>
-            
+
             <div style="text-align: center;">
                 <p style="margin: 5px 0; font-size: 12px;"><span class="target-text">ターゲット音</span></p>
-                <audio id="sample_audio_target_mobile" src="{{ url_for('static', filename='stimuli/' + ('piano_successive_0.52*4' if session['sound_type'] == 'piano' else 'successive_0.52*4') + '/as_semitone/' + ('piano_gallops_' if session['sound_type'] == 'piano' else 'gallops_') + '64.00ms.wav') }}"></audio>
-                <button class="play-button target-button" onclick="playAudio('sample_audio_target_mobile')" style="width: 35px; height: 35px;"></button>
+                <audio id="sample_audio_target_mobile"
+                    src="{{ url_for('static', filename='stimuli/' + ('piano_successive_0.52*4' if session['sound_type'] == 'piano' else 'successive_0.52*4') + '/as_semitone/' + ('piano_gallops_' if session['sound_type'] == 'piano' else 'gallops_') + '64.00ms.wav') }}"></audio>
+                <button class="play-button target-button" onclick="playAudio('sample_audio_target_mobile')"
+                    style="width: 35px; height: 35px;"></button>
             </div>
         </div>
-        
+
         <p style="font-size: 13px; margin: 8px 0; line-height: 1.3;">
             正誤に応じて問題の難易度が変わります💪
         </p>
@@ -297,40 +541,39 @@
     <!-- 音条件選択 -->
     <div class="container">
         <h2>練習問題</h2>
-        
-        <p>音条件を選択し問題を解いてみよう</p>
         <div class="dropdown-container">
             <select id="frequencyDirSelect">
                 {% for freq in session['frequency_dirs'] %}
-                    <option value="{{ freq }}">{{ frequency_labels.get(freq, freq) }}</option>
+                <option value="{{ freq }}">{{ frequency_labels.get(freq, freq) }}</option>
                 {% endfor %}
             </select>
             <button id="startPracticeBtn" class="button" onclick="startPracticeTrial()">問題を再生</button>
         </div>
-    
+
         <!-- トライアルエリア -->
         <div id="trialArea" class="trial-container">
             <!-- 選択ボタン -->
-            <p class="pc-only">ターゲット音が1番目ならFキー、3番目ならJキーを押してください</p>
+            <p class="pc-only">ターゲットが1番目ならFキー、3番目ならJキーで選択しspaceキーで送信</p>
             <p class="mobile-only">ターゲット音はどっち？</p>
             <div class="button-container">
-                <button id="buttonF" class="button"><span class="pc-only">1st(F)</span><span class="mobile-only">1st</span></button>
-                <button id="buttonJ" class="button"><span class="pc-only">3rd(J)</span><span class="mobile-only">3rd</span></button>
+                <button id="buttonF" class="button"><span class="pc-only">1st(F)</span><span
+                        class="mobile-only">1st</span></button>
+                <button id="buttonJ" class="button"><span class="pc-only">3rd(J)</span><span
+                        class="mobile-only">3rd</span></button>
             </div>
             <div class="button-container submit-container">
-                <button id="buttonSubmit" class="button submit-button"><span class="pc-only">送信(Space)</span><span class="mobile-only">決定</span></button>
+                <button id="buttonSubmit" class="button submit-button"><span class="pc-only">送信(Space)</span><span
+                        class="mobile-only">決定</span></button>
             </div>
-            <p class="pc-only">Spaceキーを押すと正誤が表示されます!<br>（本番ではそのまま次の問題に進みます）</p>
-            <!-- <p class="mobile-only">送信ボタンをタップすると正誤が表示されます</p> -->
             <!-- エラーメッセージ -->
             <div id="error"></div>
 
             <!-- 結果表示 -->
             <h3 id="resultText"></h3>
             <div id="resultImage"></div>
-            <!-- もう一度聞くボタン -->
-            <button id="replayTrialBtn" class="button" onclick="replayTrial()">もう一度聞く</button>
-            
+            <!-- もう一度聞くボタン（初期は非表示。送信後に表示） -->
+            <button id="replayTrialBtn" class="button" onclick="replayTrial()" style="display: none;">もう一度聞く</button>
+
         </div>
     </div>
 
@@ -338,7 +581,7 @@
     <!-- 説明文2 -->
     <div id="instructionStart" class="instruction-start">
         <h3>⚠️どの条件でも聞き取りやすい音量に調整してください</h3>
-        <p>これ以降は音量は変えずに実験に取り組んでください🙇🏻‍♂️</p>
+        <p>音量は変えずに実験に取り組んでください🙇🏻‍♂️</p>
     </div>
 
     <!-- 開始ボタン -->
@@ -355,23 +598,23 @@
             const audio = document.getElementById(id);
             audio.play();
         }
-        
+
         // ボタンのクリック/タップイベントリスナー
-        document.getElementById("buttonF").addEventListener("click", function() {
+        document.getElementById("buttonF").addEventListener("click", function () {
             selectKey("f");
         });
-        
-        document.getElementById("buttonJ").addEventListener("click", function() {
+
+        document.getElementById("buttonJ").addEventListener("click", function () {
             selectKey("j");
         });
-        
-        document.getElementById("buttonSubmit").addEventListener("click", function() {
+
+        document.getElementById("buttonSubmit").addEventListener("click", function () {
             // スペースキーと同じ機能を実行
             if (!isTrialRunning) {
                 document.getElementById("error").innerText = "問題が再生されていません。再生ボタンを押してください。";
                 return;
             }
-            
+
             if (isAudioPlaying) {
                 document.getElementById("error").innerText = "音声再生中です。すべての音が再生された後で応答してください。";
                 setTimeout(() => {
@@ -379,7 +622,7 @@
                 }, 1000);
                 return;
             }
-            
+
             if (!selectedKey) {
                 document.getElementById("error").innerText = "FキーまたはJキーを選択してください！";
                 setTimeout(() => {
@@ -387,11 +630,12 @@
                 }, 1000);
                 return;
             }
-            
+
             // 正誤判定と結果表示
             const resultText = document.getElementById("resultText");
             const resultImage = document.getElementById("resultImage");
-            
+            const replayBtn = document.getElementById("replayTrialBtn");
+
             if (selectedKey === practiceTarget) {
                 if (practiceTarget === "f") {
                     resultText.innerText = "正解です🔥１番目がターゲットでした";
@@ -409,23 +653,27 @@
                     resultImage.innerHTML = "<img src='static/sample_fig/trial_target_third.png' class='result-img'>";
                 }
             }
-            
+
             // エラー表示をクリア
             document.getElementById("error").innerText = "";
+            // フィードバックと同時に再生ボタンを表示
+            if (replayBtn) replayBtn.style.display = "block";
             selectedKey = null;
         });
-        
+
         // キー入力のリスナー
         document.addEventListener("keydown", (event) => {
             const errorElement = document.getElementById("error");
             const resultText = document.getElementById("resultText");
             const resultImage = document.getElementById("resultImage");
+            const replayBtn = document.getElementById("replayTrialBtn");
 
             if (event.code === "KeyF") {
                 selectKey("f");
             } else if (event.code === "KeyJ") {
                 selectKey("j");
             } else if (event.code === "Space") {
+                event.preventDefault();
                 // 音声再生中のエラーチェックを最優先
                 if (!isTrialRunning) {
                     errorElement.innerText = "問題が再生されていません。再生ボタンを押してください。";
@@ -464,38 +712,40 @@
                         resultText.innerText = "不正解です💦３番目がターゲットでした";
                         resultImage.innerHTML = "<img src='static/sample_fig/trial_target_third.png' class='result-img'>";
                     }
-
-                // エラー表示をクリア
-                errorElement.innerText = "";
-                selectedKey = null;
                 }
+
+                // エラー表示をクリア（正解/不正解に関わらず）
+                errorElement.innerText = "";
+                // フィードバックと同時に再生ボタンを表示
+                if (replayBtn) replayBtn.style.display = "block";
+                selectedKey = null;
             }
         });
 
         document.addEventListener("DOMContentLoaded", () => {
-        // 既存の初期化処理
-        updateDots();
+            // 既存の初期化処理
+            updateDots();
 
-        // 練習問題再生ボタンのスペースキー押下をキャンセルする
-        const startBtn = document.getElementById("startPracticeBtn");
-        const replayBtn = document.getElementById("replayTrialBtn");
-        if (startBtn) {
-            startBtn.addEventListener("keydown", (event) => {
-            if (event.code === "Space") {
-                event.preventDefault();
+            // 練習問題再生ボタンのスペースキー押下をキャンセルする
+            const startBtn = document.getElementById("startPracticeBtn");
+            const replayBtn = document.getElementById("replayTrialBtn");
+            if (startBtn) {
+                startBtn.addEventListener("keydown", (event) => {
+                    if (event.code === "Space") {
+                        event.preventDefault();
+                    }
+                });
             }
-            });
-        }
-        if (replayBtn) {
-            replayBtn.addEventListener("keydown", (event) => {
-            if (event.code === "Space") {
-                event.preventDefault();
+            if (replayBtn) {
+                replayBtn.addEventListener("keydown", (event) => {
+                    if (event.code === "Space") {
+                        event.preventDefault();
+                    }
+                });
             }
-            });
-        }
         });
 
-        
+
         // キー選択処理
         function selectKey(key) {
             selectedKey = key;
@@ -518,63 +768,66 @@
         let currentSlide = 0;
 
         function updateSlidePosition() {
-        const sliderWrapper = document.querySelector('.slider-wrapper');
-        sliderWrapper.style.transform = 'translateX(' + (-currentSlide * 100) + '%)';
-        updateDots(); // スライド位置更新時にドットも更新
+            const sliderWrapper = document.querySelector('.slider-wrapper');
+            sliderWrapper.style.transform = 'translateX(' + (-currentSlide * 100) + '%)';
+            updateDots(); // スライド位置更新時にドットも更新
         }
 
         function nextSlide() {
-        const slides = document.querySelectorAll('.slide');
-        if (currentSlide < slides.length - 1) {
-            currentSlide++;
-            updateSlidePosition();
-        }
+            const slides = document.querySelectorAll('.slide');
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateSlidePosition();
+            }
         }
 
         function prevSlide() {
-        if (currentSlide > 0) {
-            currentSlide--;
-            updateSlidePosition();
-        }
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlidePosition();
+            }
         }
 
         function goToSlide(index) {
-        currentSlide = index;
-        updateSlidePosition();
+            currentSlide = index;
+            updateSlidePosition();
         }
 
         function updateDots() {
-        const dots = document.querySelectorAll('.dot');
-        dots.forEach((dot, index) => {
-            if (index === currentSlide) {
-            dot.classList.add('active');
-            } else {
-            dot.classList.remove('active');
-            }
-        });
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
         }
 
         // 初期状態のドットを更新
         document.addEventListener("DOMContentLoaded", updateDots);
-                
+
         // 練習トライアル開始処理
         function startPracticeTrial() {
             console.log("startPracticeTrial");
             const freqSelect = document.getElementById("frequencyDirSelect");
             const frequencyDir = freqSelect.value;  // プルダウンから選択された周波数条件（ディレクトリ名）
             const soundType = "{{ session['sound_type'] }}";
-            
+
             // 音の種類に応じてディレクトリとファイル名プレフィックスを決定
             const audioDir = soundType === 'piano' ? 'piano_successive_0.52*4' : 'successive_0.52*4';
             const filePrefix = soundType === 'piano' ? 'piano_gallops_' : 'gallops_';
             document.getElementById("trialArea").style.display = "block";
             document.getElementById("resultText").innerText = "";
             document.getElementById("resultImage").innerHTML = "";
-            
+            // 新しい問題なのでフィードバック関連を非表示
+            const replayBtn = document.getElementById("replayTrialBtn");
+            if (replayBtn) replayBtn.style.display = "none";
+
             // ランダムに tone1 または tone3 をターゲットにする
             let targetPosition = Math.random() < 0.5 ? 1 : 3;
             practiceTarget = (targetPosition === 1) ? "f" : "j";
-            
+
             // tone2 は常に通常音 (offset 0.00ms)
             // tone1 と tone3 は、ターゲットなら offset 64.00ms、そうでなければ 0.00ms の音声ファイル
             let tone1Path, tone2Path, tone3Path;
@@ -591,27 +844,27 @@
             }
 
             currentTonePaths = { tone1: tone1Path, tone2: tone2Path, tone3: tone3Path };
-            
+
             isTrialRunning = true;
             isAudioPlaying = true;
-            
+
             // 各音声オブジェクトを生成し、順に再生
             const audio1 = new Audio(tone1Path);
             const audio2 = new Audio(tone2Path);
             const audio3 = new Audio(tone3Path);
-            
+
             audio1.play();
             audio1.onended = () => {
                 setTimeout(() => {
-                audio2.play();
-                audio2.onended = () => {
-                    setTimeout(() => {
-                    audio3.play();
-                    audio3.onended = () => {
-                        isAudioPlaying = false;  // 全て再生完了
+                    audio2.play();
+                    audio2.onended = () => {
+                        setTimeout(() => {
+                            audio3.play();
+                            audio3.onended = () => {
+                                isAudioPlaying = false;  // 全て再生完了
+                            };
+                        }, 500);
                     };
-                    }, 500);
-                };
                 }, 500);
             };
         }
@@ -621,11 +874,11 @@
             if (isAudioPlaying) return;  // 再生中は何もしない
             isTrialRunning = true;
             isAudioPlaying = true;
-            
+
             const audio1 = new Audio(currentTonePaths.tone1);
             const audio2 = new Audio(currentTonePaths.tone2);
             const audio3 = new Audio(currentTonePaths.tone3);
-            
+
             audio1.play();
             audio1.onended = () => {
                 setTimeout(() => {
@@ -647,7 +900,7 @@
             const soundType = "{{ session['sound_type'] }}";
             const audioDir = soundType === 'piano' ? 'piano_successive_0.52*4' : 'successive_0.52*4';
             const filePrefix = soundType === 'piano' ? 'piano_gallops_' : 'gallops_';
-            
+
             // ファイルパスを固定値で生成（必要に応じて、パス内の特殊文字の扱いを確認してください）
             const tone1Path = `/static/stimuli/${audioDir}/as_semitone/${filePrefix}0.00ms.wav`;
             const tone2Path = `/static/stimuli/${audioDir}/as_semitone/${filePrefix}0.00ms.wav`;
@@ -657,21 +910,21 @@
             const audio1 = new Audio(tone1Path);
             const audio2 = new Audio(tone2Path);
             const audio3 = new Audio(tone3Path);
-            
+
             audio1.play().catch((e) => console.error("audio1 play error:", e));
             audio1.onended = () => {
                 setTimeout(() => {
-                audio2.play().catch((e) => console.error("audio2 play error:", e));
-                audio2.onended = () => {
-                    setTimeout(() => {
-                    audio3.play().catch((e) => console.error("audio3 play error:", e));
-                    audio3.onended = () => {
+                    audio2.play().catch((e) => console.error("audio2 play error:", e));
+                    audio2.onended = () => {
+                        setTimeout(() => {
+                            audio3.play().catch((e) => console.error("audio3 play error:", e));
+                            audio3.onended = () => {
+                            };
+                        }, 500);
                     };
-                    }, 500);
-                };
                 }, 500);
             };
-            }
+        }
 
         // /experimentへ進む
         function finishPractice() {
@@ -679,4 +932,5 @@
         }
     </script>
 </body>
+
 </html>

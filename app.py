@@ -98,52 +98,7 @@ def save_summary_file(results_list):
     print(f"Summary file saved: {summary_file_path}")
 
 # アンケート結果でサマリーファイルを更新
-def update_global_summary_csv(participant_id, results_list, questionnaire_score):
-    """グローバルsummary.csvファイルを更新"""
-    global_summary_path = os.path.join('static', 'thrMt_fig_data', 'summary.csv')
-    
-    # CSVファイルが存在するかチェック
-    file_exists = os.path.exists(global_summary_path)
-    
-    # 現在の日時を取得
-    today = datetime.datetime.now().strftime('%Y-%m-%d')
-    sound_type = session.get('sound_type', 'pure_tone')
-    
-    # 新しいエントリを準備
-    new_entries = []
-    for result in results_list:
-        entry = {
-            'participant_id': participant_id,
-            'experiment_date': today,
-            'sound_type': sound_type,
-            'frequency_condition': result.get('freq_key', ''),
-            'frequency_label': result.get('frequency_label', ''),
-            'threshold_ms': float(result.get('threshold', 0)),
-            'log2_threshold': float(result.get('log2_threshold', 0)),
-            'level': result.get('level', ''),
-            'sub_value': questionnaire_score
-        }
-        new_entries.append(entry)
-    
-    # CSVファイルに書き込み
-    if file_exists:
-        # ファイルが存在する場合、追記モードで開く
-        existing_df = pd.read_csv(global_summary_path)
-        # 同じ参加者の既存エントリを削除（更新のため）
-        existing_df = existing_df[existing_df['participant_id'] != participant_id]
-        # 新しいエントリを追加
-        new_df = pd.DataFrame(new_entries)
-        updated_df = pd.concat([existing_df, new_df], ignore_index=True)
-    else:
-        # ファイルが存在しない場合、新しく作成
-        updated_df = pd.DataFrame(new_entries)
-    
-    # ディレクトリが存在しない場合は作成
-    os.makedirs(os.path.dirname(global_summary_path), exist_ok=True)
-    
-    # CSVファイルに保存
-    updated_df.to_csv(global_summary_path, index=False, encoding='utf-8')
-    print(f"Global summary.csv updated: {global_summary_path}")
+# グローバルsummary.csvは使用しない方針のため、関連処理は削除
 
 def update_summary_with_questionnaire(questionnaire_data):
     today = session.get('today')
@@ -514,9 +469,18 @@ def break_page():
 
 @app.route('/complete')
 def complete():
+    # 既にMLE結果がセッションにあれば、それを使って再計算を抑制
+    cached_results = session.get('mle_results_cached')
+    cached_today = session.get('today')
+    cached_participant = session.get('participant_id')
+    if cached_results and cached_today and cached_participant:
+        results_list = cached_results
+    else:
+        results_list = []
+
     # セッションから選択した周波数条件リストを取得
     frequency_dirs = session.get('frequency_dirs', [])
-    if not frequency_dirs:
+    if not frequency_dirs and not results_list:
         # セッションが失われている場合、最新のデータディレクトリを検索
         import glob
         today = datetime.datetime.now().strftime('%Y-%m-%d')
@@ -543,85 +507,93 @@ def complete():
         session['participant_id'] = participant_id
         frequency_dirs = freq_dirs
 
-    # MLE分析結果を格納するリスト
-    results_list = []
-    # MLE分析を各周波数条件ごとに実行
+    # 以降で使う日付/参加者IDを必ず確保
     today = session.get('today')
     participant_id = session.get('participant_id')
-    for freq in frequency_dirs:
-        # **データファイルのパスを統一**
-        base_filename = f"{participant_id}_{freq}_results"
-        file_index = session.get('data_file_index', 0)
 
-        if file_index > 0:
-            data_file_path = os.path.join(DATA_FOLDER, today, participant_id, freq, f"{base_filename}_{file_index}.csv")
-        else:
-            data_file_path = os.path.join(DATA_FOLDER, today, participant_id, freq, f"{base_filename}.csv")
-        # **データファイルが存在しない場合はスキップ**
-        if not os.path.exists(data_file_path):
-            print(f"Warning: Data file {data_file_path} not found. Skipping...")
-            continue
+    # まだキャッシュがない場合のみMLE分析を実行
+    if not results_list:
+        # MLE分析を各周波数条件ごとに実行
+        today = session.get('today')
+        participant_id = session.get('participant_id')
+        for freq in frequency_dirs:
+            # **データファイルのパスを統一**
+            base_filename = f"{participant_id}_{freq}_results"
+            file_index = session.get('data_file_index', 0)
 
-        fig_dir = os.path.join('static', FIG_FOLDER, today, participant_id, freq)
-        os.makedirs(fig_dir, exist_ok=True)  # フォルダがない場合は作成
-        # **MLE分析の実行**
-        results = perform_mle_analysis(data_file_path, fig_dir)
-        # エラーがあればスキップ
-        if "error" in results:
-            print(f"Error in MLE analysis for {freq} ({data_file_path}): {results['error']}")
-            continue
-        # `fig_path` と `threshold` の存在チェック
-        fig_path = results.get("fig_path")
-        threshold = results.get("threshold")
-        log2_threshold = results.get("log2_threshold")
-        if not fig_path or threshold is None or log2_threshold is None:
-            print(f"Error: Missing results for {freq} ({data_file_path})")
-            continue
-
-        # レベル判定
-        def get_level(freq_key, log2_thresh):
-            if freq_key in ['g_base', 'as_semitone']:
-                if log2_thresh <= 2:
-                    return "天才！🌟"
-                elif log2_thresh <= 2.5:
-                    return "エキスパート🎯"
-                elif log2_thresh <= 3:
-                    return "スキルド💪"
-                else:
-                    return "ファイター⚡"
-            elif freq_key == 'g_1octave':
-                if log2_thresh <= 2.5:
-                    return "天才！🌟"
-                elif log2_thresh <= 3.0:
-                    return "エキスパート🎯"
-                elif log2_thresh <= 3.5:
-                    return "スキルド💪"
-                else:
-                    return "ファイター⚡"
-            elif freq_key in ['g_2octave', 'g_3octave']:
-                if log2_thresh <= 3:
-                    return "天才！🌟"
-                elif log2_thresh <= 4:
-                    return "エキスパート🎯"
-                elif log2_thresh <= 5:
-                    return "スキルド💪"
-                else:
-                    return "ファイター⚡"
+            if file_index > 0:
+                data_file_path = os.path.join(DATA_FOLDER, today, participant_id, freq, f"{base_filename}_{file_index}.csv")
             else:
-                return "判定不能"
+                data_file_path = os.path.join(DATA_FOLDER, today, participant_id, freq, f"{base_filename}.csv")
+            # **データファイルが存在しない場合はスキップ**
+            if not os.path.exists(data_file_path):
+                print(f"Warning: Data file {data_file_path} not found. Skipping...")
+                continue
 
-        level = get_level(freq, log2_threshold)
-        
-        # 結果をリストに追加
-        results_list.append({
-            "frequency_label": FREQUENCY_LABELS.get(freq, freq),
-            "freq_key": freq,  # レベル判定用のキー
-            "fig_path": fig_path.replace('static/', ''),
-            "threshold": f"{threshold:.2f}",
-            "log2_threshold": f"{log2_threshold:.2f}",
-            "level": level,
-            "file_name": os.path.basename(data_file_path)
-        })
+            fig_dir = os.path.join('static', FIG_FOLDER, today, participant_id, freq)
+            os.makedirs(fig_dir, exist_ok=True)  # フォルダがない場合は作成
+            # **MLE分析の実行**
+            results = perform_mle_analysis(data_file_path, fig_dir)
+            # エラーがあればスキップ
+            if "error" in results:
+                print(f"Error in MLE analysis for {freq} ({data_file_path}): {results['error']}")
+                continue
+            # `fig_path` と `threshold` の存在チェック
+            fig_path = results.get("fig_path")
+            threshold = results.get("threshold")
+            log2_threshold = results.get("log2_threshold")
+            if not fig_path or threshold is None or log2_threshold is None:
+                print(f"Error: Missing results for {freq} ({data_file_path})")
+                continue
+
+            # レベル判定
+            def get_level(freq_key, log2_thresh):
+                if freq_key in ['g_base', 'as_semitone']:
+                    if log2_thresh <= 2:
+                        return "天才！🌟"
+                    elif log2_thresh <= 2.5:
+                        return "エキスパート🎯"
+                    elif log2_thresh <= 3:
+                        return "スキルド💪"
+                    else:
+                        return "ファイター⚡"
+                elif freq_key == 'g_1octave':
+                    if log2_thresh <= 2.5:
+                        return "天才！🌟"
+                    elif log2_thresh <= 3.0:
+                        return "エキスパート🎯"
+                    elif log2_thresh <= 3.5:
+                        return "スキルド💪"
+                    else:
+                        return "ファイター⚡"
+                elif freq_key in ['g_2octave', 'g_3octave']:
+                    if log2_thresh <= 3:
+                        return "天才！🌟"
+                    elif log2_thresh <= 4:
+                        return "エキスパート🎯"
+                    elif log2_thresh <= 5:
+                        return "スキルド💪"
+                    else:
+                        return "ファイター⚡"
+                else:
+                    return "判定不能"
+
+            level = get_level(freq, log2_threshold)
+            
+            # 結果をリストに追加
+            results_list.append({
+                "frequency_label": FREQUENCY_LABELS.get(freq, freq),
+                "freq_key": freq,  # レベル判定用のキー
+                "fig_path": fig_path.replace('static/', ''),
+                "threshold": f"{threshold:.2f}",
+                "log2_threshold": f"{log2_threshold:.2f}",
+                "level": level,
+                "file_name": os.path.basename(data_file_path)
+            })
+
+        # MLE結果をキャッシュ（アンケート後のcompleteでも再計算しない）
+        session['mle_results_cached'] = results_list
+        session.modified = True
 
     # **MLE分析が1つも成功しなかった場合**
     if not results_list:
@@ -641,62 +613,95 @@ def complete():
         if not os.path.exists(summary_file_path):
             save_summary_file(results_list)
     
-    # アンケート結果の統一チェック
+    # アンケート結果の統一チェック（キャッシュ利用）。アンケート送信後のデータがある場合のみ作成。
     has_questionnaire = False
     questionnaire_score = 0
     survey_figure_path = None
     survey_results = None
-    
-    if results_list:
-        # 個別のsummary.csvパスを構築
+
+    # アンケート完了判定：
+    # 1) セッションに questionnaire_answers がある
+    # 2) または summary.csv に sub_value が埋まっている
+    questionnaire_done = bool(session.get('questionnaire_answers'))
+    individual_summary_path = None
+    if not questionnaire_done and results_list:
         file_index = session.get('data_file_index', 0)
         if file_index > 0:
             individual_summary_path = os.path.join(DATA_FOLDER, today, participant_id, f"{participant_id}_summary_{file_index}.csv")
         else:
             individual_summary_path = os.path.join(DATA_FOLDER, today, participant_id, f"{participant_id}_summary.csv")
-        
-        # アンケート結果があるかadd_from_summaryで統一チェック
         if os.path.exists(individual_summary_path):
             try:
-                # まず、global summary.csvを更新
-                update_global_summary_csv(participant_id, results_list, 0)  # スコアは後で取得
-                
-                # 各被験者のディレクトリに図を保存
-                participant_dir = os.path.join('static', 'fig', today, participant_id)
-                os.makedirs(participant_dir, exist_ok=True)
-                
-                sound_type = session.get('sound_type', 'pure_tone')
-                print(f"Attempting unified survey analysis for participant: {participant_id}, sound_type: {sound_type}")
-                print(f"Using individual summary file: {individual_summary_path}")
-                
-                survey_results = add_from_summary(
-                    participant_id,
-                    summary_csv_path=individual_summary_path,
-                    sound_type=sound_type,
-                    output_dir=participant_dir
-                )
-                
-                # アンケート結果の有無を統一判定
-                if survey_results and survey_results.get('metrics_by_group'):
-                    # sub_valueがあるかチェック（最初のメトリクスから取得）
-                    first_metric = survey_results['metrics_by_group'][0] if survey_results['metrics_by_group'] else {}
-                    if 'sub_value' in first_metric and first_metric['sub_value'] is not None:
-                        questionnaire_score = int(first_metric['sub_value'])
-                        has_questionnaire = True
-                        survey_figure_path = survey_results.get('fig_path', '').replace('static/', '')
-                        print(f"Survey analysis completed: {survey_figure_path}")
-                        print(f"Questionnaire score: {questionnaire_score}")
-                
-            except FileNotFoundError as e:
-                print(f"FileNotFoundError in survey analysis: {e}")
-            except ValueError as e:
-                print(f"ValueError in survey analysis: {e}")
-                # アンケートがない場合のエラーは正常なので、survey_resultsをNoneにセット
-                survey_results = None
-            except Exception as e:
-                print(f"Unexpected error generating survey analysis: {e}")
-                import traceback
-                traceback.print_exc()
+                sdf = pd.read_csv(individual_summary_path)
+                if 'sub_value' in sdf.columns and sdf['sub_value'].astype(str).str.strip().ne('').any():
+                    questionnaire_done = True
+            except Exception:
+                pass
+
+    if questionnaire_done:
+        survey_cached = session.get('survey_cached')
+        if survey_cached and survey_cached.get('today') == today and survey_cached.get('participant_id') == participant_id:
+            # セッションに比較図があれば再計算しない
+            has_questionnaire = survey_cached.get('has_questionnaire', False)
+            questionnaire_score = survey_cached.get('questionnaire_score', 0)
+            survey_figure_path = survey_cached.get('survey_figure_path')
+            survey_results = None  # 図は再利用。詳細メトリクスは再計算しない
+        elif results_list:
+            # 個別のsummary.csvパスを構築（未取得なら改めて作る）
+            if individual_summary_path is None:
+                file_index = session.get('data_file_index', 0)
+                if file_index > 0:
+                    individual_summary_path = os.path.join(DATA_FOLDER, today, participant_id, f"{participant_id}_summary_{file_index}.csv")
+                else:
+                    individual_summary_path = os.path.join(DATA_FOLDER, today, participant_id, f"{participant_id}_summary.csv")
+
+            # アンケート結果がある場合のみ add_from_summary 実行
+            if os.path.exists(individual_summary_path):
+                try:
+                    # 各被験者のディレクトリに図を保存
+                    participant_dir = os.path.join('static', 'fig', today, participant_id)
+                    os.makedirs(participant_dir, exist_ok=True)
+
+                    sound_type = session.get('sound_type', 'pure_tone')
+                    print(f"Attempting unified survey analysis for participant: {participant_id}, sound_type: {sound_type}")
+                    print(f"Using individual summary file: {individual_summary_path}")
+
+                    survey_results = add_from_summary(
+                        participant_id,
+                        summary_csv_path=individual_summary_path,
+                        sound_type=sound_type,
+                        output_dir=participant_dir
+                    )
+
+                    # アンケート結果の有無を統一判定
+                    if survey_results and survey_results.get('metrics_by_group'):
+                        first_metric = survey_results['metrics_by_group'][0] if survey_results['metrics_by_group'] else {}
+                        if 'sub_value' in first_metric and first_metric['sub_value'] is not None:
+                            questionnaire_score = int(first_metric['sub_value'])
+                            has_questionnaire = True
+                            survey_figure_path = survey_results.get('fig_path', '').replace('static/', '')
+                            print(f"Survey analysis completed: {survey_figure_path}")
+                            print(f"Questionnaire score: {questionnaire_score}")
+
+                    # 比較図が得られた場合のみキャッシュ
+                    session['survey_cached'] = {
+                        'today': today,
+                        'participant_id': participant_id,
+                        'has_questionnaire': has_questionnaire,
+                        'questionnaire_score': questionnaire_score,
+                        'survey_figure_path': survey_figure_path
+                    }
+                    session.modified = True
+
+                except FileNotFoundError as e:
+                    print(f"FileNotFoundError in survey analysis: {e}")
+                except ValueError as e:
+                    print(f"ValueError in survey analysis: {e}")
+                    survey_results = None
+                except Exception as e:
+                    print(f"Unexpected error generating survey analysis: {e}")
+                    import traceback
+                    traceback.print_exc()
 
     # **`complete.html` にリストを渡す**
     return render_template('complete.html', 
@@ -726,6 +731,11 @@ def submit_questionnaire():
     # サマリーファイルを更新（アンケート結果を含む）
     update_summary_with_questionnaire(data)
     
+    # 比較図キャッシュを無効化（次回completeで最新を生成）
+    if 'survey_cached' in session:
+        session.pop('survey_cached')
+        session.modified = True
+    
     return jsonify({'success': True})
 
 @app.route('/debug_session')
@@ -737,4 +747,3 @@ def debug_session():
 # gunicornを使う場合は関係ない
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
-

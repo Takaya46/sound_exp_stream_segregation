@@ -16,14 +16,12 @@
 
     <!-- 説明文1 - PC版 -->
     <div id="instructionTop" class="instruction pc-only">
-        <h2>実験を始めよう！</h2>
+        <h2>実験を始めよう</h2>
         <p>
-            本番の実験は全部で{{ session['total_blocks'] }}ブロックから構成されます！<br>
-            今から行う音の条件と音刺激を確認しましょう！
+            本番の実験は全部で{{ session['total_blocks'] }}ブロックから構成されます。<br>
+            これから行うブロックの音を確認し実験を始めましょう！
         </p>
         <h4>完了したブロックの数: {{ session['block_index'] }} / {{ session['total_blocks'] }}</h4>
-        
-        <br>
         <h3>次の音条件の刺激:  {{ frequency_labels.get(session['current_block_freq'], '不明')}}</h3>
         <ul>
             <div class="media-container">
@@ -44,18 +42,20 @@
     
     <!-- 説明文1 - モバイル簡略版 -->
     <div id="instructionTopMobile" class="instruction mobile-only">
+        <h2>実験を始めよう</h2>
+        <p> {{ session['block_index'] }} / {{ session['total_blocks'] }}ブロックが終了</p>
+        <p>次のブロックの音は</p>
         <h3>{{ frequency_labels.get(session['current_block_freq'], '不明')}}</h3>
-        <p>ブロック {{ session['block_index'] }} / {{ session['total_blocks'] }}</p>
-        <p style="font-size: 12px; margin-top: 10px;">音を確認したら、下の開始ボタンで実験を始めよう！</p> 
+        <p style="font-size: 12px; margin-top: 10px;">音を確認して実験を始めよう！</p> 
         <div style="display: flex; justify-content: space-around; margin: 10px 0;">
-            <div style="text-align: center;">
+            <div style="text-align: center; background-color: #f0f0f0; padding: 10px; border-radius: 10px;">
                 <p style="margin: 5px 0; font-size: 12px;">ノーマル音</p>
                 <audio id="sample_audio_normal_mobile" src="{{ url_for('static', filename='stimuli/' + ('piano_successive_0.52*4' if session['sound_type'] == 'piano' else 'successive_0.52*4') + '/' + session['current_block_freq'] + '/' + ('piano_gallops_' if session['sound_type'] == 'piano' else 'gallops_') + '0.00ms.wav') }}"></audio>
                 <button class="play-button" onclick="playAudio('sample_audio_normal_mobile')" style="width: 35px; height: 35px;"></button>
             </div>
             
-            <div style="text-align: center;">
-                <p style="margin: 5px 0; font-size: 12px;"><span class="target-text">ターゲット音</span></p>
+            <div style="text-align: center; background-color: #f0f0f0; padding: 10px; border-radius: 10px;">
+                <p style="margin: 5px 0; font-size: 12px;"><span class="target-text">ターゲット</span></p>
                 <audio id="sample_audio_target_mobile" src="{{ url_for('static', filename='stimuli/' + ('piano_successive_0.52*4' if session['sound_type'] == 'piano' else 'successive_0.52*4') + '/' + session['current_block_freq'] + '/' + ('piano_gallops_' if session['sound_type'] == 'piano' else 'gallops_') + '64.00ms.wav') }}"></audio>
                 <button class="play-button target-button" onclick="playAudio('sample_audio_target_mobile')" style="width: 35px; height: 35px;"></button>
             </div>
@@ -89,13 +89,8 @@
     <!-- フィードバックメッセージ -->
     <div id="feedback_message"></div>
 
-    <!-- 説明文2 -->
-    <div id="instructionStart" class="instruction-start" style="text-align: center;">
-        開始ボタンをクリックして本番を始めましょう！<br>
-    </div>
-
     <!-- 開始ボタン -->
-    <button id="startButton" onclick="startExperiment()">ブロックを開始</button>
+    <button id="startButton" class="button success" onclick="startExperiment()">ブロックを開始</button>
 
     <script>
         let isExperimentStarted = false; // 実験が開始されたかどうかを示すフラグ
@@ -196,11 +191,11 @@
         async function startExperiment() {
             isExperimentStarted = true; // 実験を開始
             const startButton = document.getElementById("startButton");
-            startButton.disabled = true; // 開始ボタンを無効化
+            if (startButton) startButton.disabled = true; // 開始ボタンを無効化
             const instructionTop = document.getElementById("instructionTop");
-            instructionTop.disabled = true; // 説明文を無効化
+            if (instructionTop) instructionTop.classList.add('hidden'); // 説明文を非表示
             const instructionStart = document.getElementById("instructionStart");
-            instructionStart.disabled = true; // 説明文を無効化
+            if (instructionStart) instructionStart.classList.add('hidden'); // 説明文を非表示（存在する場合）
             
             // ターゲット選択エリアを表示
             const targetSelectionArea = document.getElementById("targetSelectionArea");

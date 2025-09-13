@@ -467,7 +467,6 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert('アンケートの回答ありがとうございました！');
                     window.location.href = '/complete';
                 } else {
                     alert('送信エラーが発生しました。もう一度お試しください。');

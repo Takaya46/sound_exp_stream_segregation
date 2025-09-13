@@ -7,65 +7,393 @@
     <title>WEB音実験(音脈分凝の体験)</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <style>
+        /* モダンなカラーパレット */
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #f093fb;
+            --gradient-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --border-color: rgba(255, 255, 255, 0.2);
+            --shadow-light: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        /* グラデーション背景 */
+        body {
+            background: var(--gradient-bg) !important;
+            min-height: 100vh;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        }
+
+        /* メインタイトルの改善 */
+        h1 {
+            background: linear-gradient(45deg, #fff, #f0f8ff) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            background-clip: text !important;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3) !important;
+            font-size: 3rem !important;
+            font-weight: 700 !important;
+            margin-bottom: 2rem !important;
+            letter-spacing: -0.02em !important;
+        }
+
+
+        /* セクションカード */
+        .section-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 700px;
+            width: 90%;
+            box-shadow: var(--shadow-medium);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(15px);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .section-card:hover {
+            background: rgba(255, 255, 255, 0.95);
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 音声プレーヤーの改善 */
         .meta-media-container {
             display: flex;
             justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+
+        .media-container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .media-container:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-medium);
         }
 
         audio {
             max-width: 250px;
+            border-radius: 12px;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
         }
 
+        /* フォーム要素の改善 */
         #frequency_dir {
             display: block;
         }
 
-        /* チェックボックスをラベルの左に配置するためのスタイル */
+        #frequency_dir_checkboxes {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin: 1rem 0;
+            align-items: center;
+            width: 100%;
+        }
+
         #frequency_dir_checkboxes label {
             display: flex;
-            /* Flexbox レイアウトを適用 */
-            flex-direction: row;
-            /* 横並び */
             align-items: center;
-            /* 垂直方向中央揃え */
-            margin: 0.5em 0;
-            /* ラベル間の余白 */
-            margin-left: 1em;
+            justify-content: flex-start;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+            font-weight: 500;
+            width: 100%;
+            margin: 0;
+        }
+
+        #frequency_dir_checkboxes label:hover {
+            background: rgba(255, 255, 255, 0.95);
+            transform: scale(1.02);
+            border-color: var(--primary-color);
+        }
+
+        #frequency_dir_checkboxes input[type="checkbox"]:checked + label,
+        #frequency_dir_checkboxes label:has(input[type="checkbox"]:checked) {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            transform: scale(1.02);
         }
 
         #frequency_dir_checkboxes input[type="checkbox"] {
-            margin-right: 0.5em;
-            /* チェックボックスとラベルの間隔を調整 */
-            width: 20px;
-            /* チェックボックスの幅 */
-            height: 20px;
-            /* チェックボックスの高さ */
+            margin-right: 1rem;
+            width: 24px;
+            height: 24px;
+            accent-color: var(--primary-color);
         }
 
+        /* ラジオボタンスタイルの改善 */
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin: 1rem 0;
+            align-items: center;
+            width: 100%;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+            font-weight: 500;
+            width: 100%;
+            margin: 0;
+        }
+
+        .radio-option:hover {
+            background: rgba(255, 255, 255, 0.95);
+            transform: scale(1.02);
+            border-color: var(--primary-color);
+        }
+
+        .radio-option:has(input[type="radio"]:checked) {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            transform: scale(1.02);
+        }
+
+        input[type="radio"] {
+            margin-right: 1rem;
+            width: 24px;
+            height: 24px;
+            accent-color: var(--primary-color);
+        }
+
+        /* ボタンの改善 */
+        .start-practice-button {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
+            color: white !important;
+            border: none !important;
+            padding: 1.2rem 4rem !important;
+            font-size: 1.3rem !important;
+            font-weight: 600 !important;
+            border-radius: 50px !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            box-shadow: var(--shadow-light) !important;
+            margin: 3rem auto 5rem auto !important;
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
+            position: relative !important;
+            overflow: hidden !important;
+        }
+
+        .start-practice-button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .start-practice-button:hover::before {
+            left: 100%;
+        }
+
+        .start-practice-button:hover {
+            transform: translateY(-3px) !important;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        .start-practice-button:active {
+            transform: translateY(-1px) !important;
+        }
+
+        /* 入力フィールドの改善 */
+        input[type="text"], input[type="number"] {
+            border: 2px solid rgba(255, 255, 255, 0.3) !important;
+            border-radius: 12px !important;
+            padding: 1rem 1.5rem !important;
+            background: rgba(255, 255, 255, 0.9) !important;
+            font-size: 1.1rem !important;
+            transition: all 0.3s ease !important;
+            backdrop-filter: blur(10px) !important;
+            width: 100% !important;
+            max-width: 400px !important;
+            margin: 0.5rem 0 !important;
+            box-sizing: border-box !important;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus {
+            outline: none !important;
+            border-color: var(--primary-color) !important;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15) !important;
+            background: rgba(255, 255, 255, 1) !important;
+        }
+
+        /* セクションタイトルの改善 */
         h3 {
-            margin-block-end: 0.5em;
+            color: var(--text-primary) !important;
+            font-size: 1.8rem !important;
+            font-weight: 600 !important;
+            margin-bottom: 1.5rem !important;
+            position: relative !important;
+            text-align: center !important;
+        }
+
+        h3::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 2px;
+        }
+
+        /* 説明文の改善 */
+        .instruction {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            border-radius: 24px !important;
+            padding: 2.5rem !important;
+            margin: 2rem auto !important;
+            box-shadow: var(--shadow-medium) !important;
+            backdrop-filter: blur(15px) !important;
+        }
+
+        .instruction h2 {
+            color: var(--primary-color) !important;
+            font-size: 2rem !important;
+            margin-bottom: 1.5rem !important;
+            text-align: center !important;
+        }
+
+        /* リズムタイトルの装飾 */
+        .rhythm-title {
+            font-weight: 600 !important;
+            color: var(--text-primary) !important;
+            margin-bottom: 0.5rem !important;
+            position: relative !important;
+            font-size: 1.1rem !important;
+        }
+
+        .rhythm-title::before {
+            content: "♪";
+            margin-right: 0.5rem;
+            color: var(--accent-color);
+            font-size: 1.2em;
         }
 
         p.section-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-block-end: 0;
+            font-size: 1.2rem !important;
+            font-weight: 600 !important;
+            margin-bottom: 1rem !important;
+            color: var(--text-secondary) !important;
+            text-align: center !important;
+        }
+
+        /* レスポンシブ対応の改善 */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem !important;
+                line-height: 1.2 !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+
+            .section-card {
+                padding: 1.5rem 1rem !important;
+                margin: 1rem 0.5rem !important;
+                width: 95% !important;
+                max-width: none !important;
+            }
+
+            .meta-media-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 1.5rem;
+            }
+
+            h3 {
+                font-size: 1.5rem !important;
+            }
+
+            .start-practice-button {
+                padding: 1rem 2.5rem !important;
+                font-size: 1.1rem !important;
+            }
+
+            /* モバイルでの選択肢調整 */
+            #frequency_dir_checkboxes label,
+            .radio-option {
+                padding: 0.75rem 1rem !important;
+                margin: 0 !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+
+            input[type="text"], input[type="number"] {
+                max-width: 100% !important;
+                width: 100% !important;
+                padding: 0.75rem 1rem !important;
+                font-size: 1rem !important;
+            }
+        }
+
+        /* より小さなモバイル画面用 */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem !important;
+            }
+
+            .section-card {
+                padding: 1rem 0.75rem !important;
+                margin: 1rem 0.25rem !important;
+                width: 98% !important;
+            }
+
         }
     </style>
 </head>
 
 <body>
-    <h1>♫ 音脈分凝クイズ ♫</h1>
+    <h1>音脈分凝クイズ</h1>
     <!-- 説明文 -->
     <div id="instruction_first" class="instruction">
-        <h2>リズムの差を聞き取ろう！</h2>
+        <h2>🎼 リズムの差を聞き取ろう！</h2>
         <p>
-            2つのリズム①とリズム②の違いを聞き取れますか？？<br>
-            音の周波数差によって聞き取りやすさは変わりましたか？？
+            2つのリズム①とリズム②の違いを聞き取れますか？<br>
+            音の周波数差によって聞き取りやすさは変わりましたか？
         </p>
-        <br>
-        <ul class="center-align">
-            <p class="section-title section-margin">音の周波数差: 半音</p>
+        
+        <div class="demo-section">
+            <p class="section-title section-margin">🎵 音の周波数差: 半音</p>
             <div class="meta-media-container">
                 <div class="media-container">
                     <p class="rhythm-title">リズム①</p>
@@ -80,8 +408,8 @@
                         controls></audio>
                 </div>
             </div>
-            <br>
-            <p class="section-title section-margin">音の周波数差: 2オクターブ</p>
+            
+            <p class="section-title section-margin">🎶 音の周波数差: 2オクターブ</p>
             <div class="meta-media-container">
                 <div class="media-container">
                     <p class="rhythm-title">リズム①</p>
@@ -96,25 +424,23 @@
                         controls></audio>
                 </div>
             </div>
-            <br>
-        </ul>
-        <p>
-            色々な音の条件でリズム①と②の識別問題にチャレンジしましょう！<br>
+        </div>
+        
+        <p style="margin-top: 2rem; font-size: 1.1rem;">
+            色々な音の条件でリズム①と②の聞き分け問題にチャレンジしましょう！✨
         </p>
     </div>
 
 
-    <!-- 被験者ID入力 -->
-    <label for="participant_id">
-        <h3>被験者ID</h3>
+    <!-- 設定フォーム -->
+    <div class="section-card">
+        <h3>👤 被験者ID</h3>
         <input id="participant_id" type="text" placeholder="IDを入力 (例: abc)">
-        <p>※IDはなんでもOKです！</p>
-    </label>
-    <br><br>
+        <p style="margin-top: 0.5rem; color: var(--text-secondary); font-size: 0.9rem;">※実験ごとに新しいIDを入力してください！</p>
+    </div>
 
-    <!-- 周波数ディレクトリ選択 -->
-    <label id="frequency_dir" for="frequency_dir_checkboxes">
-        <h3>音の条件（周波数差）</h3>
+    <div class="section-card">
+        <h3>🎵 音の条件（周波数差）</h3>
         <div id="frequency_dir_checkboxes">
             <label>
                 <input type="checkbox" name="frequency_dir" value="g_base">
@@ -137,53 +463,40 @@
                 条件５（3オクターブ）
             </label>
         </div>
-        <p>
-            ※条件1,3,5がおすすめです！<br>
+        <p style="margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
+            💡 条件1,3,5がおすすめです！
         </p>
-    </label>
-    <br><br>
+    </div>
 
-    <!-- 音の種類選択 -->
-    <label for="sound_type">
-        <h3>音の種類</h3>
-        <div style="display: flex; flex-direction: column; align-items: flex-start; margin-left: 1em;">
-            <label style="display: flex; align-items: center; margin: 0.5em 0;">
-                <input type="radio" name="sound_type" value="pure_tone" checked style="margin-right: 0.5em; width: 20px; height: 20px;">
+    <div class="section-card">
+        <h3>🎹 音の種類</h3>
+        <div class="radio-group">
+            <label class="radio-option">
+                <input type="radio" name="sound_type" value="pure_tone" checked>
                 純音
             </label>
-            <label style="display: flex; align-items: center; margin: 0.5em 0;">
-                <input type="radio" name="sound_type" value="piano" style="margin-right: 0.5em; width: 20px; height: 20px;">
+            <label class="radio-option">
+                <input type="radio" name="sound_type" value="piano">
                 ピアノ音
             </label>
         </div>
-        <p>
-            ※純音は聞き取りやすく、ピアノ音はより自然な音です<br>
+        <p style="margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
+            💡 純音は聞き取りやすく、ピアノ音はより自然な音です
         </p>
-    </label>
-    <br><br>
+    </div>
 
-    <!-- トライアル数設定 -->
-    <label for="trials_per_cond">
-        <h3>各条件の問題数</h3>
+    <div class="section-card">
+        <h3>📊 各条件の問題数</h3>
         <input id="trials_per_cond" type="number" min="10" max="50" value="10">
-        <!-- <h5>
-            目安の時間
-        </h5>
-        <p>
-            2条件10題: 約3分<br>
-            3条件30題: 約15分<br>
-        </p> -->
-    </label>
-    <br><br>
+    </div>
 
-    <!-- 任意のメルアド入力欄 -->
-    <label for="mail_address">
-        <h3>
-            メールアドレス（任意）
-        </h3>
+    <div class="section-card">
+        <h3>📧 メールアドレス（任意）</h3>
         <input id="mail_address" type="text" placeholder="メールアドレスを入力してください">
-        <p>登録で音実験@京大西田研に<br>ご招待します！</p>
-    </label>
+        <p style="margin-top: 0.5rem; color: var(--text-secondary); font-size: 0.9rem;">
+            🎓 登録で音実験@京大西田研にご招待します！
+        </p>
+    </div>
 
     <!-- 実験開始ボタン -->
     <button onclick="startExperiment()" class="start-practice-button">練習へ進む</button>
@@ -191,10 +504,29 @@
     <!-- 確認ポップアップ -->
     <div id="confirmationPopup" class="popup">
         <div class="popup-content">
-            <p id="confirmationMessage"></p>
+            <div id="confirmationMessage" style="margin-bottom: 2rem;"></div>
             <div class="popup-buttons">
-                <button id="backButton">戻る</button>
-                <button id="startExperimentButton">進む</button>
+                <button id="backButton" style="
+                    padding: 0.75rem 2rem;
+                    border: 2px solid var(--text-secondary);
+                    background: transparent;
+                    color: var(--text-secondary);
+                    border-radius: 12px;
+                    cursor: pointer;
+                    font-weight: 500;
+                    transition: all 0.3s ease;
+                ">戻る</button>
+                <button id="startExperimentButton" style="
+                    padding: 0.75rem 2rem;
+                    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+                    color: white;
+                    border: none;
+                    border-radius: 12px;
+                    cursor: pointer;
+                    font-weight: 600;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+                ">🚀 進む</button>
             </div>
         </div>
     </div>
@@ -239,8 +571,8 @@
                 return;
             }
 
-            if (Trials_per_cond < 10) {
-                alert("問題数は10問以上にしてください！");
+            if (Trials_per_cond < 1) {
+                alert("問題数は1問以上にしてください！");
                 return;
             }
 
