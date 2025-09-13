@@ -74,11 +74,6 @@
                 {% endif %}
             </div>
             {% endfor %}
-            {% if survey_results.overall.hensachi_mean and not (survey_results.overall.hensachi_mean|string == 'nan') %}
-            <div style="margin-top: 15px; padding: 10px; background-color: #e8f5e8; border-radius: 5px;">
-                <strong>全体平均偏差値: {{ "%.1f"|format(survey_results.overall.hensachi_mean) }}</strong>
-            </div>
-            {% endif %}
         </div>
         {% endif %}
         <div class="image-container">
