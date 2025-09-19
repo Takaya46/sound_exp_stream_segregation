@@ -97,6 +97,63 @@ def save_summary_file(results_list):
     
     print(f"Summary file saved: {summary_file_path}")
 
+# アンケート詳細結果を別途CSVに保存
+def save_questionnaire_details(questionnaire_data):
+    """アンケートの詳細回答を別途CSVファイルに保存"""
+    today = session.get('today')
+    participant_id = session.get('participant_id')
+    
+    if not today or not participant_id:
+        print(f"Error: Missing session data for questionnaire details - today: {today}, participant_id: {participant_id}")
+        return
+    
+    # アンケート詳細用のディレクトリとファイルパス
+    details_dir = os.path.join(DATA_FOLDER, today, participant_id)
+    os.makedirs(details_dir, exist_ok=True)
+    
+    details_file_path = os.path.join(details_dir, f"{participant_id}_questionnaire_details.csv")
+    
+    # CSVヘッダー
+    headers = ['participant_id', 'timestamp', 'q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'total_score']
+    
+    # 現在の時刻とデータを準備
+    current_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    total_score = sum(int(questionnaire_data[f'q{i}']) for i in range(1, 8))
+    
+    # データ行
+    data_row = [
+        participant_id,
+        current_time,
+        questionnaire_data.get('q1', ''),
+        questionnaire_data.get('q2', ''),
+        questionnaire_data.get('q3', ''),
+        questionnaire_data.get('q4', ''),
+        questionnaire_data.get('q5', ''),
+        questionnaire_data.get('q6', ''),
+        questionnaire_data.get('q7', ''),
+        total_score
+    ]
+    
+    try:
+        # ファイルが存在しない場合はヘッダー付きで新規作成
+        file_exists = os.path.exists(details_file_path)
+        
+        with open(details_file_path, 'a', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            
+            # ヘッダーを書き込み（新規ファイルの場合のみ）
+            if not file_exists:
+                writer.writerow(headers)
+            
+            # データ行を追加
+            writer.writerow(data_row)
+        
+        print(f"Questionnaire details saved: {details_file_path}")
+        print(f"Individual answers: {[questionnaire_data.get(f'q{i}') for i in range(1, 8)]}")
+        
+    except Exception as e:
+        print(f"Error saving questionnaire details: {e}")
+
 # アンケート結果でサマリーファイルを更新
 # グローバルsummary.csvは使用しない方針のため、関連処理は削除
 
@@ -727,6 +784,9 @@ def submit_questionnaire():
     
     # セッションにアンケート結果を保存
     session['questionnaire_answers'] = data
+    
+    # アンケート詳細結果を別途CSVに保存
+    save_questionnaire_details(data)
     
     # サマリーファイルを更新（アンケート結果を含む）
     update_summary_with_questionnaire(data)
