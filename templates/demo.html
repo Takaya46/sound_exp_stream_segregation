@@ -277,29 +277,26 @@
             const audio2 = new Audio(tone2Path);
             const audio3 = new Audio(tone3Path);
 
-            // Insert 0.2s of silence (two 0.1s files) to avoid initial noise
+            // Warm-up with ~0.05s silence to avoid initial noise
             const silencePath = '/static/stimuli/successive_0.52*4/silence/silence_0.1s.wav';
-            const s1 = new Audio(silencePath);
-            const s2 = new Audio(silencePath);
-
-            s1.play().catch(()=>{});
-            s1.onended = () => {
-                s2.play().catch(()=>{});
-                s2.onended = () => {
-                    audio1.play();
-                    audio1.onended = () => {
-                        setTimeout(() => {
-                            audio2.play();
-                            audio2.onended = () => {
-                                setTimeout(() => {
-                                    audio3.play();
-                                    audio3.onended = () => { isAudioPlaying = false; };
-                                }, 500);
-                            };
-                        }, 500);
-                    };
+            const sWarm = new Audio(silencePath);
+            sWarm.play().catch(()=>{});
+            setTimeout(() => {
+                try { sWarm.pause(); } catch(e) {}
+                // Start actual sequence
+                audio1.play();
+                audio1.onended = () => {
+                    setTimeout(() => {
+                        audio2.play();
+                        audio2.onended = () => {
+                            setTimeout(() => {
+                                audio3.play();
+                                audio3.onended = () => { isAudioPlaying = false; };
+                            }, 500);
+                        };
+                    }, 500);
                 };
-            };
+            }, 50);
         }
 
         function replayTrial() {
@@ -313,29 +310,25 @@
             const audio2 = new Audio(currentTonePaths.tone2);
             const audio3 = new Audio(currentTonePaths.tone3);
 
-            // Insert 0.2s of silence (two 0.1s files) to avoid initial noise
+            // Warm-up with ~0.05s silence to avoid initial noise
             const silencePath = '/static/stimuli/successive_0.52*4/silence/silence_0.1s.wav';
-            const s1 = new Audio(silencePath);
-            const s2 = new Audio(silencePath);
-
-            s1.play().catch(()=>{});
-            s1.onended = () => {
-                s2.play().catch(()=>{});
-                s2.onended = () => {
-                    audio1.play();
-                    audio1.onended = () => {
-                        setTimeout(() => {
-                            audio2.play();
-                            audio2.onended = () => {
-                                setTimeout(() => {
-                                    audio3.play();
-                                    audio3.onended = () => { isAudioPlaying = false; };
-                                }, 500);
-                            };
-                        }, 500);
-                    };
+            const sWarm = new Audio(silencePath);
+            sWarm.play().catch(()=>{});
+            setTimeout(() => {
+                try { sWarm.pause(); } catch(e) {}
+                audio1.play();
+                audio1.onended = () => {
+                    setTimeout(() => {
+                        audio2.play();
+                        audio2.onended = () => {
+                            setTimeout(() => {
+                                audio3.play();
+                                audio3.onended = () => { isAudioPlaying = false; };
+                            }, 500);
+                        };
+                    }, 500);
                 };
-            };
+            }, 50);
         }
 
         function submitAnswer() {
