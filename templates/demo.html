@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo Practice</title>
+    <title>Demo</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <style>
         :root {
@@ -59,6 +59,9 @@
             justify-content: center;
             margin-bottom: 1rem;
         }
+
+        .selector { display: flex; flex-direction: column; align-items: flex-start; gap: 0.4rem; }
+        .selector-label { color: var(--text-secondary); font-size: 0.9rem; padding-left: 0.25rem; }
 
         select {
             background: rgba(255, 255, 255, 0.9);
@@ -140,26 +143,32 @@
 </head>
 
 <body>
-    <h1>Demo Practice</h1>
+    <h1>Demo</h1>
 
     <div class="container">
         <p style="text-align:center; margin-top:0; color: var(--text-secondary);">
-            Choose a frequency condition and difficulty, then play a trial. Press F for 1st or J for 3rd.
+            Pick the tone difference and delay amount, then play a trial. Press F for 1st or J for 3rd.
         </p>
 
         <div class="dropdowns">
-            <select id="frequencyDirSelect" aria-label="Frequency condition">
-                <option value="g_base">Same Tone</option>
-                <option value="as_semitone">Semitone</option>
-                <option value="g_1octave">1 Octave</option>
-                <option value="g_2octave" selected>2 Octaves</option>
-                <option value="g_3octave">3 Octaves</option>
-            </select>
-            <select id="offsetSelect" aria-label="Difficulty">
-                <option value="64.00" selected>Easy: 64 ms</option>
-                <option value="32.00">Normal: 32 ms</option>
-                <option value="8.00">Hard: 8 ms</option>
-            </select>
+            <div class="selector">
+                <label for="frequencyDirSelect" class="selector-label">Tone difference</label>
+                <select id="frequencyDirSelect" aria-label="Tone difference">
+                    <option value="g_base">Same Tone</option>
+                    <option value="as_semitone">Semitone</option>
+                    <option value="g_1octave">1 Octave</option>
+                    <option value="g_2octave" selected>2 Octaves</option>
+                    <option value="g_3octave">3 Octaves</option>
+                </select>
+            </div>
+            <div class="selector">
+                <label for="offsetSelect" class="selector-label">Delay amount</label>
+                <select id="offsetSelect" aria-label="Delay amount">
+                    <option value="64.00" selected>Big delay</option>
+                    <option value="32.00">Medium delay</option>
+                    <option value="8.00">Small delay</option>
+                </select>
+            </div>
             <button id="startDemoBtn" class="button" onclick="startDemoTrial()">Play Trial</button>
         </div>
 
