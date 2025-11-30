@@ -363,6 +363,11 @@ def start_experiment():
 def practice():
     return render_template('practice.html', frequency_labels=FREQUENCY_LABELS)
 
+@app.route('/demo')
+def demo():
+    # Simple demo page (English) independent of session state
+    return render_template('demo.html')
+
 @app.route('/experiment')
 def experiment():
     return render_template('experiment.html', frequency_labels=FREQUENCY_LABELS)
