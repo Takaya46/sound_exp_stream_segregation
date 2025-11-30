@@ -97,6 +97,7 @@
         }
 
         .button:hover { transform: translateY(-2px); box-shadow: var(--shadow-medium); }
+        .button:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; filter: grayscale(10%); }
 
         /* Answer buttons: clearer hover/selected state */
         .answer-button { position: relative; }
@@ -240,7 +241,19 @@
             btnJ.setAttribute('aria-pressed', 'false');
         }
 
+        function setPlaybackState(playing) {
+            isAudioPlaying = playing;
+            const startBtn = document.getElementById('startDemoBtn');
+            const replayBtn = document.getElementById('replayBtn');
+            if (startBtn) startBtn.disabled = playing;
+            if (replayBtn) replayBtn.disabled = playing;
+        }
+
         function startDemoTrial() {
+            // Prevent overlapping playback
+            if (isAudioPlaying) {
+                return;
+            }
             // Clear any previous selection to avoid confusion during playback
             clearSelection();
             const frequencyDir = document.getElementById('frequencyDirSelect').value;
@@ -271,7 +284,7 @@
             currentTonePaths = { tone1: tone1Path, tone2: tone2Path, tone3: tone3Path };
 
             isTrialRunning = true;
-            isAudioPlaying = true;
+            setPlaybackState(true);
 
             const audio1 = new Audio(tone1Path);
             const audio2 = new Audio(tone2Path);
@@ -291,7 +304,7 @@
                         audio2.onended = () => {
                             setTimeout(() => {
                                 audio3.play();
-                                audio3.onended = () => { isAudioPlaying = false; };
+                                audio3.onended = () => { setPlaybackState(false); };
                             }, 500);
                         };
                     }, 500);
@@ -304,7 +317,7 @@
             clearSelection();
             if (!currentTonePaths || isAudioPlaying) return;
             isTrialRunning = true;
-            isAudioPlaying = true;
+            setPlaybackState(true);
 
             const audio1 = new Audio(currentTonePaths.tone1);
             const audio2 = new Audio(currentTonePaths.tone2);
@@ -323,7 +336,7 @@
                         audio2.onended = () => {
                             setTimeout(() => {
                                 audio3.play();
-                                audio3.onended = () => { isAudioPlaying = false; };
+                                audio3.onended = () => { setPlaybackState(false); };
                             }, 500);
                         };
                     }, 500);
