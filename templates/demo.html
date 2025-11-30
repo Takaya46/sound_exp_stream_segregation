@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo Practice</title>
+    <title>Demo</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <style>
         :root {
@@ -59,6 +59,9 @@
             justify-content: center;
             margin-bottom: 1rem;
         }
+
+        .selector { display: flex; flex-direction: column; align-items: flex-start; gap: 0.4rem; }
+        .selector-label { color: var(--text-secondary); font-size: 0.9rem; padding-left: 0.25rem; }
 
         select {
             background: rgba(255, 255, 255, 0.9);
@@ -140,36 +143,42 @@
 </head>
 
 <body>
-    <h1>Demo Practice</h1>
+    <h1>Demo</h1>
 
     <div class="container">
         <p style="text-align:center; margin-top:0; color: var(--text-secondary);">
-            Choose a frequency condition and difficulty, then play a trial. Press F for 1st or J for 3rd.
+            Pick the tone difference and delay amount, then play a trial. Press F for 1st or J for 3rd.
         </p>
 
         <div class="dropdowns">
-            <select id="frequencyDirSelect" aria-label="Frequency condition">
-                <option value="g_base">Same Tone</option>
-                <option value="as_semitone">Semitone</option>
-                <option value="g_1octave">1 Octave</option>
-                <option value="g_2octave" selected>2 Octaves</option>
-                <option value="g_3octave">3 Octaves</option>
-            </select>
-            <select id="offsetSelect" aria-label="Difficulty">
-                <option value="64.00" selected>Easy: 64 ms</option>
-                <option value="32.00">Normal: 32 ms</option>
-                <option value="8.00">Hard: 8 ms</option>
-            </select>
+            <div class="selector">
+                <label for="frequencyDirSelect" class="selector-label">Tone difference</label>
+                <select id="frequencyDirSelect" aria-label="Tone difference">
+                    <option value="g_base">Same Tone</option>
+                    <option value="as_semitone">Semitone</option>
+                    <option value="g_1octave">1 Octave</option>
+                    <option value="g_2octave" selected>2 Octaves</option>
+                    <option value="g_3octave">3 Octaves</option>
+                </select>
+            </div>
+            <div class="selector">
+                <label for="offsetSelect" class="selector-label">Delay amount</label>
+                <select id="offsetSelect" aria-label="Delay amount">
+                    <option value="64.00" selected>Big delay</option>
+                    <option value="32.00">Medium delay</option>
+                    <option value="8.00">Small delay</option>
+                </select>
+            </div>
             <button id="startDemoBtn" class="button" onclick="startDemoTrial()">Play Trial</button>
         </div>
 
         <div id="trialArea" class="trial-container" style="display:block;">
             <div class="button-container">
-                <button id="buttonF" class="button answer-button" aria-pressed="false">1st (F)</button>
-                <button id="buttonJ" class="button answer-button" aria-pressed="false">3rd (J)</button>
+                <button id="buttonF" class="button answer-button" aria-pressed="false">1st</button>
+                <button id="buttonJ" class="button answer-button" aria-pressed="false">3rd</button>
             </div>
             <div class="button-container">
-                <button id="buttonSubmit" class="button">Submit (Space)</button>
+                <button id="buttonSubmit" class="button">Submit</button>
             </div>
             <div id="error"></div>
             <h3 id="resultText"></h3>
@@ -268,18 +277,26 @@
             const audio2 = new Audio(tone2Path);
             const audio3 = new Audio(tone3Path);
 
-            audio1.play();
-            audio1.onended = () => {
-                setTimeout(() => {
-                    audio2.play();
-                    audio2.onended = () => {
-                        setTimeout(() => {
-                            audio3.play();
-                            audio3.onended = () => { isAudioPlaying = false; };
-                        }, 500);
-                    };
-                }, 500);
-            };
+            // Warm-up with ~0.05s silence to avoid initial noise
+            const silencePath = '/static/stimuli/successive_0.52*4/silence/silence_0.1s.wav';
+            const sWarm = new Audio(silencePath);
+            sWarm.play().catch(()=>{});
+            setTimeout(() => {
+                try { sWarm.pause(); } catch(e) {}
+                // Start actual sequence
+                audio1.play();
+                audio1.onended = () => {
+                    setTimeout(() => {
+                        audio2.play();
+                        audio2.onended = () => {
+                            setTimeout(() => {
+                                audio3.play();
+                                audio3.onended = () => { isAudioPlaying = false; };
+                            }, 500);
+                        };
+                    }, 500);
+                };
+            }, 50);
         }
 
         function replayTrial() {
@@ -293,18 +310,25 @@
             const audio2 = new Audio(currentTonePaths.tone2);
             const audio3 = new Audio(currentTonePaths.tone3);
 
-            audio1.play();
-            audio1.onended = () => {
-                setTimeout(() => {
-                    audio2.play();
-                    audio2.onended = () => {
-                        setTimeout(() => {
-                            audio3.play();
-                            audio3.onended = () => { isAudioPlaying = false; };
-                        }, 500);
-                    };
-                }, 500);
-            };
+            // Warm-up with ~0.05s silence to avoid initial noise
+            const silencePath = '/static/stimuli/successive_0.52*4/silence/silence_0.1s.wav';
+            const sWarm = new Audio(silencePath);
+            sWarm.play().catch(()=>{});
+            setTimeout(() => {
+                try { sWarm.pause(); } catch(e) {}
+                audio1.play();
+                audio1.onended = () => {
+                    setTimeout(() => {
+                        audio2.play();
+                        audio2.onended = () => {
+                            setTimeout(() => {
+                                audio3.play();
+                                audio3.onended = () => { isAudioPlaying = false; };
+                            }, 500);
+                        };
+                    }, 500);
+                };
+            }, 50);
         }
 
         function submitAnswer() {
